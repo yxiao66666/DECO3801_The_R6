@@ -5,6 +5,14 @@ import requests
 from PIL import Image
 
 
+cnet_modules = {
+    'canny': 'control_v11p_sd15_canny [d14c016b]',  # general purpose
+    'lineart_anime': 'control_v11p_sd15s2_lineart_anime [3825e83e]',     # line art
+    'shuffle': 'control_v11e_sd15_shuffle [526bfdae]',  # transfer color scheme
+    'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]'     # straight lines
+}
+
+
 def decode_base64_to_image(encoding):
     if encoding.startswith('data:image/'):
         encoding = encoding.split(';')[1].split(',')[1]
@@ -19,7 +27,7 @@ def encode_pil_to_base64(image):
     return base64.b64encode(bytes_data).decode('utf-8')
 
 
-def cnet_txt2img(prompt, ref_img, batch_size=1, url='http://127.0.0.1:7860'):
+def cnet_txt2img(prompt, ref_img, batch_size=1, module='canny',url='http://127.0.0.1:7860'):
     base64_img = encode_pil_to_base64(ref_img)
     
     txt2img_value = {
@@ -29,16 +37,17 @@ def cnet_txt2img(prompt, ref_img, batch_size=1, url='http://127.0.0.1:7860'):
         'batch_size': batch_size,
         'steps': 20,
         'cfg_scale': 9,
-        'width': 512,   # TODO: make image width & height the same aspect ratio as the input image
-        'height': 512,
+        'width': 768,   # TODO: make image width & height the same aspect ratio as the input image
+        'height': 768,
         'alwayson_scripts': {
             'controlnet': {     # TODO: implement multiple controlnet units
                 'args': [
                     {
                         'enabled': True,
-                        'module': 'canny',  # TODO: make module selectable by the user
-                        'model': 'control_v11p_sd15_canny [d14c016b]',
-                        'image': base64_img
+                        'module': module,
+                        'model': cnet_modules[module],
+                        'image': base64_img,
+                        'pixel_perfect': True
                     }
                 ]
             }
