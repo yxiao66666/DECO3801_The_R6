@@ -7,7 +7,7 @@
 1.  Clone AUTOMATIC1111's [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) repository.
 2.  Run `webui.bat` for windows, or run `./webui.sh` for macos.
 
-If you run into any issue, please refer to the original documentory [here](https://github.com/AUTOMATIC1111/stable-diffusion-webui).
+If you run into any issue, please refer to the original document [here](https://github.com/AUTOMATIC1111/stable-diffusion-webui).
 
 ### 2. Install Controlnet Extension
 
