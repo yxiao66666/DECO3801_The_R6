@@ -55,6 +55,9 @@ def cnet_txt2img(prompt, ref_img, batch_size=1, module='canny',url='http://127.0
     }
     
     response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=txt2img_value)
-    output_image = decode_base64_to_image(response.json()['images'][0])     # TODO: support batch_size >= 2
     
-    return output_image
+    output_images = []
+    for i in range(batch_size):
+        output_images.append(decode_base64_to_image(response.json()['images'][i]))
+    
+    return output_images
