@@ -15,7 +15,7 @@ cnet_modules = {
 
 def decode_base64_to_image(encoding):
     if encoding.startswith('data:image/'):
-        encoding = encoding.split(';')[1].split(',')[1]
+        encoding = encoding.split(':')[1].split(',')[1]
     image = Image.open(io.BytesIO(base64.b64decode(encoding)))
     return image
 
