@@ -10,7 +10,9 @@ if not defined VENV_DIR (set "VENV_DIR=%~dp0%venv")
 
 set SD_WEBUI_RESTART=tmp/restart
 set ERROR_REPORTING=FALSE
-set COMMANDLINE_ARGS=--api
+
+:: set sd-webui to lauch with api mode and no user interface
+set COMMANDLINE_ARGS=--api --nowebui 
 
 mkdir tmp 2>NUL
 
