@@ -18,7 +18,7 @@ class QueryMissmatchException(BaseException):
 
 
 def search_pinterest(
-    query: str, options: dict[str, str] | None = None, content: str = "{}"
+    query: str, options: dict[str, str] | None = None, context: str = "{}"
 ) -> requests.Response:
     """Querys pinterest for images
 
@@ -52,5 +52,4 @@ def search_pinterest(
         + r',"scope":"pins","selected_one_bar_modules":null,"source_id":null,"source_module_id":null,"top_pin_id":""},"context":{}}&_='
         + str(floor(time() * 1000))
     )
-    print(request)
     return requests.get(request)
