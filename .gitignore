@@ -1,2 +1,4 @@
 __pycache__/
 test*
+controlnet/__pycache__/util.cpython-311.pyc
+controlnet/test.ipynb
