@@ -7,6 +7,7 @@ to use in the future.
 
 from math import floor
 from time import time
+import json
 import requests
 
 
@@ -53,3 +54,20 @@ def search_pinterest(
         + str(floor(time() * 1000))
     )
     return requests.get(request, timeout=timeout)
+
+def response_pull_images(response:requests.Response, img_size:str ="236x") -> list[str]:
+    """Takes a http response from a search engine and return a list of the returned images
+
+    Args:
+        response (requests.Response): The response recieved from a search function
+            (search_pinterest)
+
+    Returns:
+        list[str]: A list of links to images.
+    """
+    parsed = json.loads(response.content)
+    out = []
+    for im_dat in parsed["resource_response"]["data"]["results"]:
+        out.append(im_dat["images"][img_size]["url"])
+
+    return out
