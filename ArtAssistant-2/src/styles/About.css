@@ -1,7 +1,27 @@
-.instruction {
-  color:white;
-  font-size:10em;
-  font-family: cursive;
+
+.about-us-block {
+  background-color: white;
+}
+
+
+.btn-learn-more {
+  border: 2px solid white;
+  color: white;
+  background-color: transparent;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.btn-learn-more:hover {
+  background-color: rgb(55, 0, 255); 
+  color: white;
+  border: 2px solid rgb(55, 0, 255);
 }
 
 
@@ -12,25 +32,38 @@
   z-index: 1;
   border-radius: 15px;
   box-shadow: 0 0.25rem 1rem 0 rgba(47, 91, 234, 0.125);
+  width: 80%; 
+  height: 60%; 
 }
+
+
 .single_advisor_profile .advisor_thumb {
   position: relative;
   z-index: 1;
   border-radius: 15px 15px 0 0;
   margin: 0 auto;
-  padding: 30px 30px 0 30px;
-  background-color: #3f43fd;
+  padding: 0; 
+  background-color: #000000;  
   overflow: hidden;
+  width: 100%;  
+  height: 100%; 
 }
+
+.single_advisor_profile .advisor_thumb img {
+  width: 100%; 
+  height: 100%;  
+  object-fit: cover; 
+}
+
 .single_advisor_profile .advisor_thumb::after {
   transition-duration: 500ms;
   position: absolute;
-  width: 150%;
+  width: 180%;
   height: 80px;
   bottom: -45px;
   left: -25%;
   content: "";
-  background-color: #ffffff;
+  background-color: #a2eaee;
   transform: rotate(-15deg);
 }
 @media only screen and (max-width: 575px) {
@@ -63,7 +96,7 @@
   text-align: right;
   transition-duration: 500ms;
   border-radius: 0 0 15px 15px;
-  background-color: #ffffff;
+  background-color: #a2eaee;
 }
 .single_advisor_profile .single_advisor_details_info::after {
   transition-duration: 500ms;
@@ -71,7 +104,7 @@
   z-index: 1;
   width: 50px;
   height: 3px;
-  background-color: #3f43fd;
+  background-color: #070a57;
   content: "";
   top: 12px;
   right: 30px;
