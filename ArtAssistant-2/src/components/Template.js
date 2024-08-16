@@ -3,15 +3,17 @@ import PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 
+
 // Template for all pages with a header and footer
 export default function Template({ children }) {
     return (
         <>
             <Header />
-                <main>
+                <main className="main">
                     {children}
                 </main>
             <Footer />
+    
 
             {/* Here is button to toggle light and dark mode */}
             {/* Not working yet */}
