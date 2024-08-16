@@ -17,7 +17,7 @@ export default function Upload() {
     };
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}>
         <center>
             <h1 className="tittle">ARTY</h1>
             {/* Here is the image upload */}
@@ -29,7 +29,7 @@ export default function Upload() {
                 {file && (
                     <div>
                         <h2 className="description">Uploaded Image:</h2>
-                        <img src={file} alt="Uploaded" style={{ maxWidth: '100%', height: 'auto' }} />
+                        <img src={file} alt="Uploaded" style={{ maxWidth: '40%', height: '100%' }} />
                     </div>
                 )}
             </div>

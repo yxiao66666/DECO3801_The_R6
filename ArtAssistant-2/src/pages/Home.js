@@ -5,9 +5,8 @@ import React from "react";
 // Home / Landing page
 export default function Home() {
     return ( 
-        <div> 
-            <main className="main">
-                <section >
+        <div style={{ backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}> 
+                <section>
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-15">
@@ -58,7 +57,6 @@ export default function Home() {
                         <a href="Upload" class="btn btn-light mb-5">Get Started</a>
                     </div>
                 </section>
-            </main>
         </div> 
     ); 
 } 
