@@ -6,7 +6,14 @@ const fileTypes = ["JPG", "PNG", "GIF"];
 export default function Upload() {
     const [file, setFile] = useState(null);
     const handleChange = (file) => {
-        setFile(file);
+        const reader = new FileReader();
+        reader.onload=(e)=>
+            {
+                setFile(e.target.result);
+
+        }
+        reader.readAsDataURL(file);
+        
     };
 
   return (
@@ -17,6 +24,15 @@ export default function Upload() {
             <form method="post">
                 <FileUploader handleChange={handleChange} name="file" types={fileTypes}/>
             </form>
+            
+            <div style={{ marginTop: '20px' }}>
+                {file && (
+                    <div>
+                        <h2 className="description">Uploaded Image:</h2>
+                        <img src={file} alt="Uploaded" style={{ maxWidth: '100%', height: 'auto' }} />
+                    </div>
+                )}
+            </div>
 
             <br></br>
             <br></br>
