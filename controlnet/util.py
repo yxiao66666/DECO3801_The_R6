@@ -39,7 +39,7 @@ def cnet_txt2img(prompt, ref_img, batch_size=1, module='canny',url='http://127.0
         'cfg_scale': 9,
         'width': 768,   # TODO: make image width & height the same aspect ratio as the input image
         'height': 768,
-        'alwayson_scripts': {x
+        'alwayson_scripts': {
             'controlnet': {     # TODO: implement multiple controlnet units
                 'args': [
                     {
