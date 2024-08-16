@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // Footer
 export default function Footer() {
     return (
-        <footer class="bg-dark text-light py-4">
+        <footer class="text-light py-4" style={{ backgroundColor: 'black' }}>
           <div class="container">
               <div class="row">
                   <div class="col-md-6">
