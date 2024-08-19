@@ -1,66 +1,67 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-
+import "../styles/Home.css";
 
 // Home / Landing page
 export default function Home() {
     return ( 
         <div style={{ backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}> 
-                <section>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-15">
-                                <h1 class="display-4" className="tittle">ARTY</h1>
-                                <h1 class="display-7" className="description">Unleash Your Creativity with Art Assistant</h1>
-                                <p class="lead" className="description">Explore, create, and transform art with cutting-edge tools in your hand.</p>
-                            </div>
-                            <div class="col-lg-4 d-flex justify-content-between align-items-center mt-2">
-                                <img src="images/hum-1.jpeg" alt="Landing" class="img-fluid rounded shadow"></img>
-                                <img src="images/scen-1.jpeg" alt="Landing" class="img-fluid rounded shadow"></img>
-                                <img src="images/scen-2.jpeg" alt="Landing" class="img-fluid rounded shadow"></img>
-                                
-                            </div>
+                <div className="text-start ms-auto me-auto" style={{
+                            backgroundImage: 'url("../images/Sketch.png")',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            padding: '50px 10px',
+                            borderRadius: '5px', 
+                            marginBottom:'40px',
+                            color:'white'
+                        }}>
+                        <h1 class="display-4" className="tittle">ARTY</h1>
+                        <div className="col-12">
+                            <h1 className="display-7 mb-3">Unleash Your Creativity with Us</h1>
+                            <p className="mb-2">Mesh the creativity of your mind with our empowering tools and let’s create magic.</p>
+                            <p className="mb-2">Go beyond the ordinary and unleash the artist within.</p>
+                            <p className="mb-2">Upload your masterpieces or build them right here. You’re in control.</p>
+                            <p className="mb-2">Dare to express, dare to impress.</p>
                         </div>
-                    </div>
-                </section>
+                </div>
 
                 <section>
-                    <div class="container">
-                        <h2 class="text-center mb-4" className="description">Key Features</h2>
-                        <div class="row">
-                            <div class="col-lg-4 mb-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Integrated Api search engine </h4>
-                                        <p class="card-text">A short description of api search engine.</p>
-                                    </div>
-                                </div>
+                    <div className="container">
+                        <div className="row align-items-center mb-5">
+                            <div className="col-lg-6 col-md-12 mb-4">
+                                <img src="images/hum-1.jpeg" alt="Landing" className="img-fluid rounded shadow w-100"></img>
                             </div>
-                            <div class="col-lg-4 mb-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">AI Art Generator</h4>
-                                        <p class="card-text">A short description of AI Art Generator.</p>
-                                    </div>
-                                </div>
+                            <div className="col-lg-6 col-md-12 text-lg-center">
+                                <h4>Integrated API Search Engine</h4>
+                                <p>Effortlessly search and access a wide range of images with our powerful API, offering fast results and comprehensive filtering options to find the perfect image for your needs.</p>
                             </div>
-                            <div class="col-lg-4 mb-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Easy-to-Use Interface</h4>
-                                        <p class="card-text">Makes it simple to create your resume.</p>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
-                        <a href="Upload" class="btn btn-light mb-5">Get Started</a>
+                        
+                        <div className="row align-items-center mb-5"> 
+                            <div className="col-lg-6 col-md-12 order-lg-2 mb-4">
+                                <img src="images/scen-1.jpeg" alt="Landing" className="img-fluid rounded shadow w-100"></img>
+                            </div>
+                            <div className="col-lg-6 col-md-12 order-lg-1 text-lg-center">
+                                <h4 className="card-title">AI Art Generator</h4>
+                                <p className="card-text">Create unique digital artworks effortlessly with our AI-powered generator, turning your ideas into visually stunning pieces in seconds.</p>
+                            </div>
+                        </div>
+                        
+                        <div className="row align-items-center mb-5"> 
+                            <div className="col-lg-6 col-md-12 mb-4">
+                                <img src="images/scen-2.jpeg" alt="Landing" className="img-fluid rounded shadow w-100"></img>
+                            </div>
+                            <div className="col-lg-6 col-md-12 text-lg-center">
+                                <h4 className="card-title">Easy-to-Use Interface</h4>
+                                <p className="card-text">Create your resume quickly and easily with our user-friendly interface, designed to simplify every step of the process.</p>
+                            </div>
+                        </div>
+
+                        <div className="text-center">
+                            <a href="Upload" className="btn btn-light mb-5 mt-5">Get Started</a>
+                        </div>
                     </div>
                 </section>
         </div> 
     ); 
 } 
-
-
-
-

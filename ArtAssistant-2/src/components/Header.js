@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import "../styles/Header.css";
 
 // Header
 export default function Header() {
@@ -31,10 +32,10 @@ export default function Header() {
                     aria-expanded="false" 
                     aria-label="Toggle navigation"
                 >
-                    <span className="navbar-toggler-icon" style={{ color: 'white' }}></span>
+                <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav ms-auto">
+                    <ul className="navbar-nav ms-auto me-auto">
                         <li className="nav-item">
                             <Link 
                                 className={`nav-link ${activeLink === "/" ? "active" : ""}`} 
@@ -77,6 +78,20 @@ export default function Header() {
                                 onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
                             >
                                 AI Art Generator
+                            </Link>
+                        </li>
+                    </ul>
+
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <Link 
+                                className={`nav-link ${activeLink === "/" ? "active" : ""}`} 
+                                to="/" 
+                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Cursive, sans-serif' }}
+                                onMouseEnter={(e) => e.currentTarget.style.fontSize = '20px'}
+                                onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
+                            >
+                                Login/Signup
                             </Link>
                         </li>
                     </ul>

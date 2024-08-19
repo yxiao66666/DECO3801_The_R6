@@ -5,42 +5,75 @@ const fileTypes = ["JPG", "PNG", "GIF"];
 
 export default function Upload() {
     const [file, setFile] = useState(null);
+    const [text, setText] = useState('');
+
     const handleChange = (file) => {
         const reader = new FileReader();
         reader.onload=(e)=>
             {
                 setFile(e.target.result);
 
+            }
+        reader.readAsDataURL(file)};
+
+    const handleTextChange = (event) => {
+        setText(event.target.value);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
+
+        const formData = new FormData();
+        if (file) {
+            formData.append('image', file);
         }
-        reader.readAsDataURL(file);
+        formData.append('text', text);
+
+        try {
+            console.log("submitted!");
+            const response = await fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('AI generated image:', result);
+            } else {
+                console.error('Upload failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        
         
     };
 
   return (
-    <div style={{ backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}>
+    <div style={{ backgroundImage:'url("../images/black-1.jpg")',backgroundSize: 'cover',
+        backgroundPosition: 'center', color: 'black', minHeight: '100vh', padding: '20px' }}>
         <center>
             <h1 className="tittle">ARTY</h1>
-            {/* Here is the image upload */}
-            <form method="post">
+
+            {/* Here is the text upload */}
+            <form data-mdb-input-init class="form-outline" onSubmit={handleSubmit}>
+                {/* Here is the image upload */}   
                 <FileUploader handleChange={handleChange} name="file" types={fileTypes}/>
-            </form>
-            
-            <div style={{ marginTop: '20px' }}>
+
+                <div style={{ marginTop: '20px' }}>
                 {file && (
                     <div>
                         <h2 className="description">Uploaded Image:</h2>
                         <img src={file} alt="Uploaded" style={{ maxWidth: '40%', height: '100%' }} />
                     </div>
-                )}
-            </div>
+                    )}
+                </div>
 
-            <br></br>
-            <br></br>
+                <br></br>
+                <br></br>
 
-
-            {/* Here is the text upload */}
-            <form data-mdb-input-init class="form-outline" method="post">
-                <textarea class="form-control" id="textAreaExample1" rows="4" placeholder="Enter your description here..."></textarea>
+                <textarea class="form-control" id="textAreaExample1" rows="4"  value={text} placeholder="Enter your description here..." onChange={handleTextChange}></textarea>
                 <br></br>
                 <br></br>
                 <button className="search-btn" type="submit" value="Submit" >Upload</button>

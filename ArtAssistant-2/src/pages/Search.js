@@ -3,7 +3,8 @@ import "../styles/Search.css";
 
 export default function Search() {
     return (
-        <div>
+        <div style={{ backgroundImage:'url("../images/black-1.jpg")',backgroundSize: 'cover',
+            backgroundPosition: 'center', color: 'black', minHeight: '100vh', padding: '20px'}}>
             <form id="form"> 
                 <center>
                 <h1 className="tittle">ARTY</h1>
