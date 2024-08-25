@@ -51,8 +51,8 @@ export default function Upload() {
     };
 
   return (
-    <div style={{ backgroundImage:'url("../images/black-1.jpg")',backgroundSize: 'cover',
-        backgroundPosition: 'center', color: 'black', minHeight: '100vh', padding: '20px' }}>
+    <div style={{ backgroundImage:'url("../images/Sketch.png")',backgroundColor: 'black', color: 'white', backgroundSize: 'cover',
+        backgroundPosition: 'center', minHeight: '100vh', padding: '20px' }}>
         <center>
             <h1 className="tittle">ARTY</h1>
 

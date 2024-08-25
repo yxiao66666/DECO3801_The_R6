@@ -19,7 +19,6 @@
 
 }
 
-
 .bar {
     margin: 0 auto;
     width: 575px;
@@ -73,4 +72,29 @@
 .result-title {
     margin-top: 0.5rem;
     font-size: 1rem;
+}
+
+/* search icon */
+.search-btn {
+    background-color: white;
+    border: none;
+    padding: 10px; 
+    cursor: pointer;
+    border-radius: 30px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.search-btn:hover {
+    background-color: black;
+}
+
+.search-btn:hover .search-icon {
+    filter: invert(1);
 }
