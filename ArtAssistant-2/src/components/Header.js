@@ -40,9 +40,9 @@ export default function Header() {
                             <Link 
                                 className={`nav-link ${activeLink === "/" ? "active" : ""}`} 
                                 to="/" 
-                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Cursive, sans-serif' }}
-                                onMouseEnter={(e) => e.currentTarget.style.fontSize = '20px'}
-                                onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
+                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'serif', transistion: 'transform 0.3s'}}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.5)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 Home
                             </Link>
@@ -51,9 +51,9 @@ export default function Header() {
                             <Link 
                                 className={`nav-link ${activeLink === "/about" ? "active" : ""}`} 
                                 to="/about" 
-                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Cursive, sans-serif' }}
-                                onMouseEnter={(e) => e.currentTarget.style.fontSize = '20px'}
-                                onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
+                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'serif', transistion: 'transform 0.3s'}}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.5)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 About Us
                             </Link>
@@ -62,9 +62,9 @@ export default function Header() {
                             <Link 
                                 className={`nav-link ${activeLink === "/search" ? "active" : ""}`} 
                                 to="/search" 
-                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Cursive, sans-serif' }}
-                                onMouseEnter={(e) => e.currentTarget.style.fontSize = '20px'}
-                                onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
+                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'serif' , transistion: 'transform 0.3s'}}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.5)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 Art Search
                             </Link>
@@ -73,9 +73,9 @@ export default function Header() {
                             <Link 
                                 className={`nav-link ${activeLink === "/upload" ? "active" : ""}`} 
                                 to="/upload" 
-                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Cursive, sans-serif' }}
-                                onMouseEnter={(e) => e.currentTarget.style.fontSize = '20px'}
-                                onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
+                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'serif', transistion: 'transform 0.3s' }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.5)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 AI Art Generator
                             </Link>
@@ -87,9 +87,9 @@ export default function Header() {
                             <Link 
                                 className={`nav-link ${activeLink === "/" ? "active" : ""}`} 
                                 to="/" 
-                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Cursive, sans-serif' }}
-                                onMouseEnter={(e) => e.currentTarget.style.fontSize = '20px'}
-                                onMouseLeave={(e) => e.currentTarget.style.fontSize = '16px'}
+                                style={{ color: 'white', fontWeight: 'bold', fontFamily: 'serif', transistion: 'transform 0.3s' }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.5)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 Login/Signup
                             </Link>

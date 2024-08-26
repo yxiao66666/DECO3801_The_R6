@@ -15,7 +15,7 @@ export default function Home() {
                             marginBottom:'40px',
                             color:'white'
                         }}>
-                        <h1 class="display-4" className="tittle">ARTY</h1>
+                        <h1 class="display-4" style={{fontFamily:'serif', fontSize:'18vw'}}>ARTY</h1>
                         <div className="col-12">
                             <h1 className="display-7 mb-3">Unleash Your Creativity with Us</h1>
                             <p className="mb-2">Mesh the creativity of your mind with our empowering tools and let’s create magic.</p>

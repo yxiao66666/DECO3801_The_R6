@@ -7,7 +7,7 @@ export default function Search() {
             backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px'}}>
             <form id="form"> 
                 <center>
-                <h1 className="tittle">ARTY</h1>
+                <h1 style={{fontFamily:'serif', fontSize:'18vw', color:'white'}}>ARTY</h1>
                     {/* container for searchbar and icon */}
                     <div className="search-container">
                         <input 

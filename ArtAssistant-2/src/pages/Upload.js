@@ -54,7 +54,7 @@ export default function Upload() {
     <div style={{ backgroundImage:'url("../images/Sketch.png")',backgroundColor: 'black', color: 'white', backgroundSize: 'cover',
         backgroundPosition: 'center', minHeight: '100vh', padding: '20px' }}>
         <center>
-            <h1 className="tittle">ARTY</h1>
+            <h1 style={{fontFamily:'serif', fontSize:'18vw', color:'white'}}>ARTY</h1>
 
             {/* Here is the text upload */}
             <form data-mdb-input-init class="form-outline" onSubmit={handleSubmit}>
