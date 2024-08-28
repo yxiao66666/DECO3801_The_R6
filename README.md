@@ -8,20 +8,19 @@ The R6 Digital Art Assistant is a program to assist artists in their drawing pro
 
 # Table of Contents
 
-1. [Installation](https://youtu.be/dQw4w9WgXcQ?si=2zxHFcytbqTuiOju)
-2. [Usage](https://youtu.be/dQw4w9WgXcQ?si=2zxHFcytbqTuiOju)
-3. [Release History](#release-history)
-4. [Features](#features)
-5. [Contributors](#contributors)
+1. [Usage](https://youtu.be/dQw4w9WgXcQ?si=2zxHFcytbqTuiOju)
+2. [Release History](#release-history)
+3. [Features](#features)
+4. [Contributors](#contributors)
 
 ## Release History
 
 * 0.0.0
     * README Written
 
-## Installation
-
 ## Usage
+
+The product is to be used as a side assisstant for artists to search for artwork references.
 
 ## Features
 
