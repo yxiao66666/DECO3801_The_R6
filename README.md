@@ -1,30 +1,35 @@
-# The R6 Digital Art Assistant
+<img src = images/favicon.jpg alt = "The R6 Logo" width = 25%>
 
-![logo](https://imgur.com/a/TWmqX3W)
+# The R6 Digital Art Assistant
 
 > Help Artists draw by collating and generating references
 
 The R6 Digital Art Assistant is a program to assist artists in their drawing process by finding references. It will also supply AI generated references for the artist at their request.
-[Release History]
 
 # Table of Contents
 
-1. [Release History](#release-history)
-2. [Features](#features)
-3. [Contributors](#contributors)
+1. [Installation](https://youtu.be/dQw4w9WgXcQ?si=2zxHFcytbqTuiOju)
+2. [Usage](https://youtu.be/dQw4w9WgXcQ?si=2zxHFcytbqTuiOju)
+3. [Release History](#release-history)
+4. [Features](#features)
+5. [Contributors](#contributors)
 
 ## Release History
 
 * 0.0.0
     * README Written
 
+## Installation
+
+## Usage
+
 ## Features
 
 * Cross-Platform Compatibility
 * History Logging
 * Search Engine
-* Style Recognition
-* Assets Rigging
+* [Style Recognition](/controlnet/controlnet_outline#style-recognition)
+* [Assets Rigging](/controlnet/controlnet_outline.md#assets-rigging)
 
 > **Notes:**
 >
