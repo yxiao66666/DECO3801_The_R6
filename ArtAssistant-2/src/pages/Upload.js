@@ -1,23 +1,43 @@
-import React, { useState } from "react";
-import { FileUploader } from "react-drag-drop-files";
+import React, { useState, useEffect} from "react";
+import { Excalidraw } from "@excalidraw/excalidraw";
 
-const fileTypes = ["JPG", "PNG", "GIF"];
 
 export default function Upload() {
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
     const [text, setText] = useState('');
+    const [previews, setPreviews] = useState([]); 
+    const [aiOptions, setAiOptions] = useState([]);
+    const [inpaint, setInpaint] = useState(null);
 
-    const handleChange = (file) => {
-        const reader = new FileReader();
-        reader.onload=(e)=>
-            {
-                setFile(e.target.result);
+    useEffect(() => {
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setPreviews(newPreviews);
+        setAiOptions(new Array(files.length).fill('AI Options'));
+        return () => newPreviews.forEach(preview => URL.revokeObjectURL(preview));
+    }, [files]);
 
-            }
-        reader.readAsDataURL(file)};
+    const handleChange = (event) => {
+        const selectedFiles = event.target.files; 
+        if (selectedFiles.length > 0) {
+            setFiles(Array.from(selectedFiles)); 
+        } else {
+            console.warn("No file selected or the selected files are not valid.");
+        }
+    };
 
     const handleTextChange = (event) => {
         setText(event.target.value);
+    };
+
+    const handleOptionChange = (index, value) => {
+        const updatedOptions = [...aiOptions];
+        updatedOptions[index] = value;
+        setAiOptions(updatedOptions);
+        if (value === "Inpaint") {
+            setInpaint(index); 
+        } else if (inpaint === index) {
+            setInpaint(null); 
+        }
     };
 
     const handleSubmit = async (event) => {
@@ -25,8 +45,11 @@ export default function Upload() {
         
 
         const formData = new FormData();
-        if (file) {
-            formData.append('image', file);
+        if (files.length > 0) {
+            files.forEach((file,index) => {
+                formData.append(`image${index}`,file);
+                formData.append(`option${index}`, aiOptions[index]);
+            });
         }
         formData.append('text', text);
 
@@ -52,33 +75,119 @@ export default function Upload() {
 
   return (
     <div style={{ backgroundImage:'url("../images/Sketch.png")',backgroundColor: 'black', color: 'white', backgroundSize: 'cover',
-        backgroundPosition: 'center', minHeight: '100vh', padding: '20px' }}>
+        backgroundPosition: 'center', minHeight: '100vh'}}>
         <center>
-            <h1 style={{fontFamily:'serif', fontSize:'18vw', color:'white'}}>ARTY</h1>
-
             {/* Here is the text upload */}
-            <form data-mdb-input-init class="form-outline" onSubmit={handleSubmit}>
-                {/* Here is the image upload */}   
-                <FileUploader handleChange={handleChange} name="file" types={fileTypes}/>
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                    <div className="container" style={{ margin: 'auto', fontFamily: 'Arial, sans-serif' }}>
+                        <h2>Want AI pictures? Upload your work here!</h2>
+                        <div className="avatar-upload" style={{width:'100%'}}>
+                            <div className="avatar-preview" style={{width:'100%',display:'flex',flexDirection:'row',gap:'10px'}}>
+                                {previews.length === 0 && (
+                                        <div
+                                            id="defaultPreview"
+                                            style={{
+                                                width: '70%',
+                                                height: '33em',
+                                                justifyContent:'center',
+                                                alignItems:'center',
+                                                margin:'0% auto',
+                                                backgroundImage: 'url(/images/hum-2.jpg)',
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                border: '2px solid white',
+                                                borderRadius: '5px',
+                                                
+                                            }}
+                                        >
+                                        </div>
+                                    )}
+                                
+                                
+                                {previews.map((preview, index) => (
+                                    <div key={index} style={{ width:'100%',position: 'relative' }}>
+                                    <div
+                                        id="imagePreview"
+                                        style={{
+                                            width: '100%',
+                                            height: '20em',
+                                            backgroundImage: `url(${preview})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                            border: '2px solid white',
+                                            borderRadius: '5px',
+                                        }}
+                                    >
+                                    </div>
+                                    {/* Selection Box for AI Options */}
+                                    <select
+                                        value={aiOptions[index]}
+                                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                                        style={{ position: 'absolute', top: '10px', right: '10px', padding: '5px', borderRadius: '5px' }}
+                                    >
+                                        <option value= "AI Options">AI options</option>
+                                        <option value="Inpaint">Inpaint</option>
+                                        <option value="Canny">Canny</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <br></br>
+                                    <br></br>
+                                    
+                                    {/*Need to implement a gradio!!!!!help!!*/ }
+                                    {inpaint === index && (
+                                    <div style={{ width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}>
+                                        <Excalidraw /> {/* Excalidraw component for inpainting */}
+                                    </div>
+                                
+                                )}
+                                    
+                                </div>
+                                ))}
+                            </div>
+                            <br></br>
+                            <br></br>
+                            <div className="avatar-edit">
+                                <input
+                                    multiple
+                                    type="file"
+                                    id="imageUpload"
+                                    accept=".png, .jpg, .jpeg"
+                                    onChange={handleChange}
+                                    style={{ display: 'none' }}
+                                    
+                                />
+                                <label htmlFor="imageUpload" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                                    Browse
+                                </label>
+                                <input
+                                    type="submit"
+                                    id="submit"
+                                    style={{display:'none'}}
+                                    
+                                />
+                                <label htmlFor="submit" style={{ marginLeft:'5em',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                                    Upload
+                                </label>                      
+                            </div>
 
-                <div style={{ marginTop: '20px' }}>
-                {file && (
-                    <div>
-                        <h2 className="description">Uploaded Image:</h2>
-                        <img src={file} alt="Uploaded" style={{ maxWidth: '40%', height: '100%' }} />
+                        </div>
                     </div>
-                    )}
-                </div>
-
                 <br></br>
                 <br></br>
-
-                <textarea class="form-control" id="textAreaExample1" rows="4"  value={text} placeholder="Enter your description here..." onChange={handleTextChange}></textarea>
+                <h2>Text To Image</h2>
+                <textarea class="form-control" id="textAreaExample1" rows="4"  value={text} placeholder="Enter your description here..." onChange={handleTextChange} style={{width:'65%'}}></textarea>
                 <br></br>
                 <br></br>
-                <button className="search-btn" type="submit" value="Submit" >Upload</button>
+                <input
+                    type="submit"
+                    id="submit"
+                    style={{display:'none'}}
+                    
+                />
+                <label htmlFor="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                    Upload
+                </label> 
             </form>
-
 
         </center>
     </div>
