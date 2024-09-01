@@ -5,6 +5,8 @@ import requests
 from PIL import Image
 
 
+webui_url = 'http://127.0.0.1:7860'
+
 cnet_modules = {
     'canny': 'control_v11p_sd15_canny [d14c016b]',  # general purpose
     'lineart_anime': 'control_v11p_sd15s2_lineart_anime [3825e83e]',     # line art
@@ -27,7 +29,7 @@ def encode_pil_to_base64(image):
     return base64.b64encode(bytes_data).decode('utf-8')
 
 
-def cnet_txt2img(prompt, ref_img, batch_size=1, module='canny',url='http://127.0.0.1:7860'):
+def txt2img_controlnet(prompt, ref_img, batch_size=1, module='canny',url=webui_url):
     base64_img = encode_pil_to_base64(ref_img)
     
     txt2img_value = {
@@ -37,7 +39,7 @@ def cnet_txt2img(prompt, ref_img, batch_size=1, module='canny',url='http://127.0
         'batch_size': batch_size,
         'steps': 20,
         'cfg_scale': 9,
-        'width': 768,   # TODO: make image width & height the same aspect ratio as the input image
+        'width': 768,   
         'height': 768,
         'alwayson_scripts': {
             'controlnet': {     # TODO: implement multiple controlnet units
@@ -63,7 +65,7 @@ def cnet_txt2img(prompt, ref_img, batch_size=1, module='canny',url='http://127.0
     return output_images
 
 
-def img2img_inpaint(prompt, img, mask, batch_size=1, url='http://127.0.0.1:7860'):
+def img2img_inpaint(prompt, img, mask, batch_size=1, url=webui_url):
     base64_img = encode_pil_to_base64(img)
     base64_mask = encode_pil_to_base64(mask)
     
