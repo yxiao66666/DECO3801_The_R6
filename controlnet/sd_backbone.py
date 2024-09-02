@@ -17,15 +17,15 @@ class StableDiffusionBackBone:
             'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]'                         # straight lines
         }
         
-        self.control_unit_0 = None
-        self.control_unit_1 = None
-        self.control_unit_2 = None
+        self.control_unit_0 = {}
+        self.control_unit_1 = {}
+        self.control_unit_2 = {}
         
-        self.control_units = {
+        self.control_units = [
             self.control_unit_0,
             self.control_unit_1,
             self.control_unit_2
-        }
+        ]
         
         self.inpaint_image = None
         self.inpaint_mask = None
@@ -186,13 +186,10 @@ class StableDiffusionBackBone:
             'height': 768,
             'alwayson_scripts': {
                 'controlnet': {
-                    'args': [
-                        self.control_units
-                    ]
+                    'args': self.control_units
                 }
             }
         }
-        
         response = requests.post(url=f'{self.webui_url}/sdapi/v1/txt2img', json=txt2img_value)
         
         output_images = []
