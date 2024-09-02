@@ -18,9 +18,9 @@ class StableDiffusionBackBone:
             'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]'                         # straight lines
         }
         
-        self.control_unit_0 = {}
-        self.control_unit_1 = {}
-        self.control_unit_2 = {}
+        self.control_unit_0 = None
+        self.control_unit_1 = None
+        self.control_unit_2 = None
         
         self.inpaint_image = None
         self.inpaint_mask = None
