@@ -5,9 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "*"
-requests = "*"
-pillow = "*"
 flask-cors = "*"
+pillow = "*"
 
 [dev-packages]
 

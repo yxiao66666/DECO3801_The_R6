@@ -3,4 +3,4 @@ test*
 controlnet/__pycache__/util.cpython-311.pyc
 controlnet/test.ipynb
 
-ArtAssistant-3/*
+frontend/node_modules/*
