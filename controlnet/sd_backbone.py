@@ -7,7 +7,7 @@ from PIL import Image
 
 class StableDiffusionBackBone:
     
-    def __init__(self, url='127.0.0.1:7890') -> None:
+    def __init__(self, url='http://127.0.0.1:7860') -> None:
         self.webui_url = url
         
         self.controlnet_modules = {
