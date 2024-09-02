@@ -69,7 +69,7 @@ class StableDiffusionBackBone:
         Args:
             unit_num (int): the control unit slot to enable, 0 or 1 or 2
             image_path (str): image path
-            module (str): specify the control module to use, 
+            module (str): specify the control module to use, TODO:
             intensity (str): specify control intensity, 'low' or 'mid' or 'high'
         '''
         if unit_num > 2 or unit_num < 0:
@@ -243,7 +243,9 @@ class StableDiffusionBackBone:
             'mask_blur_y': 10,
             'mask_round': False,            # False = soft inpainting
             'resize_mode': 1,
-            'alwayson_scripts': {}
+            'alwayson_scripts': {
+                # TODO:
+            }
         }
         
         response = requests.post(url=f'{self.webui_url}/sdapi/v1/img2img', json=img2img_value)
