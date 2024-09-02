@@ -21,12 +21,6 @@ class StableDiffusionBackBone:
         self.control_unit_1 = {}
         self.control_unit_2 = {}
         
-        self.control_units = [
-            self.control_unit_0,
-            self.control_unit_1,
-            self.control_unit_2
-        ]
-        
         self.inpaint_image = None
         self.inpaint_mask = None
     
@@ -175,6 +169,12 @@ class StableDiffusionBackBone:
         Returns:
             TODO: 
         '''
+        control_units = [
+            self.control_unit_0,
+            self.control_unit_1,
+            self.control_unit_2
+        ]
+        
         txt2img_value = {
             'prompt': prompt,
             'negative_prompt': 'lowres, blurry, bad anatomy, bad hands, cropped, worst quality',
@@ -186,7 +186,7 @@ class StableDiffusionBackBone:
             'height': 768,
             'alwayson_scripts': {
                 'controlnet': {
-                    'args': self.control_units
+                    'args': control_units
                 }
             }
         }
