@@ -10,6 +10,7 @@ class StableDiffusionBackBone:
     def __init__(self, url='http://127.0.0.1:7860') -> None:
         self.webui_url = url
         
+        # TODO: Add more control modules
         self.controlnet_modules = {
             'canny': 'control_v11p_sd15_canny [d14c016b]',                      # general purpose
             'lineart_anime': 'control_v11p_sd15s2_lineart_anime [3825e83e]',    # line art
@@ -64,7 +65,7 @@ class StableDiffusionBackBone:
             unit_num (int): the control unit slot to enable, 0 or 1 or 2
             image_path (str): image path
             module (str): specify the control module to use, TODO:
-            intensity (str): specify control intensity, 'low' or 'mid' or 'high'
+            intensity (str): specify control intensity, 'low' or 'mid' or 'high' TODO: Finetune control strength for intensity
         '''
         if unit_num > 2 or unit_num < 0:
             return
@@ -241,7 +242,7 @@ class StableDiffusionBackBone:
             'mask_round': False,            # False = soft inpainting
             'resize_mode': 1,
             'alwayson_scripts': {
-                # TODO:
+                # TODO: Integrate controlnet in a usable manner
             }
         }
         
