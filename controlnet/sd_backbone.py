@@ -1,8 +1,10 @@
 import io
 import base64
 import requests
+import numpy as np
 
 from PIL import Image
+from io import BytesIO
 
 
 class StableDiffusionBackBone:
@@ -18,10 +20,17 @@ class StableDiffusionBackBone:
             'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]'                         # straight lines
         }
         
+        # Control images stored in PIL.Image
+        self.control_image_0 = None
+        self.control_image_1 = None
+        self.control_image_2 = None
+        
+        # Controlnet unit args
         self.control_unit_0 = None
         self.control_unit_1 = None
         self.control_unit_2 = None
         
+        # Inpaint image and mask stored in PIL.Image 
         self.inpaint_image = None
         self.inpaint_mask = None
     
@@ -57,6 +66,48 @@ class StableDiffusionBackBone:
             
         return base64.b64encode(bytes_data).decode('utf-8')
     
+    def __inpaint_control_preprocessor(self, control_image) -> BytesIO:
+        '''
+        Centers the control image to the mask region for inpainting.
+        
+        Args:
+            control_image (Image): Control image in PIL Image type
+        
+        Returns:
+            image (BytesIO): a recentered PNG control image byte stream
+        
+        Requires:
+            Single, rectangle mask region
+        '''
+        if self.inpaint_mask is None:
+            return
+        if control_image is None:
+            return None
+        
+        mask_arr = np.array(self.inpaint_mask)
+        white_region = np.where(mask_arr == 255)
+        
+        # Getting bounding box coordinates for white region
+        top_left = (np.min(white_region[1]), np.min(white_region[0]))
+        bottom_right = (np.max(white_region[1]), np.max(white_region[0]))
+        
+        # Width & Height
+        white_region_width = bottom_right[0] - top_left[0]
+        white_region_height = bottom_right[1] - top_left[1]
+        
+        resized_image = control_image.resize((white_region_width, white_region_height))
+        
+        # Put the resized image into a new canvas
+        canvas = Image.new("RGBA", self.inpaint_mask.size)
+        canvas.paste(resized_image, box=top_left)
+        
+        # Save a PNG byte stream to ram
+        image_bytes = BytesIO()
+        canvas.save(image_bytes, format="PNG")
+        image_bytes.seek(0)
+        
+        return image_bytes
+    
     def add_control_unit(self, unit_num, image_path, module, intensity='high') -> None:
         '''
         Enables a control unit slot, specified by unit number [0, 1, 2].
@@ -86,10 +137,13 @@ class StableDiffusionBackBone:
         }
         
         if unit_num == 0:
+            self.control_image_0 = image
             self.control_unit_0 = controlnet_arg
         elif unit_num == 1:
+            self.control_image_1 = image
             self.control_unit_1 = controlnet_arg
         elif unit_num == 2:
+            self.control_image_2 = image
             self.control_unit_2 = controlnet_arg
     
     def remove_control_unit(self, unit_num) -> None:
@@ -100,16 +154,23 @@ class StableDiffusionBackBone:
             return
         
         if unit_num == 0:
+            self.control_image_0 = None
             self.control_unit_0 = None
         elif unit_num == 1:
+            self.control_image_1 = None
             self.control_unit_1 = None
         elif unit_num == 2:
+            self.control_image_2 = None
             self.control_unit_2 = None
     
     def remove_all_control_units(self) -> None:
         '''
         Removes all internal control units.
         '''
+        self.control_image_0 = None
+        self.control_image_1 = None
+        self.control_image_2 = None
+        
         self.control_unit_0 = None
         self.control_unit_1 = None
         self.control_unit_2 = None
@@ -218,6 +279,28 @@ class StableDiffusionBackBone:
         b64_inpaint_image = self.__encode_to_base64(self.inpaint_image)
         b64_inpaint_mask = self.__encode_to_base64(self.inpaint_mask)
         
+        # Preprocess control images if controlnet unit has been added
+        if (
+            self.control_image_0 is not None 
+            or self.control_image_1 is not None 
+            or self.control_image_2 is not None
+        ):
+            preprocessed_image_0 = self.__inpaint_control_preprocessor(self.inpaint_mask, self.control_image_0)
+            preprocessed_image_1 = self.__inpaint_control_preprocessor(self.inpaint_mask, self.control_image_1)
+            preprocessed_image_2 = self.__inpaint_control_preprocessor(self.inpaint_mask, self.control_image_2)
+            
+            self.add_control_unit(0, preprocessed_image_0)
+            self.add_control_unit(1, preprocessed_image_1)
+            self.add_control_unit(2, preprocessed_image_2)
+            
+            control_units = [
+                self.control_unit_0,
+                self.control_unit_1,
+                self.control_unit_2
+            ]
+        else:
+            control_units = None
+        
         img2img_value = {
             'prompt': prompt,
             'negative_prompt': 'lowres, blurry, bad anatomy, bad hands, cropped, worst quality',
@@ -242,7 +325,7 @@ class StableDiffusionBackBone:
             'mask_round': False,            # False = soft inpainting
             'resize_mode': 1,
             'alwayson_scripts': {
-                # TODO: Integrate controlnet in a usable manner
+                'args': control_units
             }
         }
         
