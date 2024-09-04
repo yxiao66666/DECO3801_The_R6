@@ -4,7 +4,6 @@ import requests
 import numpy as np
 
 from PIL import Image
-from io import BytesIO
 
 
 class StableDiffusionBackBone:
@@ -66,7 +65,7 @@ class StableDiffusionBackBone:
             
         return base64.b64encode(bytes_data).decode('utf-8')
     
-    def __inpaint_control_preprocessor(self, control_image) -> BytesIO:
+    def __inpaint_control_preprocessor(self, control_image) -> Image:
         '''
         Centers the control image to the mask region for inpainting.
         
@@ -146,6 +145,9 @@ class StableDiffusionBackBone:
     def remove_control_unit(self, unit_num) -> None:
         '''
         Removes the specified control unit.
+        
+        Args:
+            unit_num (int): the control unit slot to remove, 0 or 1 or 2
         '''
         if unit_num > 2 or unit_num < 0:
             return
