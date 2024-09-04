@@ -74,7 +74,7 @@ class StableDiffusionBackBone:
             control_image (Image): Control image in PIL Image type
         
         Returns:
-            image (BytesIO): a recentered PNG control image byte stream
+            image (Image): a recentered control image with transparent background
         
         Requires:
             Single, rectangle mask region
@@ -84,7 +84,8 @@ class StableDiffusionBackBone:
         if control_image is None:
             return None
         
-        mask_arr = np.array(self.inpaint_mask)
+        mask = self.inpaint_mask.convert('L')
+        mask_arr = np.array(mask)
         white_region = np.where(mask_arr == 255)
         
         # Getting bounding box coordinates for white region
@@ -98,15 +99,10 @@ class StableDiffusionBackBone:
         resized_image = control_image.resize((white_region_width, white_region_height))
         
         # Put the resized image into a new canvas
-        canvas = Image.new("RGBA", self.inpaint_mask.size)
+        canvas = Image.new("RGBA", mask.size)
         canvas.paste(resized_image, box=top_left)
         
-        # Save a PNG byte stream to ram
-        image_bytes = BytesIO()
-        canvas.save(image_bytes, format="PNG")
-        image_bytes.seek(0)
-        
-        return image_bytes
+        return canvas
     
     def add_control_unit(self, unit_num, image_path, module, intensity='high') -> None:
         '''
@@ -133,7 +129,8 @@ class StableDiffusionBackBone:
             'module': module,
             'model': self.controlnet_modules[module],
             'image': b64_image,
-            'pixel_perfect': True
+            'pixel_perfect': True,
+            'weight': 1.0 # TODO: adjust to intensity
         }
         
         if unit_num == 0:
@@ -279,27 +276,54 @@ class StableDiffusionBackBone:
         b64_inpaint_image = self.__encode_to_base64(self.inpaint_image)
         b64_inpaint_mask = self.__encode_to_base64(self.inpaint_mask)
         
+        temp_control_unit_0 = None
+        temp_control_unit_1 = None
+        temp_control_unit_2 = None
+        
         # Preprocess control images if controlnet unit has been added
         if (
             self.control_image_0 is not None 
             or self.control_image_1 is not None 
             or self.control_image_2 is not None
-        ):
-            preprocessed_image_0 = self.__inpaint_control_preprocessor(self.inpaint_mask, self.control_image_0)
-            preprocessed_image_1 = self.__inpaint_control_preprocessor(self.inpaint_mask, self.control_image_1)
-            preprocessed_image_2 = self.__inpaint_control_preprocessor(self.inpaint_mask, self.control_image_2)
+        ):            
+            if self.control_unit_0 is not None:
+                preprocessed_image_0 = self.__inpaint_control_preprocessor(self.control_image_0)
+                temp_control_unit_0 = {
+                    'enabled': True,
+                    'module': self.control_unit_0['module'],
+                    'model': self.control_unit_0['model'],
+                    'image': self.__encode_to_base64(preprocessed_image_0),
+                    'pixel_perfect': True,
+                    'weight': self.control_unit_0['weight']
+                }
+                
+            if self.control_unit_1 is not None:
+                preprocessed_image_1 = self.__inpaint_control_preprocessor(self.control_image_1)
+                temp_control_unit_1 = {
+                    'enabled': True,
+                    'module': self.control_unit_1['module'],
+                    'model': self.control_unit_1['model'],
+                    'image': self.__encode_to_base64(preprocessed_image_1),
+                    'pixel_perfect': True,
+                    'weight': self.control_unit_1['weight']
+                }
+                
+            if self.control_unit_2 is not None:
+                preprocessed_image_2 = self.__inpaint_control_preprocessor(self.control_image_2)
+                temp_control_unit_2 = {
+                    'enabled': True,
+                    'module': self.control_unit_2['module'],
+                    'model': self.control_unit_2['model'],
+                    'image': self.__encode_to_base64(preprocessed_image_2),
+                    'pixel_perfect': True,
+                    'weight': self.control_unit_2['weight']
+                }
             
-            self.add_control_unit(0, preprocessed_image_0)
-            self.add_control_unit(1, preprocessed_image_1)
-            self.add_control_unit(2, preprocessed_image_2)
-            
-            control_units = [
-                self.control_unit_0,
-                self.control_unit_1,
-                self.control_unit_2
-            ]
-        else:
-            control_units = None
+        control_units = [
+            temp_control_unit_0,
+            temp_control_unit_1,
+            temp_control_unit_2
+        ]
         
         img2img_value = {
             'prompt': prompt,
@@ -325,7 +349,9 @@ class StableDiffusionBackBone:
             'mask_round': False,            # False = soft inpainting
             'resize_mode': 1,
             'alwayson_scripts': {
-                'args': control_units
+                'controlnet': {
+                    'args': control_units
+                }
             }
         }
         
