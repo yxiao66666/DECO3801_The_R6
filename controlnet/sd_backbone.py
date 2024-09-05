@@ -11,12 +11,36 @@ class StableDiffusionBackBone:
     def __init__(self, url='http://127.0.0.1:7860') -> None:
         self.webui_url = url
         
-        # TODO: Add more control modules
+        # Supported control modules
+        self.module_list = [
+            'canny', 'mlsd', 'lineart_anime', 
+            'openpose_faceonly', 'openpose_hand', 'dw_openpose_full', 'animal_openpose', 
+            'depth_anything_v2', 
+            'seg_ofade20k', 'seg_anime_face', 
+            'shuffle', 't2ia_color_grid'
+        ]
         self.controlnet_modules = {
+            # Edge detectors
             'canny': 'control_v11p_sd15_canny [d14c016b]',                      # general purpose
+            'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]',                        # straight lines
             'lineart_anime': 'control_v11p_sd15s2_lineart_anime [3825e83e]',    # line art
+            
+            # OpenPose
+            'openpose_faceonly': 'control_v11p_sd15_openpose [cab727d4]',       # facial detail transfer
+            'openpose_hand': 'control_v11p_sd15_openpose [cab727d4]',           # hands and fingers detail transfer
+            'dw_openpose_full': 'control_v11p_sd15_openpose [cab727d4]',        # eyes, nose, eyes, neck, shoulder, elbow, wrist, knees, ankles...
+            'animal_openpose': 'control_v11p_sd15_openpose [cab727d4]',         # animal pose transfer, doesn't work too well
+            
+            # Depth maps
+            'depth_anything_v2': 'control_v11f1p_sd15_depth [cfd03158]',        # detailed depth map reference
+            
+            # Segmentation 
+            'seg_ofade20k': 'control_v11p_sd15_seg [e1f51eb9]',                 # transfer the location and shape of objects
+            'seg_anime_face': 'control_v11p_sd15_seg [e1f51eb9]',               # does the same thing above, but optimised for anime faces
+            
+            # Color scheme
             'shuffle': 'control_v11e_sd15_shuffle [526bfdae]',                  # transfer color scheme
-            'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]'                         # straight lines
+            't2ia_color_grid': 't2iadapter_color_sd14v1 [8522029d]',            # color grid inplace reference
         }
         
         # Control images stored in PIL.Image
@@ -118,6 +142,8 @@ class StableDiffusionBackBone:
         if image_path is None:
             return
         if module is None:
+            return
+        if module not in self.module_list:
             return
         
         image = Image.open(image_path)
