@@ -134,7 +134,9 @@ class StableDiffusionBackBone:
         Args:
             unit_num (int): the control unit slot to enable, 0 or 1 or 2
             image_path (str): image path
-            module (str): specify the control module to use, TODO:
+            module (str): specify the control module to use, ['canny', 'mlsd', 'lineart_anime', 'openpose_faceonly', 
+                'openpose_hand', 'dw_openpose_full', 'animal_openpose', 'depth_anything_v2', 
+                'seg_ofade20k', 'seg_anime_face', 'shuffle', 't2ia_color_grid']
             intensity (str): specify control intensity, 'low' or 'mid' or 'high' TODO: Finetune control strength for intensity
         '''
         if unit_num > 2 or unit_num < 0:
