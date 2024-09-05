@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { Excalidraw } from "@excalidraw/excalidraw";
+
 
 
 export default function Upload() {
@@ -133,11 +133,11 @@ export default function Upload() {
                                     <br></br>
                                     <br></br>
                                     
-                                    {/*Need to implement a gradio!!!!!help!!*/ }
+                                    {/*Need to implement a inpainting canvas*/ }
                                     {inpaint === index && (
-                                    <div style={{ width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}>
-                                        <Excalidraw /> {/* Excalidraw component for inpainting */}
-                                    </div>
+                                    <canvas style={{ margin:'auto', width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}>
+                                         {/* E component for inpainting */}
+                                    </canvas>
                                 
                                 )}
                                     
@@ -164,10 +164,7 @@ export default function Upload() {
                                     id="submit"
                                     style={{display:'none'}}
                                     
-                                />
-                                <label htmlFor="submit" style={{ marginLeft:'5em',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                                    Upload
-                                </label>                      
+                                />                    
                             </div>
 
                         </div>
@@ -184,9 +181,9 @@ export default function Upload() {
                     style={{display:'none'}}
                     
                 />
-                <label htmlFor="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                <button type="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
                     Upload
-                </label> 
+                </button> 
             </form>
 
         </center>
