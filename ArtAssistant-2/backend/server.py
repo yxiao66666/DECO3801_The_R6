@@ -5,6 +5,7 @@ from flask_cors import CORS # Enable Cross-Origin Resource Sharing (CORS) MUST H
 
 app = Flask(__name__)
 CORS(app)  # Enable Cross-Origin Resource Sharing MUST HAVE OR ERROR
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Configure upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
@@ -28,33 +29,43 @@ def upload_file():
     print("Files received:")
     print(request.files)
 
-    if 'image' not in request.files:
-        return jsonify({"error": "No file part"}), 400
+    files = []
+    options = []
 
-    file = request.files['image']
+    # Loop through the files and options
+    for key in request.files:
+        if 'image' in key:
+            file = request.files[key]
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                files.append(filepath)
+    
+    # Process AI options
+    for key in request.form:
+        if 'option' in key:
+            options.append(request.form[key])
+
     text = request.form.get('text', '')
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+    response = {
+        "message": "Files successfully uploaded",
+        "files": files,  # List of uploaded files
+        "ai_options": options,  # Corresponding AI options for each image
+        "text": text
+    }
 
-        response = {
-            "message": "File successfully uploaded",
-            "file_path": filepath,
-            "text": text
-        }
-        return jsonify(response), 200
-    else:
-        return jsonify({"error": "Invalid file format"}), 400
-
+    return jsonify(response), 200
 
 
 
 @app.route('/search', methods=['POST'])
 def search():
     data = request.get_json()
-    search_query = data.get('query', '')
+    print("This is Python: ", data)
+    search_query = data.get('search_query', '')
+
 
     return jsonify({"search_query": search_query})
 
@@ -62,21 +73,7 @@ def search():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+
