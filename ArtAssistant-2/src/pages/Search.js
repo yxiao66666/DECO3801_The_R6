@@ -1,8 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import "../styles/Search.css";
 
 // Search 
 export default function Search() {
+
+    const [images, setImages] = useState([]); // Store the image data
+    const [visibleImages, setVisibleImages] = useState(9); // Control how many images are visible initially
+
+    // Simulating fetching image data from backend
+    useEffect(() => {
+        fetchImages();
+    }, []);
+
+    const fetchImages = async () => {
+        try {
+            //Fetch the search engine api
+            const response = await fetch('/http://localhost:5000/#'); 
+            const imageData = await response.json(); 
+            setImages(imageData); 
+        } catch (error) {
+            console.error("Error fetching images:", error); 
+        }
+    };
+
+    // Function to load more images when the button is clicked
+    const loadMore = () => {
+        setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 3 each time
+    };
+
 // Chck if text entered
 const [searchQuery, setSearchQuery] = useState(''); // Empty string
 
@@ -37,13 +62,14 @@ const handleSubmit = async (event) => {
     }
 };
     return (
-        <div style={{ backgroundImage:'url("../images/Sketch.png")',backgroundSize: 'cover',
+        <div style={{ backgroundImage:'url("../images/Sketch.png")',backgroundSize: 'cover', backgroundRepeat:'no-repeat',
             backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px'}}>
             <form id="form" onSubmit={handleSubmit}> 
                 <center>
                     <h1 style={{fontFamily:'serif', fontSize:'18vw', color:'white'}}>ARTY</h1>
                     {/* container for searchbar and icon */}
-                    <div className="search-container">
+                    <div style={{display:'flex', justifyContent:'center',alignItems:'center'}}>
+                        
                         <input 
                             style = {{paddingLeft:'15px', paddingRight:'15px'}}
                             className="searchbar" 
@@ -52,14 +78,33 @@ const handleSubmit = async (event) => {
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
-
+                        
                         <button className="search-btn" type="submit" aria-label="edit button later">
                             <img src="../images/search_icon.png" alt="Search Icon" className="search-icon" />
                         </button>
+                        
                     </div>
                     
                 </center>
             </form>
+            <br></br>
+            <br></br>
+            <div style={{display:'flex',gap:'3em', flexDirection:'column'}}>
+                {images.slice(0,visibleImages).map((image, index) =>  (
+                    <div key={index} style={{display:'flex',gap:'3em',textAlign:'center'}}>
+                        <img className="results" src={image.url} alt={image.description}></img>
+                    </div>
+                    
+                ))}
+
+                {visibleImages < images.length && (
+                <label onClick={loadMore} class="row" style={{ margin:'auto', cursor: 'pointer', border:'2px solid white', borderRadius: '5px', textAlign:'center',justifyContent:'center'}}>
+                        More results...
+                </label>
+                )}
+            </div>
+            <br></br>
+            
         </div>
     );
 }

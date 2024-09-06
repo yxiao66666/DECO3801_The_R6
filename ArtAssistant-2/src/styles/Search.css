@@ -36,15 +36,6 @@
     border:none;
 }
 
-.search-btn {
-    position:relative;
-    margin-top: 20px;
-    padding:5px 10px;
-    border-radius: 25px;
-    color:black;
-    background-color: white;
-    border:none;
-}
  
 .results-container {
     display: flex;
@@ -69,7 +60,7 @@
 
 /* search icon */
 .search-btn {
-    background-color: white;
+    background-color: black;
     border: none;
     padding: 10px; 
     cursor: pointer;
@@ -82,12 +73,10 @@
 .search-icon {
     width: 24px;
     height: 24px;
-}
-
-.search-btn:hover {
-    background-color: black;
-}
-
-.search-btn:hover .search-icon {
     filter: invert(1);
 }
+
+.results {
+    width:60%;
+    height:70%;
+}                  
