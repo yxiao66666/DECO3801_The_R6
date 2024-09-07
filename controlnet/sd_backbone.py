@@ -172,13 +172,20 @@ class StableDiffusionBackBone:
         image = Image.open(image_path)
         b64_image = self.__encode_to_base64(image)
         
+        processor_res = None
+        pixel_perfect = True
+        if module == 't2ia_color_grid':
+            processor_res = 1024
+            pixel_perfect = False
+        
         controlnet_arg = {
             'enabled': True,
             'module': module,
             'model': self.controlnet_modules[module],
             'image': b64_image,
-            'pixel_perfect': True,
-            'weight': 1.0 # TODO: adjust to intensity
+            'pixel_perfect': pixel_perfect,
+            'weight': 1.0, # TODO: adjust to intensity
+            'processor_res': processor_res
         }
         
         if unit_num == 0:
