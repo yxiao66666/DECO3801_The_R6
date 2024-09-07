@@ -89,7 +89,7 @@ class StableDiffusionBackBone:
             
         return base64.b64encode(bytes_data).decode('utf-8')
     
-    def __inpaint_control_preprocessor(self, control_image) -> Image:
+    def __inpaint_control_preprocessor(self, control_image, keep_aspect_ratio) -> Image:
         '''
         Centers the control image to the mask region for inpainting.
         
@@ -119,11 +119,32 @@ class StableDiffusionBackBone:
         white_region_width = bottom_right[0] - top_left[0]
         white_region_height = bottom_right[1] - top_left[1]
         
-        resized_image = control_image.resize((white_region_width, white_region_height))
+        if keep_aspect_ratio:
+            image_aspect_ratio = control_image.width / control_image.height
+            target_aspect_ratio = white_region_width / white_region_height
+            
+            if target_aspect_ratio > image_aspect_ratio:
+                # Height is the limiting factor
+                new_height = white_region_height
+                new_width = int(new_height * image_aspect_ratio)
+            else:
+                # Width is the limiting factor
+                new_width = white_region_width
+                new_height = int(new_width / image_aspect_ratio)
+            
+            resized_image = control_image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            # Center the resized image in the white region
+            x_offset = top_left[0] + (white_region_width - new_width) // 2
+            y_offset = top_left[1] + (white_region_height - new_height) // 2
+        else:
+            resized_image = control_image.resize((white_region_width, white_region_height))
+            x_offset = top_left[0]
+            y_offset = top_left[1]
         
         # Put the resized image into a new canvas
         canvas = Image.new("RGBA", mask.size)
-        canvas.paste(resized_image, box=top_left)
+        canvas.paste(resized_image, (x_offset, y_offset))
         
         return canvas
     
@@ -287,7 +308,7 @@ class StableDiffusionBackBone:
         
         return output_images
     
-    def img2img_inpaint(self, prompt='', batch_size=3):
+    def img2img_inpaint(self, prompt='', batch_size=3, keep_aspect_ratio=False):
         '''
         Request WebUI to inpaint.
         
@@ -317,7 +338,7 @@ class StableDiffusionBackBone:
             or self.control_image_2 is not None
         ):            
             if self.control_unit_0 is not None:
-                preprocessed_image_0 = self.__inpaint_control_preprocessor(self.control_image_0)
+                preprocessed_image_0 = self.__inpaint_control_preprocessor(self.control_image_0, keep_aspect_ratio)
                 temp_control_unit_0 = {
                     'enabled': True,
                     'module': self.control_unit_0['module'],
@@ -328,7 +349,7 @@ class StableDiffusionBackBone:
                 }
                 
             if self.control_unit_1 is not None:
-                preprocessed_image_1 = self.__inpaint_control_preprocessor(self.control_image_1)
+                preprocessed_image_1 = self.__inpaint_control_preprocessor(self.control_image_1, keep_aspect_ratio)
                 temp_control_unit_1 = {
                     'enabled': True,
                     'module': self.control_unit_1['module'],
@@ -339,7 +360,7 @@ class StableDiffusionBackBone:
                 }
                 
             if self.control_unit_2 is not None:
-                preprocessed_image_2 = self.__inpaint_control_preprocessor(self.control_image_2)
+                preprocessed_image_2 = self.__inpaint_control_preprocessor(self.control_image_2, keep_aspect_ratio)
                 temp_control_unit_2 = {
                     'enabled': True,
                     'module': self.control_unit_2['module'],
