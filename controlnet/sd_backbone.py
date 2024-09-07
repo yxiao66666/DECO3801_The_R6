@@ -13,7 +13,7 @@ class StableDiffusionBackBone:
         
         # Supported control modules
         self.module_list = [
-            'canny', 'mlsd', 'lineart_anime', 
+            'canny', 'mlsd', 
             'openpose_faceonly', 'openpose_hand', 'dw_openpose_full', 'animal_openpose', 
             'depth_anything_v2', 
             'seg_ofade20k', 'seg_anime_face', 
@@ -21,26 +21,44 @@ class StableDiffusionBackBone:
         ]
         self.controlnet_modules = {
             # Edge detectors
-            'canny': 'control_v11p_sd15_canny [d14c016b]',                      # general purpose
-            'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]',                        # straight lines
-            'lineart_anime': 'control_v11p_sd15s2_lineart_anime [3825e83e]',    # line art
+            'canny': 'control_v11p_sd15_canny [d14c016b]',                                  # general purpose
+            'invert (from white bg & black line)': 'control_v11p_sd15_canny [d14c016b]',    # inverted canny, for white bg and black line
+            'mlsd': 'control_v11p_sd15_mlsd [aca30ff0]',                                    # straight lines
             
             # OpenPose
-            'openpose_faceonly': 'control_v11p_sd15_openpose [cab727d4]',       # facial detail transfer
-            'openpose_hand': 'control_v11p_sd15_openpose [cab727d4]',           # hands and fingers detail transfer
-            'dw_openpose_full': 'control_v11p_sd15_openpose [cab727d4]',        # eyes, nose, eyes, neck, shoulder, elbow, wrist, knees, ankles...
-            'animal_openpose': 'control_v11p_sd15_openpose [cab727d4]',         # animal pose transfer, doesn't work too well
+            'openpose_faceonly': 'control_v11p_sd15_openpose [cab727d4]',                   # facial detail transfer
+            'openpose_hand': 'control_v11p_sd15_openpose [cab727d4]',                       # hands and fingers detail transfer
+            'dw_openpose_full': 'control_v11p_sd15_openpose [cab727d4]',                    # eyes, nose, eyes, neck, shoulder, elbow, wrist, knees, ankles...
+            'animal_openpose': 'control_v11p_sd15_openpose [cab727d4]',                     # animal pose transfer, doesn't work too well
             
             # Depth maps
-            'depth_anything_v2': 'control_v11f1p_sd15_depth [cfd03158]',        # detailed depth map reference
+            'depth_anything_v2': 'control_v11f1p_sd15_depth [cfd03158]',                    # detailed depth map reference
             
             # Segmentation 
-            'seg_ofade20k': 'control_v11p_sd15_seg [e1f51eb9]',                 # transfer the location and shape of objects
-            'seg_anime_face': 'control_v11p_sd15_seg [e1f51eb9]',               # does the same thing above, but optimised for anime faces
+            'seg_ofade20k': 'control_v11p_sd15_seg [e1f51eb9]',                             # transfer the location and shape of objects
+            'seg_anime_face': 'control_v11p_sd15_seg [e1f51eb9]',                           # does the same thing above, but optimised for anime faces
             
             # Color scheme
-            'shuffle': 'control_v11e_sd15_shuffle [526bfdae]',                  # transfer color scheme
-            't2ia_color_grid': 't2iadapter_color_sd14v1 [8522029d]',            # color grid inplace reference
+            'shuffle': 'control_v11e_sd15_shuffle [526bfdae]',                              # transfer color scheme
+            't2ia_color_grid': 't2iadapter_color_sd14v1 [8522029d]',                        # color grid inplace reference
+        }
+        self.weights = {
+            'canny': {'high': 1.5, 'balanced': 1.0, 'low': 0.1},
+            'invert (from white bg & black line)': {'high': 1.5, 'balanced': 1.0, 'low': 0.1},
+            'mlsd': {'high': 1.6, 'balanced': 0.95, 'low': 0.35},
+            
+            'openpose_faceonly': {'high': 1.0, 'balanced': 1.0, 'low': 0.6},
+            'openpose_hand': {'high': 1.0, 'balanced': 1.0, 'low': 0.6},
+            'dw_openpose_full': {'high': 1.0, 'balanced': 1.0, 'low': 0.6},
+            'animal_openpose': {'high': 1.0, 'balanced': 1.0, 'low': 0.6},
+            
+            'depth_anything_v2': {'high': 1.5, 'balanced': 1.0, 'low': 0.4},
+            
+            'seg_ofade20k': {'high': 1.0, 'balanced': 1.0, 'low': 1.0},
+            'seg_anime_face': {'high': 1.0, 'balanced': 1.0, 'low': 1.0},
+            
+            'shuffle': {'high': 0.8, 'balanced': 0.5, 'low': 0.3},
+            't2ia_color_grid': {'high': 1.3, 'balanced': 0.9, 'low': 0.7}
         }
         
         # Control images stored in PIL.Image
@@ -148,7 +166,7 @@ class StableDiffusionBackBone:
         
         return canvas
     
-    def add_control_unit(self, unit_num, image_path, module, intensity='high') -> None:
+    def add_control_unit(self, unit_num, image_path, module, intensity='balanced') -> None:
         '''
         Enables a control unit slot, specified by unit number [0, 1, 2].
         
@@ -158,7 +176,7 @@ class StableDiffusionBackBone:
             module (str): specify the control module to use, ['canny', 'mlsd', 'lineart_anime', 'openpose_faceonly', 
                 'openpose_hand', 'dw_openpose_full', 'animal_openpose', 'depth_anything_v2', 
                 'seg_ofade20k', 'seg_anime_face', 'shuffle', 't2ia_color_grid']
-            intensity (str): specify control intensity, 'low' or 'mid' or 'high' TODO: Finetune control strength for intensity
+            intensity (str): specify control intensity, 'low' or 'balanced' or 'high'
         '''
         if unit_num > 2 or unit_num < 0:
             return
@@ -168,11 +186,13 @@ class StableDiffusionBackBone:
             return
         if module not in self.module_list:
             return
+        if intensity not in ['high', 'balanced', 'low']:
+            return
         
         image = Image.open(image_path)
         b64_image = self.__encode_to_base64(image)
         
-        processor_res = None
+        processor_res = 768
         pixel_perfect = True
         if module == 't2ia_color_grid':
             processor_res = 1024
@@ -184,7 +204,7 @@ class StableDiffusionBackBone:
             'model': self.controlnet_modules[module],
             'image': b64_image,
             'pixel_perfect': pixel_perfect,
-            'weight': 1.0, # TODO: adjust to intensity
+            'weight': self.weights[module][intensity],
             'processor_res': processor_res
         }
         
