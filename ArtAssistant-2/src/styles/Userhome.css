@@ -1,0 +1,82 @@
+.user-home {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+.user-home-header {
+    background-image: url('/Users/luhongyingzi/Desktop/ArtAssistant-2 sunday/public/images/user_bg.png'); /* 背景图片路径 */
+    background-size: cover;
+    background-position: center; 
+    padding: 100px; 
+    text-align: center;
+    color: black; 
+    font-size: small;
+    width: 100%;
+    min-height: 700px;
+}
+
+.user-home-content {
+    margin-bottom: 20px;
+}
+
+.user-works ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.user-works li {
+    margin: 10px 0;
+}
+
+.user-home-footer {
+    margin-top: 20px;
+}
+
+.logout-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: darkblue;
+}
+
+
+/* 哦iu一个土豪金客流也会跟他回家 */
+.user-options {
+    display: flex;
+    justify-content: center;
+    gap: 70px;
+    
+}
+
+.option-link {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: black;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.option-link:hover {
+    text-decoration: underline;
+}
+
+.option-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.user-works {
+    margin-top: 50px;
+}

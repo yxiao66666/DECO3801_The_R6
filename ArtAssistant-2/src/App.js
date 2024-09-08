@@ -6,6 +6,7 @@ import SearchPage from "../src/components/SearchPage";
 import UploadPage from "../src/components/UploadPage"; 
 import PrivacyPage from "../src/components/PrivacyPage"; 
 import TermsPage from "../src/components/TermsPage"; 
+import UserPage from "../src/components/UserPage"; 
 
 
 // Add a new route here for each new page created
@@ -19,6 +20,7 @@ export default function App() {
                 <Route path="/upload" element={<UploadPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/terms" element={<TermsPage />} />
+                <Route path="/user" element={<UserPage />} />
             </Routes>
         </Router>
     );
