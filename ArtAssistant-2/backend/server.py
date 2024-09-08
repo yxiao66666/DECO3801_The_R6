@@ -4,7 +4,7 @@ import os
 from flask_cors import CORS # Enable Cross-Origin Resource Sharing (CORS) MUST HAVE OR ERROR
 
 app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin Resource Sharing MUST HAVE OR ERROR
+CORS(app, resources={r"/*": {"origins": "*"}})  # Enable Cross-Origin Resource Sharing MUST HAVE OR ERROR
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Configure upload folder and allowed extensions
@@ -34,13 +34,23 @@ def upload_file():
 
     # Loop through the files and options
     for key in request.files:
-        if 'image' in key:
-            file = request.files[key]
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(filepath)
-                files.append(filepath)
+        file = request.files[key] 
+        if 'image' in key and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            files.append(filepath)
+        
+        elif key=='canvasImage':
+            filename = 'canvasImage.png' 
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            files.append(filepath)
+        else:
+            print(f"File {file.filename} is not a valid image format or is not handled.")
+
+        
+
     
     # Process AI options
     for key in request.form:
@@ -55,6 +65,7 @@ def upload_file():
         "ai_options": options,  # Corresponding AI options for each image
         "text": text
     }
+    print("This is Python: ", files)
 
     return jsonify(response), 200
 
@@ -63,8 +74,7 @@ def upload_file():
 @app.route('/search', methods=['POST'])
 def search():
     data = request.get_json()
-    print("This is Python: ", data)
-    search_query = data.get('search_query', '')
+    search_query = data.get('query', '')
 
 
     return jsonify({"search_query": search_query})

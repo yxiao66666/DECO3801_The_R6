@@ -5,7 +5,6 @@
 }
 
 .user-home-header {
-    background-image: url('/Users/luhongyingzi/Desktop/ArtAssistant-2 sunday/public/images/user_bg.png'); /* 背景图片路径 */
     background-size: cover;
     background-position: center; 
     padding: 100px; 

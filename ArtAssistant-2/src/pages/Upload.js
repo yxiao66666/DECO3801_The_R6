@@ -10,8 +10,9 @@ export default function Upload() {
     const [inpaint, setInpaint] = useState(null);
 
     const [tool, setTool] = useState('brush'); 
-    const [brushSize, setBrushSize] = useState(5); 
+    const [brushSize, setBrushSize] = useState(15); 
     const [brushColor, setBrushColor] = useState('#000000'); 
+    const [imageChosen, setChosen] = useState(false)
     const canvasRef = useRef(null);
     const ctxRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -30,28 +31,42 @@ export default function Upload() {
         ctxRef.current = ctx;
         ctx.lineCap = 'round';
         ctx.lineWidth = brushSize;
-        ctx.strokeStyle = brushColor;
-    }, [brushSize, brushColor]);
+        ctx.strokeStyle = 'rgba(255,255,248, 0.3)';
+
+    }, [brushSize]);
 
     const handleChange = (event) => {
         const selectedFiles = event.target.files; 
         if (selectedFiles.length > 0) {
             setFiles(Array.from(selectedFiles));
 
-            //send files to canvas
+            
+        } else {
+            console.warn("No file selected or the selected files are not valid.");
+        }
+    };
+
+    const handleCanvasChange = (event) => {
+        const selectedImage = event.target.files[0]; 
+        if (selectedImage) {
             const img = new Image();
-            img.src = URL.createObjectURL(selectedFiles[0]);
+            img.src = URL.createObjectURL(selectedImage);
             img.onload = () => {
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height); 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
             };
+            setChosen(true);
+
+
+            
         } else {
+            setChosen(false);
             console.warn("No file selected or the selected files are not valid.");
         }
     };
-
+    
     const handleTextChange = (event) => {
         setText(event.target.value);
     };
@@ -67,10 +82,76 @@ export default function Upload() {
         }
     };
 
+     // drawing on canvas
+     const startDrawing = (e) => {
+        e.preventDefault();
+        const { offsetX, offsetY } = getPointerPosition(e);
+        ctxRef.current.beginPath();
+        ctxRef.current.moveTo(offsetX, offsetY);
+        setIsDrawing(true);
+    };
+
+
+    const draw = (e) => {
+        
+        if (!isDrawing) return;
+        e.preventDefault();
+        const { offsetX, offsetY } = getPointerPosition(e);
+        ctxRef.current.lineTo(offsetX, offsetY);
+        ctxRef.current.stroke();
+    };
+
+    const stopDrawing = (e) => {
+        e.preventDefault();
+        ctxRef.current.closePath();
+        setIsDrawing(false);
+    };
+
+    const getPointerPosition = (e) => {
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect(); 
+
+        const scaleX = canvas.width / rect.width;   
+        const scaleY = canvas.height / rect.height;  
+
+        if (e.touches) {
+            const touch = e.touches[0];
+            return {
+                offsetX: (touch.clientX - rect.left) * scaleX,  
+                offsetY: (touch.clientY - rect.top) * scaleY  
+            };
+        } else {
+            return {
+                offsetX: (e.clientX - rect.left) * scaleX,
+                offsetY: (e.clientY - rect.top) * scaleY 
+            };
+        }
+    };
+
+    const changeTool = (toolName) => {
+        setTool(toolName);
+        if (toolName === 'eraser') {
+            ctxRef.current.strokeStyle = 'black'; 
+        } else {
+            ctxRef.current.strokeStyle = brushColor;
+        }
+    };
+
+    useEffect(() => {
+        if (imageChosen) {
+            const preventScroll = (e) => e.preventDefault();
+            document.body.addEventListener('touchmove', preventScroll, { passive: false });
+            return () => {
+                document.body.removeEventListener('touchmove', preventScroll);
+            };
+        }
+    }, [imageChosen]);
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         
-
+        // add option available images
         const formData = new FormData();
         if (files.length > 0) {
             files.forEach((file,index) => {
@@ -78,7 +159,29 @@ export default function Upload() {
                 formData.append(`option${index}`, aiOptions[index]);
             });
         }
+
+        //add text description
         formData.append('text', text);
+
+        const canvas = canvasRef.current;
+        const canvasBlob = await new Promise((resolve, reject) => {   
+            canvas.toBlob((blob) => {
+                
+                if (blob) {
+                    resolve(blob);
+                } else {
+                    reject(new Error("Canvas toBlob failed"));
+                }
+            }, 'image/png');
+        }).catch((error) => {
+            console.error("Failed to generate canvas blob:", error);
+            return null; 
+        });
+    
+        if (canvasBlob) {
+            formData.append('canvasImage', canvasBlob, 'canvasImage.png');
+        }
+        
 
         try {
             console.log("submitted!");
@@ -99,36 +202,6 @@ export default function Upload() {
         }
         
         
-    };
-
-     // drawing on canvas
-     const startDrawing = ({ nativeEvent }) => {
-        const { offsetX, offsetY } = nativeEvent;
-        ctxRef.current.beginPath();
-        ctxRef.current.moveTo(offsetX, offsetY);
-        setIsDrawing(true);
-    };
-
-
-    const draw = ({ nativeEvent }) => {
-        if (!isDrawing) return;
-        const { offsetX, offsetY } = nativeEvent;
-        ctxRef.current.lineTo(offsetX, offsetY);
-        ctxRef.current.stroke();
-    };
-
-    const stopDrawing = () => {
-        ctxRef.current.closePath();
-        setIsDrawing(false);
-    };
-
-    const changeTool = (toolName) => {
-        setTool(toolName);
-        if (toolName === 'eraser') {
-            ctxRef.current.strokeStyle = '#FFFFFF'; 
-        } else {
-            ctxRef.current.strokeStyle = brushColor;
-        }
     };
 
   return (
@@ -177,6 +250,7 @@ export default function Upload() {
                                             }}
                                         >
                                         </div>
+
                                         {/* Selection Box for AI Options */}
                                         <select
                                             value={aiOptions[index]}
@@ -194,6 +268,7 @@ export default function Upload() {
                                     </div>
                                 ))}
                             </div>
+                            <br></br>
                             <div className="avatar-edit">
                                 <input
                                     multiple
@@ -212,22 +287,27 @@ export default function Upload() {
                             <br></br>
                             <br />
                             <br />
+
+                            <h1>Polish your work with inpainting, if you use this on ipad, two fingers double touch to move up/down the whole page</h1>
                             <canvas
                                 ref={canvasRef}
                                 onMouseDown={startDrawing}
                                 onMouseUp={stopDrawing}
                                 onMouseMove={draw}
+                                onTouchMove={draw}
+                                onTouchEnd={stopDrawing}
+                                onTouchStart={startDrawing}
                                 width="800"
                                 height="600"
-                                style={{ display: 'start', width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}
+                                style={{ backgroundColor:'white',display: 'start', width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}
                             />
                             <br />
                             <div>
-                                <button type="button" onClick={() => changeTool('brush')} style={{ marginRight: '10px' }}>
-                                    Brush
+                                <button type="button" onClick={() => changeTool('brush')} className="search-btn" style={{ marginRight: '10px'}}>
+                                    <img src="../images/png-transparent-paintbrush-painting-black-brush-s-hand-monochrome-head.png" className="painting-icon"></img>
                                 </button>
-                                <button type="button" onClick={() => changeTool('eraser')} style={{ marginRight: '10px' }}>
-                                    Eraser
+                                <button type="button" onClick={() => changeTool('eraser')} className="search-btn" style={{ marginRight: '10px' }}>
+                                    <img src="../images/be6c2fe2ca4a392ca28be1acc4f8ad44.jpg" className="painting-icon"></img>
                                 </button>
                                 <label>Brush Size:</label>
                                 <input
@@ -236,15 +316,23 @@ export default function Upload() {
                                     max="20"
                                     value={brushSize}
                                     onChange={(e) => setBrushSize(e.target.value)}
-                                    style={{ marginLeft: '10px' }}
+                                    style={{ marginLeft: '10px', marginRight:'10px'}}
                                 />
-                                <label style={{ marginLeft: '10px' }}>Color:</label>
+
                                 <input
-                                    type="color"
-                                    value={brushColor}
-                                    onChange={(e) => setBrushColor(e.target.value)}
-                                    style={{ marginLeft: '10px' }}
+                                    multiple
+                                    type="file"
+                                    id="canvasUpload"
+                                    accept=".png, .jpg, .jpeg"
+                                    onChange={handleCanvasChange}
+                                    style={{ display: 'none' }}
+                                    
                                 />
+                                <label htmlFor="canvasUpload" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                                    Choose an image
+                                </label>  
+                                
+                                
                             </div>
                         </div>
                     </div>
@@ -261,7 +349,7 @@ export default function Upload() {
                     
                 />
                 <label htmlFor="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                    Upload
+                    Generate
                 </label> 
             </form>
 

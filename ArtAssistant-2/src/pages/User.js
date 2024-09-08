@@ -32,7 +32,7 @@ export default function Userhome() {
 
     return (
         <div className="user-home">
-            <header className="user-home-header">
+            <header className="user-home-header" style={{backgroundImage:'url("../images/user_bg.png")'}}>
                 <br /><br />
                 <h1>Welcome, {userEmail}</h1>
                 <br /><br /><br />

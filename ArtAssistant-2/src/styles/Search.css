@@ -12,21 +12,6 @@
 
 }
 
-.bar {
-    margin: 0 auto;
-    width: 575px;
-    border-radius: 30px;
-    border: 1px solid #dcdcdc;
-}
-
-.bar:hover {
-    box-shadow: 1px 1px 8px 1px #dcdcdc;
-}
-
-.bar:focus-within {
-    box-shadow: 1px 1px 8px 1px #dcdcdc;
-    outline: none;
-}
 
 .searchbar {
     height: 45px;
@@ -34,6 +19,7 @@
     font-size: 16px;
     border-radius: 25px;
     border:none;
+    outline:none;
 }
 
  
@@ -62,18 +48,23 @@
 .search-btn {
     background-color: black;
     border: none;
-    padding: 10px; 
     cursor: pointer;
     border-radius: 30px; 
-    display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .search-icon {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     filter: invert(1);
+}
+
+.painting-icon {
+    width: 60px;
+    height: 60px;
+    filter: invert(1);
+
 }
 
 .results {
