@@ -3,10 +3,14 @@ This Module mainly provides access to pintrest and any other image search engine
 to use in the future.
 
 - v0.0.2 Basic Pintrest Search Available
+- v0.0.3 Add support for image query with BLIP
 """
 
 from math import floor
 from time import time
+from PIL import Image
+from transformers import BlipProcessor, BlipForConditionalGeneration
+
 import json
 import requests
 
@@ -19,6 +23,26 @@ class QueryMissmatchException(BaseException):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
+
+def generate_image_caption(image_path: str) -> str:
+    """Generate caption from the provided image for searching
+    
+    Args:
+        image (str): The path to the image file to query
+
+    Returns:
+        caption (str): A description of the image
+    """
+    # TODO: After Flask is implemented, the model should be made so that it's always online.
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
+    
+    image = Image.open(image_path)
+    inputs = processor(images=image, return_tensors="pt")
+    outputs = model.generate(**inputs)
+    caption = processor.decode(outputs[0], skip_special_tokens=True)
+
+    return caption
 
 def search_pinterest(
     query: str, options: dict[str, str] | None = None, context: str = "{}", timeout: float = 100.0
