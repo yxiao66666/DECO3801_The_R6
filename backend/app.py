@@ -38,29 +38,26 @@ def search():
     else:
         return {}
     
-@app.route('/upload', methods = ['GET', 'POST'])
+@app.route('/upload', methods = ['POST'])
 @cross_origin()
 def upload():
+    if request.method == 'POST':
+        if 'query' in request.get_json():
+            keyword = request.get_json().get('query')
+            raw_imgs = search_pinterest(keyword)
+        else:
+            source_img = request.get_json('image')
+            caption = generate_image_caption(image_path=source_img, model=blip, processor=blip_processor)
+            raw_imgs = search_pinterest(caption)
 
-    return request.form
-    # if request.method == 'POST':
+        images = response_pull_images(raw_imgs)
+        response = dict()
+        for i in range(len(images)):
+            response[i] = images[i]
+        return response
+    else:
+        return {}
 
-    #     prompt = request.form['prompt']
-    #     reference = request.files['reference']
-
-    #     path = os.path.join(app.root_path, 'images', reference.filename)
-
-    #     reference.save(path)
-
-    #     ref_img = Image.open(path)
-
-    #     images = cnet_txt2img(prompt, ref_img)
-
-    #     # This section is a compromise as behaviour is unpredictable
-    #     return images
-
-    # else:
-    #     return render_template('generate.html')
 if __name__ == '__main__':
 
     app.run(host = 'localhost', debug = True)

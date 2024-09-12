@@ -1,6 +1,6 @@
 __pycache__/
 controlnet/__pycache__/util.cpython-311.pyc
 controlnet/test.ipynb
-
-frontend/node_modules/*
 blip_weights
+
+frontend/
