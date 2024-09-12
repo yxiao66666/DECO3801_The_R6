@@ -4,3 +4,5 @@ controlnet/test.ipynb
 blip_weights
 
 frontend/node_modules/
+backend/Pipfile
+backend/Pipfile.lock

@@ -8,6 +8,7 @@ flask = "*"
 flask-cors = "*"
 pillow = "*"
 transformers = "*"
+torch = "*"
 
 [dev-packages]
 
