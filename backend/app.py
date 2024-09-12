@@ -56,6 +56,7 @@ def search():
 # Upload image and text in upload.js
 @app.route('/upload', methods=['POST'])
 def upload_file():
+
     bb.reset()
     if request.method == 'POST':
 
@@ -92,7 +93,7 @@ def upload_file():
     
 def _collect_imgs(files_requests):
         files = []
-        for key in request.files:
+        for key in files_requests:
             if 'image' in key:
                 file = request.files[key]
                 if file and allowed_file(file.filename):
