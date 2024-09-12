@@ -3,4 +3,4 @@ controlnet/__pycache__/util.cpython-311.pyc
 controlnet/test.ipynb
 blip_weights
 
-frontend/
+frontend/node_modules/
