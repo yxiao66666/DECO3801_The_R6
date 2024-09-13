@@ -293,7 +293,7 @@ class StableDiffusionBackBone:
         '''
         Reset the backbone, removes all internal variables and images.
         '''
-        self.__init__()
+        self.__init__(url=self.webui_url)
     
     def txt2img(self, prompt='', batch_size=3):
         '''
