@@ -3,7 +3,7 @@ import os
 from PIL import Image
 from datetime import datetime
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, after_this_request
 from flask_cors import CORS, cross_origin
 
 from search_engine_access import generate_image_caption, search_pinterest, response_pull_images
@@ -95,13 +95,23 @@ def upload():
         output = bb.txt2img(prompt=prompt)
     
     response = {}
-    
     for idx, img in enumerate(output):
         file_name = f'{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{prompt}_{idx}.png'
         file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
         img.save(file_path, format='PNG')
         
         response[idx] = file_name
+    
+    @after_this_request
+    def delete_generations(r):
+        '''delete generated images after they got sent back'''
+        for file in response.values():
+            file_path = os.path.join(app.config['GENERATION_FOLDER'], file)
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                print(f"Error deleting file {file}: {e}")
+        return r
     
     return jsonify(response), 200
 
