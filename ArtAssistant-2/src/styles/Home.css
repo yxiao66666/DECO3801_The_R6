@@ -1,5 +1,26 @@
 @import url('https://use.fontawesome.com/releases/v5.8.1/css/all.css');
 
+.full-height-section {
+  background-color: black;
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.styled-background {
+  background-size: cover;
+  background-position: center;
+  padding: 50px 10px;
+  border-radius: 5px;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.display-4.styled-heading {
+  font-family: serif;
+  font-size: 18vw;
+}
+
 
 .container {
   text-align: center;
