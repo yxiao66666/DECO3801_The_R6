@@ -9,6 +9,7 @@ flask-cors = "*"
 pillow = "*"
 transformers = "*"
 torch = "*"
+requests = "*"
 
 [dev-packages]
 
