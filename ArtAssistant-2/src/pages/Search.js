@@ -68,8 +68,12 @@ export default function Search() {
             backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}>
             <form id="form" onSubmit={handleSubmit}> 
                 <center>
-                    <h1 style={{ fontFamily: 'serif', fontSize: '18vw', color: 'white' }}>ARTY</h1>
-                    {/* container for searchbar, upload icon, and search icon */}
+                    <img 
+                        src="../images/ARTY.png" // Path to your title image
+                        alt="ARTY" 
+                        style={{ width: 'auto', height: '18vw' ,margin:'50px 0'}} // Adjust height as needed
+                    />
+                    {/* Container for searchbar, upload icon, and search icon */}
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
                         
                         <input 
