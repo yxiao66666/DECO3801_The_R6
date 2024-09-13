@@ -101,7 +101,7 @@ export default function About() {
                     <div className="single_advisor_profile wow fadeInUp" 
                         data-wow-delay="0.2s">
                         <div className="advisor_thumb"><img src="images/william.JPG" alt="" />
-                            <div className="social-info"><a href="#"><i className="fa fa-facebook"></i></a><a href="#"><i className="fa fa-twitter"></i></a><a href="#"><i className="fa fa-linkedin"></i></a></div>
+                            <div className="social-info"><a href="https://www.instagram.com/wmercado0"><i className="fa fa-instagram"></i></a><a href="https://www.instagram.com/wmercado0"><i className="fa fa-twitter"></i></a><a href="https://www.instagram.com/wmercado0"><i className="fa fa-linkedin"></i></a></div>
                         </div>
                         <div className="single_advisor_details_info">
                             <h6>William Mercado</h6>
@@ -114,7 +114,7 @@ export default function About() {
                 <div className="single_advisor_profile wow fadeInUp" 
                         data-wow-delay="0.2s">
                         <div className="advisor_thumb"><img src="images/brian.JPG" alt="" />
-                            <div className="social-info"><a href="#"><i className="fa fa-facebook"></i></a><a href="#"><i className="fa fa-twitter"></i></a><a href="#"><i className="fa fa-linkedin"></i></a></div>
+                            <div className="social-info"><a href="https://www.instagram.com/z.pengfei_"><i className="fa fa-instagram"></i></a><a href="https://www.instagram.com/z.pengfei_"><i className="fa fa-twitter"></i></a><a href="https://www.instagram.com/z.pengfei_"><i className="fa fa-linkedin"></i></a></div>
                         </div>
                         <div className="single_advisor_details_info">
                             <h6>Brian Zhang</h6>
@@ -127,7 +127,7 @@ export default function About() {
                 <div className="single_advisor_profile wow fadeInUp" 
                         data-wow-delay="0.2s">
                         <div className="advisor_thumb"><img src="images/ryuto.PNG" alt="" />
-                            <div className="social-info"><a href="#"><i className="fa fa-facebook"></i></a><a href="#"><i className="fa fa-twitter"></i></a><a href="#"><i className="fa fa-linkedin"></i></a></div>
+                            <div className="social-info"><a href="https://www.instagram.com/hisattohisahisa"><i className="fa fa-instagram"></i></a><a href="https://www.instagram.com/hisattohisahisa"><i className="fa fa-twitter"></i></a><a href="https://www.instagram.com/hisattohisahisa"><i className="fa fa-linkedin"></i></a></div>
                         </div>
                         <div className="single_advisor_details_info">
                             <h6>Ryuto Hisamoto</h6>
@@ -140,7 +140,7 @@ export default function About() {
                 <div className="single_advisor_profile wow fadeInUp" 
                         data-wow-delay="0.2s">
                         <div className="advisor_thumb"><img src="images/yang.JPG" alt="" />
-                            <div className="social-info"><a href="#"><i className="fa fa-facebook"></i></a><a href="#"><i className="fa fa-twitter"></i></a><a href="#"><i className="fa fa-linkedin"></i></a></div>
+                            <div className="social-info"><a href="https://www.instagram.com/y.a.n.g_official"><i className="fa fa-instagram"></i></a><a href="https://www.instagram.com/y.a.n.g_official"><i className="fa fa-twitter"></i></a><a href="https://www.instagram.com/y.a.n.g_official"><i className="fa fa-linkedin"></i></a></div>
                         </div>
                         <div className="single_advisor_details_info">
                             <h6>Yang Xiao</h6>
@@ -153,7 +153,7 @@ export default function About() {
                 <div className="single_advisor_profile wow fadeInUp" 
                         data-wow-delay="0.2s">
                         <div className="advisor_thumb"><img src="images/shan.jpeg" alt="" />
-                            <div className="social-info"><a href="#"><i className="fa fa-facebook"></i></a><a href="#"><i className="fa fa-twitter"></i></a><a href="#"><i className="fa fa-linkedin"></i></a></div>
+                            <div className="social-info"><a href="https://www.instagram.com/cecili_l"><i className="fa fa-instagram"></i></a><a href="https://www.instagram.com/cecili_l"><i className="fa fa-twitter"></i></a><a href="https://www.instagram.com/cecili_l"><i className="fa fa-linkedin"></i></a></div>
                         </div>
                         <div className="single_advisor_details_info">
                             <h6>Shan Liu</h6>
@@ -166,7 +166,7 @@ export default function About() {
                 <div className="single_advisor_profile wow fadeInUp" 
                         data-wow-delay="0.2s">
                         <div className="advisor_thumb"><img src="images/hongyingzi.jpg" alt="" />
-                            <div className="social-info"><a href="#"><i className="fa fa-facebook"></i></a><a href="#"><i className="fa fa-twitter"></i></a><a href="#"><i className="fa fa-linkedin"></i></a></div>
+                            <div className="social-info"><a href="https://www.instagram.com/olivialuuuuuu"><i className="fa fa-instagram"></i></a><a href="https://www.instagram.com/olivialuuuuuu"><i className="fa fa-twitter"></i></a><a href="https://www.instagram.com/olivialuuuuuu"><i className="fa fa-linkedin"></i></a></div>
                         </div>
                         <div className="single_advisor_details_info">
                             <h6>Hongyingzi Lu</h6>

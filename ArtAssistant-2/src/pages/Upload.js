@@ -185,7 +185,7 @@ export default function Upload() {
 
         try {
             console.log("submitted!");
-            const response = await fetch('http://localhost:5000/upload', {
+            const response = await fetch('http://arty.uqcloud.net/backend/upload', {
                 method: 'POST',
                 body: formData,
             });

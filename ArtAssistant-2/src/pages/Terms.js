@@ -15,7 +15,7 @@ export default function Terms() {
                 <p>By using this website, you certify that you have read and reviewed this Agreement and that you agree to comply with its terms. If you do not want to be bound by the terms of this Agreement, you are advised to leave the website accordingly. <strong>ArtAssistant</strong> only grants use and access of this website, its products, and its services to those who have accepted its terms.</p>
                 
                 <h3 className="text-center mb-4">Privacy policy</h3>
-                <p>Before you continue using our website, we advise you to read our <a href="#">privacy policy</a> regarding our user data collection. It will help you better understand our practices.</p>
+                <p>Before you continue using our website, we advise you to read our <a href="/privacy">privacy policy</a> regarding our user data collection. It will help you better understand our practices.</p>
 
                 <h3 className="text-center mb-4">Age restriction</h3>
                 <p>You must be at least 18 (eighteen) years of age before you can use this website. By using this website, you warrant that you are at least 18 years of age and you may legally adhere to this Agreement. <strong>ArtAssistant</strong> assumes no responsibility for liabilities related to age misrepresentation.</p>
