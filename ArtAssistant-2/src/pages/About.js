@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles/About.css";
-import william from './app-icon.png'; 
 
 // About Us page
 export default function About() {
