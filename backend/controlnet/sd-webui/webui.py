@@ -25,11 +25,21 @@ def create_api(app):
 
 def api_only():
     from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
     from modules.shared_cmd_options import cmd_opts
 
     initialize.initialize()
 
     app = FastAPI()
+    
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  
+        allow_credentials=True,
+        allow_methods=["*"],  
+        allow_headers=["*"], 
+    )
+    
     initialize_util.setup_middleware(app)
     api = create_api(app)
 

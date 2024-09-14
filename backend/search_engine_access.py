@@ -14,6 +14,8 @@ from transformers import BlipProcessor, BlipForConditionalGeneration
 import json
 import requests
 
+from flask import Flask
+
 
 class QueryMissmatchException(BaseException):
     """Exception for when main query does not match query from options dictionary"""
@@ -22,7 +24,7 @@ class QueryMissmatchException(BaseException):
         super().__init__(*args)
 
 
-def generate_image_caption(image_path: str) -> str:
+def generate_image_caption(image_path: str, model: BlipForConditionalGeneration, processor: BlipProcessor) -> str:
     """Generate caption from the provided image for searching
     
     Args:
@@ -32,8 +34,8 @@ def generate_image_caption(image_path: str) -> str:
         caption (str): A description of the image
     """
     # TODO: After Flask is implemented, the model should be made so that it's always online.
-    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
-    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
+    # processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
+    # model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
     
     image = Image.open(image_path)
     inputs = processor(images=image, return_tensors="pt")
