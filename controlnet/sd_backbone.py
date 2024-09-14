@@ -295,7 +295,7 @@ class StableDiffusionBackBone:
         '''
         self.__init__(url=self.webui_url)
     
-    def txt2img(self, prompt='', batch_size=3):
+    def txt2img(self, prompt='', batch_size=3) -> list:
         '''
         Request WebUI to txt2img.
         
@@ -304,7 +304,7 @@ class StableDiffusionBackBone:
             batch_size (int): optional, number of generations in one batch
         
         Returns:
-            TODO: 
+            output_images (list): a list of PIL Image
         '''
         control_units = [
             self.control_unit_0,
@@ -335,7 +335,7 @@ class StableDiffusionBackBone:
         
         return output_images
     
-    def img2img_inpaint(self, prompt='', batch_size=3, keep_aspect_ratio=False):
+    def img2img_inpaint(self, prompt='', batch_size=3, keep_aspect_ratio=False) -> list:
         '''
         Request WebUI to inpaint.
         
@@ -344,7 +344,7 @@ class StableDiffusionBackBone:
             batch_size (int): optional, number of generations in one batch
         
         Returns:
-            TODO: 
+            output_images (list): a list of PIL Image
         '''
         if self.inpaint_image is None:
             return
