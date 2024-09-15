@@ -2,7 +2,7 @@
 
 >It turns out that we must set up backend and frontend separately, you must create a ```pipenv``` to aside from the ```npm``` for the frontend. Refer to the instructions below:
 
-## Process
+## Getting Started
 
 1. Navigate yourself to the ```/backend``` directory on your terminal
 2. Run ```pip install pipenv```
@@ -11,3 +11,7 @@
 5. ```flask run``` to start the application.
 
 > **The process could be easier if you are on VS code as you could set the python interpreter to the ```pipenv``` in your directory. This allows you to run the flask application like your normal code from the execution button at the top right corner.** <br>
+
+## Database
+
+<img src = '../images/db_structure.png'>
