@@ -39,7 +39,7 @@ db = SQLAlchemy(app)
 # temporarily user_name is replaced with user_email
 class Users(db.Model):
     __tablename__ = 'Users'
-    user_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    user_id = db.Column(db.Integer, primary_key = True)
     user_email = db.Column(db.String(255), unique = True)
     user_password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
@@ -48,43 +48,8 @@ class Users(db.Model):
         self.user_email = user_email
         self.user_password = user_password
 
-class SearchImage(db.Model):
-    __tablename__ = 'SearchImage'
-    s_image_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
-    s_image_file_path = db.Column(LONGTEXT)
-    created_at = db.Column(db.DateTime, default = datetime.now)
-
-class SearchText(db.Model):
-    __tablename__ = 'SearchText'
-    s_text_id = db.Column(db.Integer, primary_key = True)
-    s_image_id = db.Column(db.Integer, db.ForeignKey('SearchImage.s_image_id'))
-    s_text_query = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime, default = datetime.now)
-
-class GenerateImage(db.Model):
-    __tablename__ = 'GenerateImage'
-    g_image_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
-    g_image_file_path = db.Column(LONGTEXT)
-    created_at = db.Column(db.DateTime, default = datetime.now)
-
-class GenerateText(db.Model):
-    __tablename__ = 'GenerateText'
-    g_text_id = db.Column(db.Integer, primary_key = True)
-    g_image_id = db.Column(db.Integer, db.ForeignKey('GenerateImage.g_image_id'))
-    g_text_query = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime, default = datetime.now)
-
-class SavedImage(db.Model):
-    __tablename__ = 'SavedImage'
-    sd_image_id = db.Column(db.Integer, primary_key = True, nullable = False)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
-    sd_image_path = db.Column(LONGTEXT)
-    created_at = db.Column(db.DateTime, default = datetime.now)
-
 @app.route('/users/get', methods = ['GET'])
-def get_user():
+def get_users():
     print(request.method)
     if request.method == 'GET':
         users = Users.query.all()
@@ -100,7 +65,6 @@ def get_user():
 
 @app.route('/users/add', methods=['POST'])
 # @cross_origin
-# Use this function to test the database?
 def add_user():
     if request.method == 'POST':
         try:
@@ -117,6 +81,121 @@ def add_user():
             db.session.rollback()
             return {}, 500
     return {}, 405
+
+class SearchImage(db.Model):
+    __tablename__ = 'SearchImage'
+    s_image_id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    s_image_file_path = db.Column(LONGTEXT)
+    created_at = db.Column(db.DateTime, default = datetime.now)
+
+@app.route('/search_image/get', methods = ['GET'])
+def get_search_imgs():
+    print(request.method)
+    if request.method == 'GET':
+        search_imgs = SearchImage.query.all()
+        search_imgs_list = [
+        {
+            "s_image_id": search_img.s_image_id,
+            "user_id": search_img.user_id,
+            "s_image_file_path": search_img.s_image_file_path,
+            "created_at": search_img.created_at.isoformat()  # Convert datetime to string
+        }
+        for search_img in search_imgs
+        ]
+        return jsonify(search_imgs_list)
+
+class SearchText(db.Model):
+    __tablename__ = 'SearchText'
+    s_text_id = db.Column(db.Integer, primary_key = True)
+    s_image_id = db.Column(db.Integer)
+    s_text_query = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default = datetime.now)
+
+@app.route('/search_text/get', methods = ['GET'])
+def get_search_text():
+    print(request.method)
+    if request.method == 'GET':
+        search_texts = SearchImage.query.all()
+        search_texts_list = [
+        {
+            "s_text_id": search_text.s_text_id,
+            "user_id": search_text.user_id,
+            "s_text_query": search_text.s_text_query,
+            "created_at": search_text.created_at.isoformat()  # Convert datetime to string
+        }
+        for search_text in search_texts
+        ]
+        return jsonify(search_texts_list)
+
+class GenerateImage(db.Model):
+    __tablename__ = 'GenerateImage'
+    g_image_id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    g_image_file_path = db.Column(LONGTEXT)
+    created_at = db.Column(db.DateTime, default = datetime.now)
+
+@app.route('/generate_image/get', methods = ['GET'])
+def get_search_imgs():
+    print(request.method)
+    if request.method == 'GET':
+        generate_imgs = SearchImage.query.all()
+        generate_imgs_list = [
+        {
+            "g_image_id": generate_img.g_image_id,
+            "user_id": generate_img.user_id,
+            "g_image_file_path": generate_img.g_image_file_path,
+            "created_at": generate_img.created_at.isoformat()  # Convert datetime to string
+        }
+        for generate_img in generate_imgs
+        ]
+        return jsonify(generate_imgs_list)
+
+class GenerateText(db.Model):
+    __tablename__ = 'GenerateText'
+    g_text_id = db.Column(db.Integer, primary_key = True)
+    g_image_id = db.Column(db.Integer, db.ForeignKey('GenerateImage.g_image_id'))
+    g_text_query = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default = datetime.now)
+
+@app.route('/generate_text/get', methods = ['GET'])
+def get_search_text():
+    print(request.method)
+    if request.method == 'GET':
+        generate_texts = SearchImage.query.all()
+        generate_texts_list = [
+        {
+            "g_text_id": generate_text.g_text_id,
+            "user_id": generate_text.user_id,
+            "g_text_query": generate_text.g_text_query,
+            "created_at": generate_text.created_at.isoformat()  # Convert datetime to string
+        }
+        for generate_text in generate_texts
+        ]
+        return jsonify(generate_texts_list)
+
+class SavedImage(db.Model):
+    __tablename__ = 'SavedImage'
+    sd_image_id = db.Column(db.Integer, primary_key = True, nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    sd_image_path = db.Column(LONGTEXT)
+    created_at = db.Column(db.DateTime, default = datetime.now)
+
+@app.route('/saved_image/get', methods = ['GET'])
+def get_saved_imgs():
+    print(request.method)
+    if request.method == 'GET':
+        saved_imgs = SearchImage.query.all()
+        saved_imgs_list = [
+        {
+            "sd_image_id": saved_img.sd_image_id,
+            "user_id": saved_img.user_id,
+            "sd_image_file_path": saved_img.sd_image_path,
+            "created_at": saved_img.created_at.isoformat()  # Convert datetime to string
+        }
+        for saved_img in saved_imgs
+        ]
+        return jsonify(saved_imgs_list)
 
 @app.route('/search', methods = ['POST'])
 @cross_origin()
