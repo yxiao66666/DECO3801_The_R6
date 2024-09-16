@@ -167,7 +167,7 @@ ADE20K_150_CATEGORIES = [
     {"color": [0, 184, 255], "id": 109, "isthing": 0, "name": "pool"},
     {"color": [0, 214, 255], "id": 110, "isthing": 1, "name": "stool"},
     {"color": [255, 0, 112], "id": 111, "isthing": 1, "name": "barrel, cask"},
-    {"color": [92, 255, 0], "id": 112, "isthing": 1, "name": "basket, handbasket"},
+    {"color": [92, 255, 0], "id": 112, "isthing": 1, "name": "basket, hanasket"},
     {"color": [0, 224, 255], "id": 113, "isthing": 0, "name": "falls"},
     {"color": [112, 224, 255], "id": 114, "isthing": 0, "name": "tent"},
     {"color": [70, 184, 160], "id": 115, "isthing": 1, "name": "bag"},

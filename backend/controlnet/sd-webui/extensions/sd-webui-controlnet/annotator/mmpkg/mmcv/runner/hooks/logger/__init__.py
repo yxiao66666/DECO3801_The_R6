@@ -6,10 +6,10 @@ from .neptune import NeptuneLoggerHook
 from .pavi import PaviLoggerHook
 from .tensorboard import TensorboardLoggerHook
 from .text import TextLoggerHook
-from .wandb import WandbLoggerHook
+from .wan import WanLoggerHook
 
 __all__ = [
     'LoggerHook', 'MlflowLoggerHook', 'PaviLoggerHook',
-    'TensorboardLoggerHook', 'TextLoggerHook', 'WandbLoggerHook',
+    'TensorboardLoggerHook', 'TextLoggerHook', 'WanLoggerHook',
     'NeptuneLoggerHook', 'DvcliveLoggerHook'
 ]

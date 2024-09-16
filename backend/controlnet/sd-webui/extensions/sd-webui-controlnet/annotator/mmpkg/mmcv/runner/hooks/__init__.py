@@ -7,7 +7,7 @@ from .hook import HOOKS, Hook
 from .iter_timer import IterTimerHook
 from .logger import (DvcliveLoggerHook, LoggerHook, MlflowLoggerHook,
                      NeptuneLoggerHook, PaviLoggerHook, TensorboardLoggerHook,
-                     TextLoggerHook, WandbLoggerHook)
+                     TextLoggerHook, WanLoggerHook)
 from .lr_updater import LrUpdaterHook
 from .memory import EmptyCacheHook
 from .momentum_updater import MomentumUpdaterHook
@@ -22,7 +22,7 @@ __all__ = [
     'OptimizerHook', 'Fp16OptimizerHook', 'IterTimerHook',
     'DistSamplerSeedHook', 'EmptyCacheHook', 'LoggerHook', 'MlflowLoggerHook',
     'PaviLoggerHook', 'TextLoggerHook', 'TensorboardLoggerHook',
-    'NeptuneLoggerHook', 'WandbLoggerHook', 'DvcliveLoggerHook',
+    'NeptuneLoggerHook', 'WanLoggerHook', 'DvcliveLoggerHook',
     'MomentumUpdaterHook', 'SyncBuffersHook', 'EMAHook', 'EvalHook',
     'DistEvalHook', 'ProfilerHook', 'GradientCumulativeOptimizerHook',
     'GradientCumulativeFp16OptimizerHook'

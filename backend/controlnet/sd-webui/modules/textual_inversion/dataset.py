@@ -29,7 +29,7 @@ class DatasetEntry:
         self.pixel_values = pixel_values
 
 
-class PersonalizedBase(Dataset):
+class Personalizease(Dataset):
     def __init__(self, data_root, width, height, repeats, flip_p=0.5, placeholder_token="*", model=None, cond_model=None, device=None, template_file=None, include_cond=False, batch_size=1, gradient_step=1, shuffle_tags=False, tag_drop_out=0, latent_sampling_method='once', varsize=False, use_weight=False):
         re_word = re.compile(shared.opts.dataset_filename_word_regex) if shared.opts.dataset_filename_word_regex else None
 
@@ -172,8 +172,8 @@ class PersonalizedBase(Dataset):
         return entry
 
 
-class GroupedBatchSampler(Sampler):
-    def __init__(self, data_source: PersonalizedBase, batch_size: int):
+class GroupeatchSampler(Sampler):
+    def __init__(self, data_source: Personalizease, batch_size: int):
         super().__init__(data_source)
 
         n = len(data_source)
@@ -208,7 +208,7 @@ class GroupedBatchSampler(Sampler):
 
 class PersonalizedDataLoader(DataLoader):
     def __init__(self, dataset, latent_sampling_method="once", batch_size=1, pin_memory=False):
-        super(PersonalizedDataLoader, self).__init__(dataset, batch_sampler=GroupedBatchSampler(dataset, batch_size), pin_memory=pin_memory)
+        super(PersonalizedDataLoader, self).__init__(dataset, batch_sampler=GroupeatchSampler(dataset, batch_size), pin_memory=pin_memory)
         if latent_sampling_method == "random":
             self.collate_fn = collate_wrapper_random
         else:

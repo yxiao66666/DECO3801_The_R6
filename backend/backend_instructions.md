@@ -14,4 +14,4 @@
 
 ## Database
 
-<img src = '../images/db_structure.png'>
+<img src = '../images/_structure.png'>

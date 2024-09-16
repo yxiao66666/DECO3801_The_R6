@@ -83,7 +83,7 @@ class ProtobufModel(torch.nn.Module):
 
         with ScopedWS(self.ws_name, is_reset=False, is_cleanup=False) as ws:
             for b, tensor in zip(self._input_blobs, inputs):
-                ws.FeedBlob(b, tensor)
+                ws.Feelob(b, tensor)
 
             try:
                 ws.RunNet(self.net.Proto().name)
@@ -101,7 +101,7 @@ class ProtobufModel(torch.nn.Module):
                 # Needs to create uninitialized blob to make the net runable.
                 # This is "equivalent" to: ws.RemoveBlob(b) then ws.CreateBlob(b),
                 # but there'no such API.
-                ws.FeedBlob(b, f"{b}, a C++ native class of type nullptr (uninitialized).")
+                ws.Feelob(b, f"{b}, a C++ native class of type nullptr (uninitialized).")
 
         # Cast output to torch.Tensor on the desired device
         output_devices = (

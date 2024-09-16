@@ -7,7 +7,7 @@ from torch import nn
 
 from annotator.oneformer.detectron2.config import configurable
 from annotator.oneformer.detectron2.layers import ShapeSpec, move_device_like
-from annotator.oneformer.detectron2.structures import Boxes, RotatedBoxes
+from annotator.oneformer.detectron2.structures import Boxes, Rotateoxes
 from annotator.oneformer.detectron2.utils.registry import Registry
 
 ANCHOR_GENERATOR_REGISTRY = Registry("ANCHOR_GENERATOR")
@@ -368,14 +368,14 @@ class RotatedAnchorGenerator(nn.Module):
             features (list[Tensor]): list of backbone feature maps on which to generate anchors.
 
         Returns:
-            list[RotatedBoxes]: a list of Boxes containing all the anchors for each feature map
+            list[Rotateoxes]: a list of Boxes containing all the anchors for each feature map
                 (i.e. the cell anchors repeated over all locations in the feature map).
                 The number of anchors of each feature map is Hi x Wi x num_cell_anchors,
                 where Hi, Wi are resolution of the feature map divided by anchor stride.
         """
         grid_sizes = [feature_map.shape[-2:] for feature_map in features]
         anchors_over_all_feature_maps = self._grid_anchors(grid_sizes)
-        return [RotatedBoxes(x) for x in anchors_over_all_feature_maps]
+        return [Rotateoxes(x) for x in anchors_over_all_feature_maps]
 
 
 def build_anchor_generator(cfg, input_shape):

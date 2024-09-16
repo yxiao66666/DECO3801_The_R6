@@ -140,7 +140,7 @@ class InstancesSchema(DictSchema):
 class TensorWrapSchema(Schema):
     """
     For classes that are simple wrapper of tensors, e.g.
-    Boxes, RotatedBoxes, BitMasks
+    Boxes, Rotateoxes, BitMasks
     """
 
     class_name: str

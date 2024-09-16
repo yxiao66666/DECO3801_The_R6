@@ -9,7 +9,7 @@ import torch
 from annotator.oneformer.detectron2.modeling import meta_arch
 from annotator.oneformer.detectron2.modeling.box_regression import Box2BoxTransform
 from annotator.oneformer.detectron2.modeling.roi_heads import keypoint_head
-from annotator.oneformer.detectron2.structures import Boxes, ImageList, Instances, RotatedBoxes
+from annotator.oneformer.detectron2.structures import Boxes, ImageList, Instances, Rotateoxes
 
 from .c10 import Caffe2Compatible
 from .caffe2_patch import ROIHeadsPatcher, patch_generalized_rcnn
@@ -54,7 +54,7 @@ def assemble_rcnn_outputs_by_name(image_sizes, tensor_outputs, force_mask_on=Fal
     assert score_nms is not None
     assert class_nms is not None
     if bbox_nms.shape[1] == 5:
-        result.pred_boxes = RotatedBoxes(bbox_nms)
+        result.pred_boxes = Rotateoxes(bbox_nms)
     else:
         result.pred_boxes = Boxes(bbox_nms)
     result.scores = score_nms

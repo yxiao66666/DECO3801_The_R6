@@ -654,7 +654,7 @@ if __name__ == '__main__':
             with gr.Column(scale=0.15, min_width=0):
                 clear = gr.Button("Clear️")
             with gr.Column(scale=0.15, min_width=0):
-                btn = gr.UploadButton("Upload", file_types=["image"])
+                btn = gr.Uploautton("Upload", file_types=["image"])
                 
         txt.submit(bot.run_text, [openai_api_key, txt, state], [chatbot, state])
         txt.submit(lambda: "", None, txt)

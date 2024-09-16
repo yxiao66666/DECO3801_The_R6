@@ -194,7 +194,7 @@ class TED(nn.Module):
         super(TED, self).__init__()
         self.block_1 = DoubleConvBlock(3, 16, 16, stride=2,)
         self.block_2 = DoubleConvBlock(16, 32, use_act=False)
-        self.dblock_3 = _DenseBlock(1, 32, 48) # [32,48,100,100] before (2, 32, 64)
+        self.lock_3 = _DenseBlock(1, 32, 48) # [32,48,100,100] before (2, 32, 64)
 
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
@@ -258,7 +258,7 @@ class TED(nn.Module):
 
         # Block 3
         block_3_pre_dense = self.pre_dense_3(block_2_down) # [8,64,88,88] block 3 L connection
-        block_3, _ = self.dblock_3([block_2_add, block_3_pre_dense]) # [8,64,88,88]
+        block_3, _ = self.lock_3([block_2_add, block_3_pre_dense]) # [8,64,88,88]
 
         # upsampling blocks
         out_1 = self.up_block_1(block_1)

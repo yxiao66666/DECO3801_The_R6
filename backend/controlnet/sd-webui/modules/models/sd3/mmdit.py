@@ -328,7 +328,7 @@ class SwiGLUFeedForward(nn.Module):
         return self.w2(nn.functional.silu(self.w1(x)) * self.w3(x))
 
 
-class DismantledBlock(nn.Module):
+class Dismantlelock(nn.Module):
     """A DiT block with gated adaptive layer norm (adaLN) conditioning."""
 
     ATTENTION_MODES = ("xformers", "torch", "torch-hb", "math", "debug")
@@ -437,8 +437,8 @@ class JointBlock(nn.Module):
         super().__init__()
         pre_only = kwargs.pop("pre_only")
         qk_norm = kwargs.pop("qk_norm", None)
-        self.context_block = DismantledBlock(*args, pre_only=pre_only, qk_norm=qk_norm, **kwargs)
-        self.x_block = DismantledBlock(*args, pre_only=False, qk_norm=qk_norm, **kwargs)
+        self.context_block = Dismantlelock(*args, pre_only=pre_only, qk_norm=qk_norm, **kwargs)
+        self.x_block = Dismantlelock(*args, pre_only=False, qk_norm=qk_norm, **kwargs)
 
     def forward(self, *args, **kwargs):
         return block_mixing(*args, context_block=self.context_block, x_block=self.x_block, **kwargs)

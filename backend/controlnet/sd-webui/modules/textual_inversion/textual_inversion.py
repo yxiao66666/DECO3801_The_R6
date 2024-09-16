@@ -435,7 +435,7 @@ def train_embedding(id_task, embedding_name, learn_rate, batch_size, gradient_st
 
     hijack = sd_hijack.model_hijack
 
-    embedding = hijack.embedding_db.word_embeddings[embedding_name]
+    embedding = hijack.embedding_word_embeddings[embedding_name]
     checkpoint = sd_models.select_checkpoint()
 
     initial_step = embedding.step or 0

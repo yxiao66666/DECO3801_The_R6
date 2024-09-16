@@ -9,7 +9,7 @@ export class OpenposeEditor {
         this.unit = unit;
         this.iframe = this.unit.generatedImageGroup.querySelector('.cnet-modal iframe');
         this.closeModalButton = this.unit.generatedImageGroup.querySelector('.cnet-modal .cnet-modal-close');
-        this.uploadButton = this.unit.inputImageGroup.querySelector('.cnet-upload-pose input');
+        this.uploautton = this.unit.inputImageGroup.querySelector('.cnet-upload-pose input');
         this.editorURL = null;
         this.unit.poseEditButton.addEventListener('click', this.trigger.bind(this));
         // Updates preview image when edit is done.
@@ -21,7 +21,7 @@ export class OpenposeEditor {
             this.closeModalButton.click();
         }).bind(this));
         // Updates preview image when JSON file is uploaded.
-        this.uploadButton.addEventListener('change', ((event) => {
+        this.uploautton.addEventListener('change', ((event) => {
             const file = event.target.files[0];
             if (!file)
                 return;

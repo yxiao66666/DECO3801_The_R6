@@ -323,7 +323,7 @@ def HFlip_rotated_box(transform, rotated_boxes):
 def Resize_rotated_box(transform, rotated_boxes):
     """
     Apply the resizing transform on rotated boxes. For details of how these (approximation)
-    formulas are derived, please refer to :meth:`RotatedBoxes.scale`.
+    formulas are derived, please refer to :meth:`Rotateoxes.scale`.
 
     Args:
         rotated_boxes (ndarray): Nx5 floating point array of

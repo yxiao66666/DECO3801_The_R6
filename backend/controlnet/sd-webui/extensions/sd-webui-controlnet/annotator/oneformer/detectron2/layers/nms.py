@@ -30,8 +30,8 @@ def nms_rotated(boxes: torch.Tensor, scores: torch.Tensor, iou_threshold: float)
     Rotated NMS iteratively removes lower scoring rotated boxes which have an
     IoU greater than iou_threshold with another (higher scoring) rotated box.
 
-    Note that RotatedBox (5, 3, 4, 2, -90) covers exactly the same region as
-    RotatedBox (5, 3, 4, 2, 90) does, and their IoU will be 1. However, they
+    Note that Rotateox (5, 3, 4, 2, -90) covers exactly the same region as
+    Rotateox (5, 3, 4, 2, 90) does, and their IoU will be 1. However, they
     can be representing completely different objects in certain tasks, e.g., OCR.
 
     As for the question of whether rotated-NMS should treat them as faraway boxes

@@ -353,7 +353,7 @@ class ControlNetUiGroup(object):
                         columns=[4], rows=[2], object_fit="contain", height="auto"
                     )
                     with gr.Row():
-                        self.merge_upload_button = gr.UploadButton(
+                        self.merge_upload_button = gr.Uploautton(
                             "Upload Images",
                             file_types=["image"],
                             file_count="multiple",

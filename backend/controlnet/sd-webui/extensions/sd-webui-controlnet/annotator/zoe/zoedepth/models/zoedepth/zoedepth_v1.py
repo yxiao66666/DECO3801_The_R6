@@ -30,8 +30,8 @@ from ..depth_model import DepthModel
 from ..base_models.midas import MidasCore
 from ..layers.attractor import AttractorLayer, AttractorLayerUnnormed
 from ..layers.dist_layers import ConditionalLogBinomial
-from ..layers.localbins_layers import (Projector, SeedBinRegressor,
-                                            SeedBinRegressorUnnormed)
+from ..layers.localbins_layers import (Projector, SeeinRegressor,
+                                            SeeinRegressorUnnormed)
 from ..model_io import load_state_from_resource
 
 
@@ -87,22 +87,22 @@ class ZoeDepth(DepthModel):
                                kernel_size=1, stride=1, padding=0)  # btlnck conv
 
         if bin_centers_type == "normed":
-            SeedBinRegressorLayer = SeedBinRegressor
+            SeeinRegressorLayer = SeeinRegressor
             Attractor = AttractorLayer
         elif bin_centers_type == "softplus":
-            SeedBinRegressorLayer = SeedBinRegressorUnnormed
+            SeeinRegressorLayer = SeeinRegressorUnnormed
             Attractor = AttractorLayerUnnormed
         elif bin_centers_type == "hybrid1":
-            SeedBinRegressorLayer = SeedBinRegressor
+            SeeinRegressorLayer = SeeinRegressor
             Attractor = AttractorLayerUnnormed
         elif bin_centers_type == "hybrid2":
-            SeedBinRegressorLayer = SeedBinRegressorUnnormed
+            SeeinRegressorLayer = SeeinRegressorUnnormed
             Attractor = AttractorLayer
         else:
             raise ValueError(
                 "bin_centers_type should be one of 'normed', 'softplus', 'hybrid1', 'hybrid2'")
 
-        self.seed_bin_regressor = SeedBinRegressorLayer(
+        self.seed_bin_regressor = SeeinRegressorLayer(
             btlnck_features, n_bins=n_bins, min_depth=min_depth, max_depth=max_depth)
         self.seed_projector = Projector(btlnck_features, bin_embedding_dim)
         self.projectors = nn.ModuleList([
