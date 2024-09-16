@@ -10,8 +10,6 @@ pillow = "*"
 transformers = "*"
 torch = "*"
 requests = "*"
-flask-sqlalchemy = "*"
-pymysql = "*"
 
 [dev-packages]
 

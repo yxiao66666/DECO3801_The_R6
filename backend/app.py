@@ -14,19 +14,12 @@ from controlnet.sd_backbone import StableDiffusionBackBone
 # Database
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import LONGTEXT
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant"
-
-engine = create_engine("mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant")
-
-Base = declarative_base()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost@https://arty.uqcloud.net/phpmyadmin/index.php?route=/database/structure&db=ArtAssistant'
 
 # Folder to temporarily save generation results
 GENERATION_FOLDER = './generations'
@@ -42,97 +35,69 @@ webui_url = 'http://127.0.0.1:7860'
 bb = StableDiffusionBackBone(webui_url)
 
 # Creating Database
-# db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
-class Users(Base):
+class Users(db.Model):
     __tablename__ = 'Users'
-    user_id = Column(Integer, primary_key = True)
-    user_name = Column(String(255), unique = True)
-    user_password = Column(String(255))
-    created_at = Column(DateTime, default = datetime.now)
+    user_id = db.Column(db.Integer, primary_key = True)
+    user_name = db.Column(db.String(255), unique = True)
+    user_password = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default = datetime.now)
 
-class SearchImage(Base):
+class SearchImage(db.Model):
     __tablename__ = 'SearchImage'
-    s_image_id = Column(Integer, primary_key = True)
-    user_id = Column(Integer, ForeignKey('Users.user_id'))
-    s_image_file_path = Column(LONGTEXT)
-    created_at = Column(DateTime, default = datetime.now)
+    s_image_id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    s_image_file_path = db.Column(LONGTEXT)
+    created_at = db.Column(db.DateTime, default = datetime.now)
 
-class SearchText(Base):
+class SearchText(db.Model):
     __tablename__ = 'SearchText'
-    s_text_id = Column(Integer, primary_key = True)
-    s_image_id = Column(Integer, ForeignKey('SearchImage.s_image_id'))
-    s_text_query = Column(String(255))
-    created_at = Column(DateTime, default = datetime.now)
+    s_text_id = db.Column(db.Integer, primary_key = True)
+    s_image_id = db.Column(db.Integer, db.ForeignKey('SearchImage.s_image_id'))
+    s_text_query = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default = datetime.now)
 
-class GenerateImage(Base):
+class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
-    g_image_id = Column(Integer, primary_key = True)
-    user_id = Column(Integer, ForeignKey('Users.user_id'))
-    g_image_file_path = Column(LONGTEXT)
-    created_at = Column(DateTime, default = datetime.now)
+    g_image_id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    g_image_file_path = db.Column(LONGTEXT)
+    created_at = db.Column(db.DateTime, default = datetime.now)
 
-class GenerateText(Base):
+class GenerateText(db.Model):
     __tablename__ = 'GenerateText'
-    g_text_id = Column(Integer, primary_key = True)
-    g_image_id = Column(Integer, ForeignKey('GenerateImage.g_image_id'))
-    g_text_query = Column(String(255))
-    created_at = Column(DateTime, default = datetime.now)
+    g_text_id = db.Column(db.Integer, primary_key = True)
+    g_image_id = db.Column(db.Integer, db.ForeignKey('GenerateImage.g_image_id'))
+    g_text_query = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default = datetime.now)
 
-class SavedImage(Base):
+class SavedImage(db.Model):
     __tablename__ = 'SavedImage'
-    sd_image_id = Column(Integer, primary_key = True)
-    user_id = Column(Integer, ForeignKey('Users.user_id'))
-    sd_image_path = Column(LONGTEXT)
-    created_at = Column(DateTime, default = datetime.now)
-
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-session = Session()
-    
-@app.route('/user', methods=['GET'])
-def get_user():
-    users = Users.query.all()
-    print(users)
-    return jsonify({'idk':'something'}), 200
-
+    sd_image_id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    sd_image_path = db.Column(LONGTEXT)
+    created_at = db.Column(db.DateTime, default = datetime.now)
 
 @app.route('/users/add', methods=['POST'])
 # @cross_origin
 # Use this function to test the database?
 def add_user():
     if request.method == 'POST':
-        try:
-            data = request.get_json()
-            print('here')
-            new_user = Users(user_name = data['user_name'],
-                            user_password = data['user_password'])
-            print('there')
-            session.add(new_user)
-            print('everywhere')
-            print(new_user)
-            session.commit()
-            print('why')
-            return jsonify({'id': new_user.user_id,
-                            'user_name': new_user.user_name,
-                            'user_password': new_user.user_password,
-                            'created_at': new_user.created_at}), 201
-        except Exception as e:
-            return jsonify({'message': 'An error occured', 'error':str(e)}), 500
+        data = request.get_json()
+        new_user = Users(user_name = data['user_name'],
+                        user_password = data['user_password'])
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'id': new_user.user_id,
+                        'user_name': new_user.user_name,
+                        'user_password': new_user.user_password,
+                        'created_at': new_user.created_at}), 201
     return {}, 405
 
 @app.route('/search', methods = ['POST'])
 @cross_origin()
 def search():
-    '''
-    Returns a list of images with the given image or keyword
-
-    The endpoint accepts a JSON payload with the keyword in string or an image the user selects
-
-    Returns:
-        JSON response with the images associated with the users inputs
-    '''
     if request.method == 'POST':
         if 'query' in request.get_json():
             keyword = request.get_json().get('query')
@@ -215,6 +180,7 @@ def upload():
         return r
     
     return jsonify(response), 200
+
 
 if __name__ == '__main__':
 
