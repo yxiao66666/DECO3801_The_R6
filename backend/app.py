@@ -19,8 +19,7 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost@https://arty.uqcloud.net/phpmyadmin/index.php?route=/database/structure&db=ArtAssistant'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant'
 # Folder to temporarily save generation results
 GENERATION_FOLDER = './generations'
 app.config['GENERATION_FOLDER'] = GENERATION_FOLDER
@@ -37,12 +36,17 @@ bb = StableDiffusionBackBone(webui_url)
 # Creating Database
 db = SQLAlchemy(app)
 
+# temporarily user_name is replaced with user_email
 class Users(db.Model):
     __tablename__ = 'Users'
-    user_id = db.Column(db.Integer, primary_key = True)
-    user_name = db.Column(db.String(255), unique = True)
+    user_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    user_email = db.Column(db.String(255), unique = True)
     user_password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
+
+    def __init__(self, user_email, user_password):
+        self.user_email = user_email
+        self.user_password = user_password
 
 class SearchImage(db.Model):
     __tablename__ = 'SearchImage'
@@ -74,25 +78,44 @@ class GenerateText(db.Model):
 
 class SavedImage(db.Model):
     __tablename__ = 'SavedImage'
-    sd_image_id = db.Column(db.Integer, primary_key = True)
+    sd_image_id = db.Column(db.Integer, primary_key = True, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
     sd_image_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
+
+@app.route('/users/get', methods = ['GET'])
+def get_user():
+    print(request.method)
+    if request.method == 'GET':
+        users = Users.query.all()
+        users_list = [
+        {
+            "user_id": user.user_id,
+            "user_name": user.user_email,
+            "created_at": user.created_at.isoformat()  # Convert datetime to string
+        }
+        for user in users
+        ]
+        return jsonify(users_list)
 
 @app.route('/users/add', methods=['POST'])
 # @cross_origin
 # Use this function to test the database?
 def add_user():
     if request.method == 'POST':
-        data = request.get_json()
-        new_user = Users(user_name = data['user_name'],
-                        user_password = data['user_password'])
-        db.session.add(new_user)
-        db.session.commit()
-        return jsonify({'id': new_user.user_id,
-                        'user_name': new_user.user_name,
-                        'user_password': new_user.user_password,
-                        'created_at': new_user.created_at}), 201
+        try:
+            data = request.get_json()
+            new_user = Users(user_email = data['user_email'],
+                            user_password = data['user_password'])
+            db.session.add(new_user)
+            db.session.commit()
+            return jsonify({'user_id': new_user.user_id,
+                            'user_email': new_user.user_email,
+                            'user_password': new_user.user_password,
+                            'created_at': new_user.created_at}), 201
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
     return {}, 405
 
 @app.route('/search', methods = ['POST'])
@@ -184,4 +207,7 @@ def upload():
 
 if __name__ == '__main__':
 
-    app.run(host='localhost', debug=True)
+    with app.app_context():
+        db.create_all()
+
+        app.run(host='localhost', debug=True)

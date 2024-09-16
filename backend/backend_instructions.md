@@ -10,12 +10,9 @@
 4. Run ```pipenv shell``` and run ```export FLASK_APP = app.py``` (MacOS), or ```set FLASK_APP = app.py``` (Terminal), or ```$env:FLASK_APP = app.py``` (Windows Powershell).
 5. ```flask run``` to start the application.
 
-<<<<<<< HEAD
+
 > **The process could be easier if you are on VS code as you could set the python interpreter to the ```pipenv``` in your directory. This allows you to run the flask application like your normal code from the execution button at the top right corner.** <br>
 
 ## Database
 
-<img src = '../images/_structure.png'>
-=======
-> **The process could be easier if you are on VS code as you could set the python interpreter to the ```pipenv``` in your directory. This allows you to run the flask application like your normal code from the execution button at the top right corner.** <br>
->>>>>>> parent of 68319687 (each database entry instance created)
+<img src = '../images/db.png'>
