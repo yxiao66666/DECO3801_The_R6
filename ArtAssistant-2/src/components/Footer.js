@@ -17,8 +17,8 @@ export default function Footer() {
                         </ul>
                   </div>
                   <p className="text-light me-5 mt-3">@2024 ArtAssistant. All rights reserved.</p> 
-                  <Link className="nav-link" class="text-light " to="/privacy">Privacy Policy</Link>
-                  <Link className="nav-link" class="text-light" to="/terms">Terms of Service</Link> 
+                  <Link className="nav-link text-light" to="/privacy">Privacy Policy</Link>
+                  <Link className="nav-link text-light" to="/terms">Terms of Service</Link> 
               </div>
           </div>
           

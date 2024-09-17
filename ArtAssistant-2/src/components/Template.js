@@ -21,6 +21,6 @@ export default function Template({ children }) {
 }
 
 Template.propTypes = {
-    title: PropTypes.string.isRequired,
-    children: PropTypes.node, // Expecting React nodes as children
+    // Expecting React nodes as children
+    children: PropTypes.node
 };
