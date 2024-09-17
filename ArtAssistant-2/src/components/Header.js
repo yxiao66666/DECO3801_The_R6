@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import "../styles/Header.css";
 import axios from "axios";
 
 // Header
 export default function Header() {
-    const location = useLocation();
-    const [activeLink, setActiveLink] = useState(location.pathname);
     const [showPopup, setShowPopup] = useState(false);
     const [isLoggedIn] = useState(false); 
     const [haveAccount, setHaveAccount] = useState(false); 
-
-    useEffect(() => {
-        setActiveLink(location.pathname);
-    }, [location]);
 
     const handleLogin = () => {
         setHaveAccount(true);

@@ -14,7 +14,7 @@ export default function Search() {
 
     const fetchImages = async () => {
         try {
-            //Fetch the search engine api
+            // Fetch the search engine api
             const imageResponse = await fetch('http://localhost:5000/'); 
             const imageData = await imageResponse.json(); 
             setImages(imageData); 
@@ -71,7 +71,6 @@ export default function Search() {
                     <h1 style={{fontFamily:'serif', fontSize:'18vw', color:'white'}}>ARTY</h1>
                     {/* container for searchbar and icon */}
                     <div style={{display:'flex', justifyContent:'center',alignItems:'center'}}>
-                        
                         <input 
                             style = {{paddingLeft:'15px', paddingRight:'15px'}}
                             className="searchbar" 
@@ -80,13 +79,10 @@ export default function Search() {
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
-                        
                         <button className="search-btn" type="submit" aria-label="edit button later">
                             <img src="../images/search_icon.png" alt="Search Icon" className="search-icon" />
                         </button>
-                        
                     </div>
-                    
                 </center>
             </form>
             <br></br>
@@ -106,7 +102,6 @@ export default function Search() {
                 )}
             </div>
             <br></br>
-            
         </div>
     );
 }
