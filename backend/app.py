@@ -44,9 +44,9 @@ class Users(db.Model):
     user_password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-    def __init__(self, user_email, user_password):
-        self.user_email = user_email
-        self.user_password = user_password
+    # def __init__(self, user_email, user_password):
+    #     self.user_email = user_email
+    #     self.user_password = user_password
 
 @app.route('/users/get', methods = ['GET'])
 def get_users():
@@ -56,16 +56,17 @@ def get_users():
         users_list = [
         {
             "user_id": user.user_id,
-            "user_name": user.user_email,
+            "user_email": user.user_email,
+            "user_password": user.password,
             "created_at": user.created_at.isoformat()  # Convert datetime to string
         }
         for user in users
         ]
         return jsonify(users_list)
 
-@app.route('/users/add', methods=['POST'])
+@app.route('/users/insert', methods=['POST'])
 # @cross_origin
-def add_user():
+def insert_user():
     if request.method == 'POST':
         try:
             data = request.get_json()
@@ -104,11 +105,36 @@ def get_search_imgs():
         for search_img in search_imgs
         ]
         return jsonify(search_imgs_list)
+    
+@app.route('/search_image/insert', methods=['POST'])
+# @cross_origin
+def insert_search_image():
+    '''
+    Inserts the new search image to the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id. IT DOES NOT FETCH 
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            new_search_image = SearchImage(user_id = data['user_id'],
+                                   s_image_file_path = data['s_image_file_path'])
+            db.session.add(new_search_image)
+            db.session.commit()
+            return jsonify({'s_image_id': new_search_image.s_image_id,
+                            'user_id': new_search_image.user_id,
+                            's_image_file_path': new_search_image.s_image_file_path,
+                            'created_at': new_search_image.created_at}), 201
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
+    return {}, 405
 
 class SearchText(db.Model):
     __tablename__ = 'SearchText'
     s_text_id = db.Column(db.Integer, primary_key = True)
-    s_image_id = db.Column(db.Integer)
+    s_image_id = db.Column(db.Integer, db.ForeignKey('SearchImage.s_image_id'))
     s_text_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
@@ -120,13 +146,38 @@ def get_search_text():
         search_texts_list = [
         {
             "s_text_id": search_text.s_text_id,
-            "user_id": search_text.user_id,
+            "s_image_id": search_text.s_image_id,
             "s_text_query": search_text.s_text_query,
             "created_at": search_text.created_at.isoformat()  # Convert datetime to string
         }
         for search_text in search_texts
         ]
         return jsonify(search_texts_list)
+    
+@app.route('/search_text/insert', methods=['POST'])
+# @cross_origin
+def insert_search_text():
+    '''
+    Inserts the new search image to the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id. IT DOES NOT FETCH 
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            new_search_text = SearchText(user_id = data['user_id'],
+                                   s_text_query = data['s_image_file_path'])
+            db.session.add(new_search_text)
+            db.session.commit()
+            return jsonify({'s_text_id': new_search_text.s_text_id,
+                            's_image_id': new_search_text.s_image_id,
+                            's_text_query': new_search_text.s_text_query,
+                            'created_at': new_search_text.created_at.isoformat()}), 201
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
+    return {}, 405
 
 class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
@@ -136,7 +187,7 @@ class GenerateImage(db.Model):
     created_at = db.Column(db.DateTime, default = datetime.now)
 
 @app.route('/generate_image/get', methods = ['GET'])
-def get_search_imgs():
+def get_generate_imgs():
     print(request.method)
     if request.method == 'GET':
         generate_imgs = SearchImage.query.all()
@@ -150,6 +201,31 @@ def get_search_imgs():
         for generate_img in generate_imgs
         ]
         return jsonify(generate_imgs_list)
+    
+@app.route('/generate_image/insert', methods=['POST'])
+# @cross_origin
+def insert_generate_image():
+    '''
+    Inserts the new generate image to the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id. IT DOES NOT FETCH 
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            new_generate_image = GenerateImage(user_id = data['user_id'],
+                                   g_image_file_path = data['s_image_file_path'])
+            db.session.add(new_generate_image)
+            db.session.commit()
+            return jsonify({'g_image_id': new_generate_image.g_image_id,
+                            'user_id': new_generate_image.user_id,
+                            'g_image_file_path': new_generate_image.g_image_file_path,
+                            'created_at': new_generate_image.created_at.isoformat()}), 201
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
+    return {}, 405
 
 class GenerateText(db.Model):
     __tablename__ = 'GenerateText'
@@ -159,24 +235,49 @@ class GenerateText(db.Model):
     created_at = db.Column(db.DateTime, default = datetime.now)
 
 @app.route('/generate_text/get', methods = ['GET'])
-def get_search_text():
+def get_generate_text():
     print(request.method)
     if request.method == 'GET':
         generate_texts = SearchImage.query.all()
         generate_texts_list = [
         {
             "g_text_id": generate_text.g_text_id,
-            "user_id": generate_text.user_id,
+            "g_image_id": generate_text.g_image_id,
             "g_text_query": generate_text.g_text_query,
             "created_at": generate_text.created_at.isoformat()  # Convert datetime to string
         }
         for generate_text in generate_texts
         ]
         return jsonify(generate_texts_list)
+    
+@app.route('/generate_text/insert', methods=['POST'])
+# @cross_origin
+def insert_generate_text():
+    '''
+    Inserts the new search image to the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id. IT DOES NOT FETCH 
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            new_generate_text = GenerateText(g_image_id = data['g_image_id'],
+                                   g_text_query = data['g_text_query'])
+            db.session.add(new_generate_text)
+            db.session.commit()
+            return jsonify({'g_text_id': new_generate_text.g_text_id,
+                            'g_image_id': new_generate_text.g_image_id,
+                            'g_text_query': new_generate_text.g_text_query,
+                            'created_at': new_generate_text.created_at}), 201
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
+    return {}, 405
 
 class SavedImage(db.Model):
     __tablename__ = 'SavedImage'
-    sd_image_id = db.Column(db.Integer, primary_key = True, nullable = False)
+    sd_image_id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
     sd_image_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
@@ -196,10 +297,43 @@ def get_saved_imgs():
         for saved_img in saved_imgs
         ]
         return jsonify(saved_imgs_list)
+    
+@app.route('/saved_image/insert', methods=['POST'])
+# @cross_origin
+def insert_saved_image():
+    '''
+    Inserts the new saved image to the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id. IT DOES NOT FETCH 
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            new_saved_image = SavedImage(user_id = data['user_id'],
+                                   sd_image_path = data['s_image_file_path'])
+            db.session.add(new_saved_image)
+            db.session.commit()
+            return jsonify({'sd_image_id': new_saved_image.sd_image_id,
+                            'user_id': new_saved_image.user_id,
+                            'sd_image_path': new_saved_image.sd_image_path,
+                            'created_at': new_saved_image.created_at.isoformat()}), 201
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
+    return {}, 405
 
 @app.route('/search', methods = ['POST'])
 @cross_origin()
 def search():
+    '''
+    Retrive data from the Pinterest API using the keyword or an image submitted by the user.
+
+    This endpoint returns a list of images as a JSON boject.
+
+    Returns:
+        Response: A JSON response with a unique id for each image.
+    '''
     if request.method == 'POST':
         if 'query' in request.get_json():
             keyword = request.get_json().get('query')
