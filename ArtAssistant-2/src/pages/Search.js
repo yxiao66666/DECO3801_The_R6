@@ -100,7 +100,7 @@ export default function Search() {
                 ))}
 
                 {visibleImages < images.length && (
-                <label onClick={loadMore} class="row" style={{ margin:'auto', cursor: 'pointer', border:'2px solid white', borderRadius: '5px', textAlign:'center',justifyContent:'center'}}>
+                <label onClick={loadMore} className="row" style={{ margin:'auto', cursor: 'pointer', border:'2px solid white', borderRadius: '5px', textAlign:'center',justifyContent:'center'}}>
                         More results...
                 </label>
                 )}
