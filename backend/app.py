@@ -44,13 +44,10 @@ class Users(db.Model):
     user_password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-    # def __init__(self, user_email, user_password):
-    #     self.user_email = user_email
-    #     self.user_password = user_password
+    posts = db.relationship('Post', backref='users', cascade='all, delete-orphan')
 
 @app.route('/users/get', methods = ['GET'])
 def get_users():
-    print(request.method)
     if request.method == 'GET':
         users = Users.query.all()
         users_list = [
@@ -83,10 +80,25 @@ def insert_user():
             return {}, 500
     return {}, 405
 
+@app.route('/users/delete', methods = ['POST'])
+def delete_user():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            user = Users.query.get(user_id)
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({'DELETED' : user_id})
+        except Exception as e:
+            db.session.rollback()
+            return {}, 500
+    return {}, 405
+
 class SearchImage(db.Model):
     __tablename__ = 'SearchImage'
     s_image_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
     s_image_file_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
@@ -134,7 +146,7 @@ def insert_search_image():
 class SearchText(db.Model):
     __tablename__ = 'SearchText'
     s_text_id = db.Column(db.Integer, primary_key = True)
-    s_image_id = db.Column(db.Integer, db.ForeignKey('SearchImage.s_image_id'))
+    s_image_id = db.Column(db.Integer, db.ForeignKey('SearchImage.s_image_id', ondelete = 'CASCADE'))
     s_text_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
@@ -182,7 +194,7 @@ def insert_search_text():
 class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
     g_image_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
     g_image_file_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
@@ -230,7 +242,7 @@ def insert_generate_image():
 class GenerateText(db.Model):
     __tablename__ = 'GenerateText'
     g_text_id = db.Column(db.Integer, primary_key = True)
-    g_image_id = db.Column(db.Integer, db.ForeignKey('GenerateImage.g_image_id'))
+    g_image_id = db.Column(db.Integer, db.ForeignKey('GenerateImage.g_image_id'), ondelete = 'CASCADE')
     g_text_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
@@ -278,7 +290,7 @@ def insert_generate_text():
 class SavedImage(db.Model):
     __tablename__ = 'SavedImage'
     sd_image_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
     sd_image_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
