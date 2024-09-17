@@ -2,10 +2,11 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS # Enable Cross-Origin Resource Sharing (CORS) MUST HAVE OR ERROR
+import mysql.connector
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Enable Cross-Origin Resource Sharing MUST HAVE OR ERROR
-app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_HEADERS'] = 'Content-Type' # Enable Cross-Origin Resource Sharing MUST HAVE OR ERROR
 
 # Configure upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
@@ -49,9 +50,6 @@ def upload_file():
         else:
             print(f"File {file.filename} is not a valid image format or is not handled.")
 
-        
-
-    
     # Process AI options
     for key in request.form:
         if 'option' in key:
@@ -69,15 +67,80 @@ def upload_file():
 
     return jsonify(response), 200
 
-
-
 @app.route('/search', methods=['POST'])
 def search():
     data = request.get_json()
     search_query = data.get('query', '')
-
-
     return jsonify({"search_query": search_query})
+
+# Connect to the database
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host='arty.uqcloud.net',
+        user='root@localhost',
+        password='',
+        database='ArtAssistant'
+    )
+    return connection
+
+@app.route('/get-users', methods=['GET'])
+def get_users():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM Users')
+    users = cursor.fetchall()
+    conn.close()
+    return jsonify(users)
+
+@app.route('/create-users', methods=['POST'])
+def create_user():
+    # Extract user data from the request
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    confirm_password = data.get('confirmPassword', '')
+
+    # Simple validation
+    if password != confirm_password:
+        return jsonify({"error": "Passwords do not match"}), 400
+
+    # Connect to the database
+    conn = get_db_connection()
+    if conn is None:
+        return jsonify({"error": "Database connection failed"}), 500
+
+    cursor = conn.cursor()
+    
+    try:
+        # Insert the new user into the Users table
+        cursor.execute(
+            'INSERT INTO Users (email, password) VALUES (%s, %s)',
+            (email, password)
+        )
+        conn.commit()
+        # Get the ID of the newly created user
+        user_id = cursor.lastrowid
+        response = {
+            "message": "User created successfully",
+            "user_id": user_id
+        }
+        return jsonify(response), 201
+    except mysql.connector.Error as err:
+        conn.rollback()  # Rollback in case of error
+        print(f"Error: {err}")
+        return jsonify({"error": "Failed to create user"}), 500
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
+
+
 
 
 

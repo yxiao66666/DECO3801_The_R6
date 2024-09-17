@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../styles/Header.css";
+import axios from "axios";
 
 // Header
 export default function Header() {
@@ -8,6 +9,12 @@ export default function Header() {
     const [activeLink, setActiveLink] = useState(location.pathname);
     const [showPopup, setShowPopup] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false); 
+    const [inputs, setInputs] = useState({
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+    
 
     useEffect(() => {
         setActiveLink(location.pathname);
@@ -17,6 +24,121 @@ export default function Header() {
         setIsLoggedIn(true);
     };
 
+    // Login/Signup Popup Component
+    const LoginSignupPopup = ({ closePopup, onLogin }) => {
+        const [isLogin, setIsLogin] = useState(true);
+        const [inputs, setInputs] = useState({
+            email: '',
+            password: '',
+            confirmPassword: ''
+        });
+    
+        const toggleForm = () => {
+            setIsLogin(!isLogin);
+        };
+    
+        const handleOverlayClick = (event) => {
+            if (event.target === event.currentTarget) {
+                closePopup();
+            }
+        };
+    
+        const handleChange = (event) => {
+            const { name, value } = event.target;
+            setInputs((prevInputs) => ({
+                ...prevInputs,
+                [name]: value,
+            }));
+        };
+    
+        const handleSubmit = async (event) => {
+            event.preventDefault();
+            console.log(inputs);
+            const url = isLogin
+                ? 'http://localhost:5000/get-users'
+                : 'http://localhost:5000/create-users';
+        
+            try {
+                const response = isLogin
+                    ? await axios.get(url, {
+                          params: { email: inputs.email, password: inputs.password }
+                      })
+                    : await axios.post(url, {
+                          email: inputs.email,
+                          password: inputs.password,
+                          confirmPassword: inputs.confirmPassword
+                      }, {
+                          headers: {
+                              'Content-Type': 'application/json',
+                          }
+                      });
+        
+                if (response.status === 200 || response.status === 201) {
+                    onLogin();
+                    closePopup();
+                }
+            } catch (error) {
+                console.error('Error making request:', error);
+            }
+        };
+        
+    
+    
+        return (
+            <div className="popup-overlay" onClick={handleOverlayClick}>
+                <div className="popup-container">
+                    {isLogin ? (
+                        <>
+                            <form onSubmit={handleSubmit} className="form-container">
+                                <h4>Welcome</h4>
+                                <label>
+                                    Email
+                                    <input type="email" name="email" required className="input-field" onChange={handleChange} value={inputs.email} />
+                                </label>
+                                <label>
+                                    Password
+                                    <input type="password" name="password" required className="input-field" onChange={handleChange} value={inputs.password} />
+                                </label>
+                                <br />
+                                <br />
+                                <button type="submit" className="btn-primary">LOGIN</button>
+                            </form>
+                            <span className="form-footer">
+                                Don't have an account? 
+                                <button onClick={toggleForm} className="form-toggle">Sign up</button>
+                            </span>
+                        </>
+                    ) : (
+                        <>
+                            <form onSubmit={handleSubmit} className="form-container">
+                                <h4>Create an Account</h4>
+                                <label>
+                                    Email
+                                    <input type="email" name="email" required className="input-field" onChange={handleChange} value={inputs.email} />
+                                </label>
+                                <label>
+                                    Password
+                                    <input type="password" name="password" required className="input-field" onChange={handleChange} value={inputs.password} />
+                                </label>
+                                <label>
+                                    Confirm Password
+                                    <input type="password" name="confirmPassword" required className="input-field" onChange={handleChange} value={inputs.confirmPassword} />
+                                </label>
+                                <br />
+                                <br />
+                                <button type="submit" className="btn-primary">SIGN UP</button>
+                            </form>
+                            <span className="form-footer">
+                                Already have an account? 
+                                <button onClick={toggleForm} className="form-toggle">Login</button>
+                            </span>
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    };
+        
     return (
         <header>
             <nav className="navbar navbar-expand-lg custom-navbar">
@@ -45,8 +167,8 @@ export default function Header() {
                                 <Link 
                                     className={`nav-link ${activeLink === "/" ? "active" : ""} nav-hover`} 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
+                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
                                     to="/" 
                                 >
                                     Home
@@ -56,8 +178,8 @@ export default function Header() {
                                 <Link 
                                     className={`nav-link ${activeLink === "/about" ? "active" : ""} nav-hover`} 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
+                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
                                     to="/about" 
                                 >
                                     About
@@ -67,8 +189,8 @@ export default function Header() {
                                 <Link 
                                     className={`nav-link ${activeLink === "/search" ? "active" : ""} nav-hover`} 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
+                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
                                     to="/search"
                                 >
                                     Search
@@ -78,8 +200,8 @@ export default function Header() {
                                 <Link 
                                     className={`nav-link ${activeLink === "/upload" ? "active" : ""} nav-hover`} 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
+                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
                                     to="/upload"
                                 >
                                     Generator
@@ -93,19 +215,19 @@ export default function Header() {
                                     <Link 
                                         className={`nav-link ${activeLink === "/user" ? "active" : ""} nav-hover`} 
                                         style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                        onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
+                                        onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
                                         to="/user"
                                     >Account</Link>
                                 ) : (
                                     <Link 
                                         className={`nav-link ${activeLink === "/" ? "active" : ""} nav-hover`} 
                                         style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                        onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
+                                        onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
                                         to="/"
-                                        onClick={(e) => {
-                                            e.preventDefault();
+                                        onClick={(event) => {
+                                            event.preventDefault();
                                             setShowPopup(true);
                                         }}
                                     >Login / Signup</Link>
@@ -115,104 +237,8 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
-            
             {showPopup && <LoginSignupPopup closePopup={() => setShowPopup(false)} onLogin={handleLogin} />}
         </header>
     );
 }
-
-// Login/Signup Popup Component
-const LoginSignupPopup = ({ closePopup, onLogin }) => {
-    const [isLogin, setIsLogin] = useState(true);
-
-    const toggleForm = () => {
-        setIsLogin(!isLogin); 
-    };
-
-    const handleOverlayClick = (e) => {
-        if (e.target === e.currentTarget) {
-            closePopup();
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (isLogin) {
-            onLogin(); 
-            closePopup();
-        } else {
-            const password = e.target.password.value;
-            const confirmPassword = e.target.confirmPassword.value;
-
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-            } else {
-                console.log("Passwords match. Form submitted.");
-                onLogin(); 
-                closePopup();
-            }
-        }
-    };
-
-    return (
-        <div className="popup-overlay" onClick={handleOverlayClick}>
-            <div className="popup-container">
-                {isLogin ? (
-                    <>
-                        <form onSubmit={handleSubmit} className="form-container">
-                            <h4>Welcome</h4>
-                            <label>
-                                Email
-                                <input type="email" name="email" required className="input-field" />
-                            </label>
-                            <label>
-                                Password
-                                <input type="password" name="password" required className="input-field" />
-                            </label>
-                            <br />
-                            <br />
-                            <button 
-                                type="submit" 
-                                className="btn-primary"
-                            >LOGIN</button>
-                        </form>
-                        <span className="form-footer">
-                            Don't have an account? 
-                            <button onClick={toggleForm} className="form-toggle">Sign up</button>
-                        </span>
-                    </>
-                ) : (
-                    <>
-                        <form onSubmit={handleSubmit} className="form-container">
-                            <h4>Create an Account</h4>
-                            <label>
-                                Email
-                                <input type="email" name="email" required className="input-field" />
-                            </label>
-                            <label>
-                                Password
-                                <input type="password" name="password" required className="input-field" />
-                            </label>
-                            <label>
-                                Confirm Password
-                                <input type="password" name="confirmPassword" required className="input-field" />
-                            </label>
-                            <br />
-                            <br />
-                            <button 
-                                type="submit" 
-                                className="btn-primary"
-                            >SIGN UP</button>
-                        </form>
-                        <span className="form-footer">
-                            Already have an account? 
-                            <button onClick={toggleForm} className="form-toggle">Login</button>
-                        </span>
-                    </>
-                )}
-            </div>
-        </div>
-    );
-};
-
 
