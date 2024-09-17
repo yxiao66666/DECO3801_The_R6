@@ -9,6 +9,7 @@ export default function Header() {
     const [activeLink, setActiveLink] = useState(location.pathname);
     const [showPopup, setShowPopup] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false); 
+    const [haveAccount, setHaveAccount] = useState(false); 
     const [inputs, setInputs] = useState({
         email: '',
         password: '',
@@ -21,7 +22,7 @@ export default function Header() {
     }, [location]);
 
     const handleLogin = () => {
-        setIsLoggedIn(true);
+        setHaveAccount(true);
     };
 
     // Login/Signup Popup Component
@@ -34,8 +35,9 @@ export default function Header() {
         });
     
         const toggleForm = () => {
-            setIsLogin(!isLogin);
+            setHaveAccount(!haveAccount);
         };
+        
     
         const handleOverlayClick = (event) => {
             if (event.target === event.currentTarget) {
@@ -82,63 +84,67 @@ export default function Header() {
             }
         };
         
-    
-    
         return (
             <div className="popup-overlay" onClick={handleOverlayClick}>
                 <div className="popup-container">
-                    {isLogin ? (
-                        <>
-                            <form onSubmit={handleSubmit} className="form-container">
-                                <h4>Welcome</h4>
-                                <label>
-                                    Email
-                                    <input type="email" name="email" required className="input-field" onChange={handleChange} value={inputs.email} />
-                                </label>
-                                <label>
-                                    Password
-                                    <input type="password" name="password" required className="input-field" onChange={handleChange} value={inputs.password} />
-                                </label>
-                                <br />
-                                <br />
-                                <button type="submit" className="btn-primary">LOGIN</button>
-                            </form>
-                            <span className="form-footer">
-                                Don't have an account? 
-                                <button onClick={toggleForm} className="form-toggle">Sign up</button>
-                            </span>
-                        </>
-                    ) : (
-                        <>
-                            <form onSubmit={handleSubmit} className="form-container">
-                                <h4>Create an Account</h4>
-                                <label>
-                                    Email
-                                    <input type="email" name="email" required className="input-field" onChange={handleChange} value={inputs.email} />
-                                </label>
-                                <label>
-                                    Password
-                                    <input type="password" name="password" required className="input-field" onChange={handleChange} value={inputs.password} />
-                                </label>
-                                <label>
-                                    Confirm Password
-                                    <input type="password" name="confirmPassword" required className="input-field" onChange={handleChange} value={inputs.confirmPassword} />
-                                </label>
-                                <br />
-                                <br />
-                                <button type="submit" className="btn-primary">SIGN UP</button>
-                            </form>
-                            <span className="form-footer">
-                                Already have an account? 
-                                <button onClick={toggleForm} className="form-toggle">Login</button>
-                            </span>
-                        </>
-                    )}
+                    <form onSubmit={handleSubmit} className="form-container">
+                        <h4>{haveAccount ? "Welcome" : "Create an Account"}</h4>
+                        
+                        <label>
+                            Email
+                            <input 
+                                type="email" 
+                                name="email" 
+                                required 
+                                className="input-field" 
+                                onChange={handleChange} 
+                                value={inputs.email} 
+                            />
+                        </label>
+                        
+                        <label>
+                            Password
+                            <input 
+                                type="password" 
+                                name="password" 
+                                required 
+                                className="input-field" 
+                                onChange={handleChange} 
+                                value={inputs.password} 
+                            />
+                        </label>
+        
+                        {/* Only show the Confirm Password field if creating an account */}
+                        {!haveAccount && (
+                            <label>
+                                Confirm Password
+                                <input 
+                                    type="password" 
+                                    name="confirmPassword" 
+                                    required 
+                                    className="input-field" 
+                                    onChange={handleChange} 
+                                    value={inputs.confirmPassword} 
+                                />
+                            </label>
+                        )}
+                        <br />
+                        <br />
+                        <button type="submit" className="btn-primary">
+                            {haveAccount ? "LOGIN" : "SIGN UP"}
+                        </button>
+                    </form>
+                    <span className="form-footer">
+                        {haveAccount ? "Don't have an account?" : "Already have an account?"}
+                        <button onClick={toggleForm} className="form-toggle">
+                            {haveAccount ? "Sign up" : "Login"}
+                        </button>
+                    </span>
                 </div>
             </div>
         );
     };
-        
+
     return (
         <header>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'black' }}>
