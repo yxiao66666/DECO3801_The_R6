@@ -141,12 +141,12 @@ export default function Header() {
         
     return (
         <header>
-            <nav className="navbar navbar-expand-lg custom-navbar">
+            <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'black' }}>
                 <div className="container">
                     <Link 
-                        className="navbar-brand brand-name" 
-                        style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                        to="/"
+                        className="navbar-brand" 
+                        to="/" 
+                        style={{ color: 'white', fontSize: '22px', fontFamily: 'fantasy' }}
                     >
                         Arty
                     </Link>
@@ -176,7 +176,8 @@ export default function Header() {
                             </li>
                             <li className="nav-item">
                                 <Link 
-                                    className={`nav-link ${activeLink === "/about" ? "active" : ""} nav-hover`} 
+                                    className={`nav-link ${activeLink === "/about" ? "active" : ""}`} 
+                                    to="/about" 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
                                     onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
                                     onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
@@ -187,7 +188,8 @@ export default function Header() {
                             </li>
                             <li className="nav-item">
                                 <Link 
-                                    className={`nav-link ${activeLink === "/search" ? "active" : ""} nav-hover`} 
+                                    className={`nav-link ${activeLink === "/search" ? "active" : ""}`} 
+                                    to="/search" 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
                                     onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
                                     onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
@@ -198,7 +200,8 @@ export default function Header() {
                             </li>
                             <li className="nav-item">
                                 <Link 
-                                    className={`nav-link ${activeLink === "/upload" ? "active" : ""} nav-hover`} 
+                                    className={`nav-link ${activeLink === "/upload" ? "active" : ""}`} 
+                                    to="/upload" 
                                     style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
                                     onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
                                     onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
@@ -213,7 +216,8 @@ export default function Header() {
                             <li className="nav-item">
                                 {isLoggedIn ? (
                                     <Link 
-                                        className={`nav-link ${activeLink === "/user" ? "active" : ""} nav-hover`} 
+                                        className={`nav-link ${activeLink === "/user" ? "active" : ""}`} 
+                                        to="/user" 
                                         style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
                                         onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
                                         onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
