@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import "../styles/Header.css";
 import axios from "axios";
 
@@ -8,14 +8,8 @@ export default function Header() {
     const location = useLocation();
     const [activeLink, setActiveLink] = useState(location.pathname);
     const [showPopup, setShowPopup] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false); 
+    const [isLoggedIn] = useState(false); 
     const [haveAccount, setHaveAccount] = useState(false); 
-    const [inputs, setInputs] = useState({
-        email: '',
-        password: '',
-        confirmPassword: ''
-    });
-    
 
     useEffect(() => {
         setActiveLink(location.pathname);
@@ -27,7 +21,6 @@ export default function Header() {
 
     // Login/Signup Popup Component
     const LoginSignupPopup = ({ closePopup, onLogin }) => {
-        const [isLogin, setIsLogin] = useState(true);
         const [inputs, setInputs] = useState({
             email: '',
             password: '',
@@ -56,12 +49,12 @@ export default function Header() {
         const handleSubmit = async (event) => {
             event.preventDefault();
             console.log(inputs);
-            const url = isLogin
+            const url = isLoggedIn
                 ? 'http://localhost:5000/get-users'
                 : 'http://localhost:5000/create-users';
         
             try {
-                const response = isLogin
+                const response = isLoggedIn
                     ? await axios.get(url, {
                           params: { email: inputs.email, password: inputs.password }
                       })
@@ -89,7 +82,6 @@ export default function Header() {
                 <div className="popup-container">
                     <form onSubmit={handleSubmit} className="form-container">
                         <h4>{haveAccount ? "Welcome" : "Create an Account"}</h4>
-                        
                         <label>
                             Email
                             <input 
@@ -101,7 +93,6 @@ export default function Header() {
                                 value={inputs.email} 
                             />
                         </label>
-                        
                         <label>
                             Password
                             <input 
@@ -113,7 +104,6 @@ export default function Header() {
                                 value={inputs.password} 
                             />
                         </label>
-        
                         {/* Only show the Confirm Password field if creating an account */}
                         {!haveAccount && (
                             <label>
@@ -128,6 +118,7 @@ export default function Header() {
                                 />
                             </label>
                         )}
+                        {/* A bit of space underneath */}
                         <br />
                         <br />
                         <button type="submit" className="btn-primary">
@@ -147,15 +138,9 @@ export default function Header() {
 
     return (
         <header>
-            <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'black' }}>
+            <nav className="navbar navbar-expand-lg" >
                 <div className="container">
-                    <Link 
-                        className="navbar-brand" 
-                        to="/" 
-                        style={{ color: 'white', fontSize: '22px', fontFamily: 'fantasy' }}
-                    >
-                        Arty
-                    </Link>
+                    <NavLink className="navbar-brand" to="/">Arty</NavLink>
                     <button 
                         className="navbar-toggler" 
                         type="button" 
@@ -170,79 +155,65 @@ export default function Header() {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav ms-auto me-auto">
                             <li className="nav-item">
-                                <Link 
-                                    className={`nav-link ${activeLink === "/" ? "active" : ""} nav-hover`} 
-                                    style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
+                                <NavLink 
+                                    className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
                                     to="/" 
                                 >
                                     Home
-                                </Link>
+                                </NavLink>
                             </li>
                             <li className="nav-item">
-                                <Link 
-                                    className={`nav-link ${activeLink === "/about" ? "active" : ""}`} 
-                                    style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
+                                <NavLink 
+                                    className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
                                     to="/about" 
                                 >
                                     About
-                                </Link>
+                                </NavLink>
                             </li>
                             <li className="nav-item">
-                                <Link 
-                                    className={`nav-link ${activeLink === "/search" ? "active" : ""}`} 
-                                    style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
+                                <NavLink 
+                                    className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
                                     to="/search"
                                 >
                                     Search
-                                </Link>
+                                </NavLink>
                             </li>
                             <li className="nav-item">
-                                <Link 
-                                    className={`nav-link ${activeLink === "/upload" ? "active" : ""}`} 
-                                    style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                    onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
-                                    onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
+                                <NavLink 
+                                    className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
                                     to="/upload"
                                 >
                                     Generator
-                                </Link>
+                                </NavLink>
                             </li>
                         </ul>
-
                         <ul className="navbar-nav">
                             <li className="nav-item">
                                 {isLoggedIn ? (
-                                    <Link 
-                                        className={`nav-link ${activeLink === "/user" ? "active" : ""}`} 
-                                        style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                        onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
-                                        onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
-                                        to="/user"
-                                    >Account</Link>
+                                    <NavLink 
+                                        className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
+                                        to="/user" 
+                                    >
+                                        Account
+                                    </NavLink>
                                 ) : (
-                                    <Link 
-                                        className={`nav-link ${activeLink === "/" ? "active" : ""} nav-hover`} 
-                                        style={{ color: 'white', transition: 'transform 0.3s', paddingLeft:'30px', paddingRight:'30px'}}
-                                        onMouseEnter={(event) => event.currentTarget.style.transform = 'scale(1.05)'}
-                                        onMouseLeave={(event) => event.currentTarget.style.transform = 'scale(1)'}
-                                        to="/"
+                                    <NavLink 
+                                        className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
+                                        to="/" 
                                         onClick={(event) => {
                                             event.preventDefault();
                                             setShowPopup(true);
                                         }}
-                                    >Login / Signup</Link>
+                                    >
+                                        Login / Signup
+                                    </NavLink>
                                 )}
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
+            {/* For the loggin pop up */}
             {showPopup && <LoginSignupPopup closePopup={() => setShowPopup(false)} onLogin={handleLogin} />}
         </header>
     );
