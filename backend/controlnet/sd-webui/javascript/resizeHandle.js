@@ -127,7 +127,7 @@
             });
         });
 
-        resizeHandle.addEventListener('dblclick', onDoubleClick);
+        resizeHandle.addEventListener('lclick', onDoubleClick);
 
         afterResize(parent);
     }

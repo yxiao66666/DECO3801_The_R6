@@ -11,7 +11,7 @@ from annotator.oneformer.detectron2.utils.tracing import assert_fx_safe, is_fx_t
 
 """
 To export ROIPooler to torchscript, in this file, variables that should be annotated with
-`Union[List[Boxes], List[RotatedBoxes]]` are only annotated with `List[Boxes]`.
+`Union[List[Boxes], List[Rotateoxes]]` are only annotated with `List[Boxes]`.
 
 TODO: Correct these annotations when torchscript support `Union`.
 https://github.com/pytorch/pytorch/issues/41412
@@ -32,7 +32,7 @@ def assign_boxes_to_levels(
     vector.
 
     Args:
-        box_lists (list[Boxes] | list[RotatedBoxes]): A list of N Boxes or N RotatedBoxes,
+        box_lists (list[Boxes] | list[Rotateoxes]): A list of N Boxes or N Rotateoxes,
             where N is the number of images in the batch.
         min_level (int): Smallest feature map level index. The input is considered index 0,
             the output of stage 1 is index 1, and so.
@@ -75,8 +75,8 @@ def convert_boxes_to_pooler_format(box_lists: List[Boxes]):
     (see description under Returns).
 
     Args:
-        box_lists (list[Boxes] | list[RotatedBoxes]):
-            A list of N Boxes or N RotatedBoxes, where N is the number of images in the batch.
+        box_lists (list[Boxes] | list[Rotateoxes]):
+            A list of N Boxes or N Rotateoxes, where N is the number of images in the batch.
 
     Returns:
         When input is list[Boxes]:
@@ -85,7 +85,7 @@ def convert_boxes_to_pooler_format(box_lists: List[Boxes]):
             The 5 columns are (batch index, x0, y0, x1, y1), where batch index
             is the index in [0, N) identifying which batch image the box with corners at
             (x0, y0, x1, y1) comes from.
-        When input is list[RotatedBoxes]:
+        When input is list[Rotateoxes]:
             A tensor of shape (M, 6), where M is the total number of boxes aggregated over all
             N batch images.
             The 6 columns are (batch index, x_ctr, y_ctr, width, height, angle_degrees),
@@ -208,8 +208,8 @@ class ROIPooler(nn.Module):
         Args:
             x (list[Tensor]): A list of feature maps of NCHW shape, with scales matching those
                 used to construct this module.
-            box_lists (list[Boxes] | list[RotatedBoxes]):
-                A list of N Boxes or N RotatedBoxes, where N is the number of images in the batch.
+            box_lists (list[Boxes] | list[Rotateoxes]):
+                A list of N Boxes or N Rotateoxes, where N is the number of images in the batch.
                 The box coordinates are defined on the original image and
                 will be scaled by the `scales` argument of :class:`ROIPooler`.
 

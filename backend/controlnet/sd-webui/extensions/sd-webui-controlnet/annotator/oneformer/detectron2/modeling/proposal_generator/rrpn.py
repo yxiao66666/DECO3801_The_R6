@@ -6,7 +6,7 @@ import torch
 
 from annotator.oneformer.detectron2.config import configurable
 from annotator.oneformer.detectron2.layers import ShapeSpec, batched_nms_rotated, cat
-from annotator.oneformer.detectron2.structures import Instances, RotatedBoxes, pairwise_iou_rotated
+from annotator.oneformer.detectron2.structures import Instances, Rotateoxes, pairwise_iou_rotated
 from annotator.oneformer.detectron2.utils.memory import retry_if_cuda_oom
 
 from ..box_regression import Box2BoxTransformRotated
@@ -90,7 +90,7 @@ def find_top_rrpn_proposals(
     # 3. For each image, run a per-level NMS, and choose topk results.
     results = []
     for n, image_size in enumerate(image_sizes):
-        boxes = RotatedBoxes(topk_proposals[n])
+        boxes = Rotateoxes(topk_proposals[n])
         scores_per_img = topk_scores[n]
         lvl = level_ids
 
@@ -148,10 +148,10 @@ class RRPN(RPN):
         return ret
 
     @torch.no_grad()
-    def label_and_sample_anchors(self, anchors: List[RotatedBoxes], gt_instances: List[Instances]):
+    def label_and_sample_anchors(self, anchors: List[Rotateoxes], gt_instances: List[Instances]):
         """
         Args:
-            anchors (list[RotatedBoxes]): anchors for each feature map.
+            anchors (list[Rotateoxes]): anchors for each feature map.
             gt_instances: the ground-truth instances for each image.
 
         Returns:
@@ -164,7 +164,7 @@ class RRPN(RPN):
                 feature maps.  The values are the matched gt boxes for each anchor.
                 Values are undefined for those anchors not labeled as 1.
         """
-        anchors = RotatedBoxes.cat(anchors)
+        anchors = Rotateoxes.cat(anchors)
 
         gt_boxes = [x.gt_boxes for x in gt_instances]
         del gt_instances

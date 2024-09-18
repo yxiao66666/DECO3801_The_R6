@@ -78,7 +78,7 @@ _C.INPUT.CROP.SIZE = [0.9, 0.9]
 
 # Whether the model needs RGB, YUV, HSV etc.
 # Should be one of the modes defined here, as we use PIL to read the image:
-# https://pillow.readthedocs.io/en/stable/handbook/concepts.html#concept-modes
+# https://pillow.readthedocs.io/en/stable/hanook/concepts.html#concept-modes
 # with BGR being the one exception. One can set image format to BGR, we will
 # internally use RGB for conversion and flip the channels over
 _C.INPUT.FORMAT = "BGR"

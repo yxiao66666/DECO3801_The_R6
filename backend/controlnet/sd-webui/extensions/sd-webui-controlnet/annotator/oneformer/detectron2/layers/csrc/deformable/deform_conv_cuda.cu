@@ -645,7 +645,7 @@ int deform_conv_backward_parameters_cuda(
     at::Tensor input,
     at::Tensor offset,
     at::Tensor gradOutput,
-    at::Tensor gradWeight, // at::Tensor gradBias,
+    at::Tensor gradWeight, // at::Tensor graias,
     at::Tensor columns,
     at::Tensor ones,
     int kW,

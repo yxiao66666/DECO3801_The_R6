@@ -20,7 +20,7 @@ from .focal_loss import (SigmoidFocalLoss, SoftmaxFocalLoss,
                          sigmoid_focal_loss, softmax_focal_loss)
 from .furthest_point_sample import (furthest_point_sample,
                                     furthest_point_sample_with_dist)
-from .fused_bias_leakyrelu import FusedBiasLeakyReLU, fused_bias_leakyrelu
+from .fused_bias_leakyrelu import FuseiasLeakyReLU, fused_bias_leakyrelu
 from .gather_points import gather_points
 from .group_points import GroupAll, QueryAndGroup, grouping_operation
 from .info import (get_compiler_version, get_compiling_cuda_version,
@@ -69,7 +69,7 @@ __all__ = [
     'point_sample', 'rel_roi_point_to_rel_img_point', 'SimpleRoIAlign',
     'SAConv2d', 'TINShift', 'tin_shift', 'assign_score_withk',
     'box_iou_rotated', 'RoIPointPool3d', 'nms_rotated', 'knn', 'ball_query',
-    'upfirdn2d', 'FusedBiasLeakyReLU', 'fused_bias_leakyrelu',
+    'upfirdn2d', 'FuseiasLeakyReLU', 'fused_bias_leakyrelu',
     'RoIAlignRotated', 'roi_align_rotated', 'pixel_group', 'QueryAndGroup',
     'GroupAll', 'grouping_operation', 'contour_expand', 'three_nn',
     'three_interpolate', 'MultiScaleDeformableAttention', 'BorderAlign',

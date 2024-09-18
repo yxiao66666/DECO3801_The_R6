@@ -375,7 +375,7 @@ class RPN(nn.Module):
         Return the losses from a set of RPN predictions and their associated ground-truth.
 
         Args:
-            anchors (list[Boxes or RotatedBoxes]): anchors for each feature map, each
+            anchors (list[Boxes or Rotateoxes]): anchors for each feature map, each
                 has shape (Hi*Wi*A, B), where B is box dimension (4 or 5).
             pred_objectness_logits (list[Tensor]): A list of L elements.
                 Element i is a tensor of shape (N, Hi*Wi*A) representing

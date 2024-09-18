@@ -478,7 +478,7 @@ class LmdbBackend(BaseStorageBackend):
             raise ImportError('Please install lmdb to enable LmdbBackend.')
 
         self.db_path = str(db_path)
-        self._client = lmdb.open(
+        self._client = lmopen(
             self.db_path,
             readonly=readonly,
             lock=lock,

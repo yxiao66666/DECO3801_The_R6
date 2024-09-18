@@ -5,7 +5,7 @@ import torch
 
 from annotator.oneformer.detectron2.config import configurable
 from annotator.oneformer.detectron2.layers import ShapeSpec, batched_nms_rotated
-from annotator.oneformer.detectron2.structures import Instances, RotatedBoxes, pairwise_iou_rotated
+from annotator.oneformer.detectron2.structures import Instances, Rotateoxes, pairwise_iou_rotated
 from annotator.oneformer.detectron2.utils.events import get_event_storage
 
 from ..box_regression import Box2BoxTransformRotated
@@ -104,7 +104,7 @@ def fast_rcnn_inference_single_image_rotated(
     scores = scores[:, :-1]
     num_bbox_reg_classes = boxes.shape[1] // B
     # Convert to Boxes to use the `clip` function ...
-    boxes = RotatedBoxes(boxes.reshape(-1, B))
+    boxes = Rotateoxes(boxes.reshape(-1, B))
     boxes.clip(image_shape)
     boxes = boxes.tensor.view(-1, num_bbox_reg_classes, B)  # R x C x B
     # Filter results based on detection scores
@@ -125,7 +125,7 @@ def fast_rcnn_inference_single_image_rotated(
     boxes, scores, filter_inds = boxes[keep], scores[keep], filter_inds[keep]
 
     result = Instances(image_shape)
-    result.pred_boxes = RotatedBoxes(boxes)
+    result.pred_boxes = Rotateoxes(boxes)
     result.scores = scores
     result.pred_classes = filter_inds[:, 1]
 

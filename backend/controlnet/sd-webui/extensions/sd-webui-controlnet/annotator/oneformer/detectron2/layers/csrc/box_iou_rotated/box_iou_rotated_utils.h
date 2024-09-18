@@ -19,7 +19,7 @@ namespace detectron2 {
 namespace {
 
 template <typename T>
-struct RotatedBox {
+struct Rotateox {
   T x_ctr, y_ctr, w, h, a;
 };
 
@@ -57,7 +57,7 @@ HOST_DEVICE_INLINE R cross_2d(const Point<T>& A, const Point<T>& B) {
 
 template <typename T>
 HOST_DEVICE_INLINE void get_rotated_vertices(
-    const RotatedBox<T>& box,
+    const Rotateox<T>& box,
     Point<T> (&pts)[4]) {
   // M_PI / 180. == 0.01745329251
   double theta = box.a * 0.01745329251;
@@ -313,8 +313,8 @@ HOST_DEVICE_INLINE T polygon_area(const Point<T> (&q)[24], const int& m) {
 
 template <typename T>
 HOST_DEVICE_INLINE T rotated_boxes_intersection(
-    const RotatedBox<T>& box1,
-    const RotatedBox<T>& box2) {
+    const Rotateox<T>& box1,
+    const Rotateox<T>& box2) {
   // There are up to 4 x 4 + 4 + 4 = 24 intersections (including dups) returned
   // from rotated_rect_intersection_pts
   Point<T> intersectPts[24], orderedPts[24];
@@ -342,7 +342,7 @@ template <typename T>
 HOST_DEVICE_INLINE T
 single_box_iou_rotated(T const* const box1_raw, T const* const box2_raw) {
   // shift center to the middle point to achieve higher precision in result
-  RotatedBox<T> box1, box2;
+  Rotateox<T> box1, box2;
   auto center_shift_x = (box1_raw[0] + box2_raw[0]) / 2.0;
   auto center_shift_y = (box1_raw[1] + box2_raw[1]) / 2.0;
   box1.x_ctr = box1_raw[0] - center_shift_x;

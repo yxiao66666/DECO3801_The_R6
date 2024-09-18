@@ -41,8 +41,8 @@ def add_common_config(cfg):
 
     # wandb
     cfg.WANDB = CN()
-    cfg.WANDB.PROJECT = "unified_dense_recognition"
-    cfg.WANDB.NAME = None
+    cfg.WANPROJECT = "unified_dense_recognition"
+    cfg.WANNAME = None
 
     cfg.MODEL.IS_TRAIN = False
     cfg.MODEL.IS_DEMO = True

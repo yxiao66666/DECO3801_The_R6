@@ -26,7 +26,7 @@ import torch
 import torch.nn as nn
 
 
-class SeedBinRegressor(nn.Module):
+class SeeinRegressor(nn.Module):
     def __init__(self, in_features, n_bins=16, mlp_dim=256, min_depth=1e-3, max_depth=10):
         """Bin center regressor network. Bin centers are bounded on (min_depth, max_depth) interval.
 
@@ -68,7 +68,7 @@ class SeedBinRegressor(nn.Module):
         return B_widths_normed, B_centers
 
 
-class SeedBinRegressorUnnormed(nn.Module):
+class SeeinRegressorUnnormed(nn.Module):
     def __init__(self, in_features, n_bins=16, mlp_dim=256, min_depth=1e-3, max_depth=10):
         """Bin center regressor network. Bin centers are unbounded
 
@@ -76,8 +76,8 @@ class SeedBinRegressorUnnormed(nn.Module):
             in_features (int): input channels
             n_bins (int, optional): Number of bin centers. Defaults to 16.
             mlp_dim (int, optional): Hidden dimension. Defaults to 256.
-            min_depth (float, optional): Not used. (for compatibility with SeedBinRegressor)
-            max_depth (float, optional): Not used. (for compatibility with SeedBinRegressor)
+            min_depth (float, optional): Not used. (for compatibility with SeeinRegressor)
+            max_depth (float, optional): Not used. (for compatibility with SeeinRegressor)
         """
         super().__init__()
         self.version = "1_1"
