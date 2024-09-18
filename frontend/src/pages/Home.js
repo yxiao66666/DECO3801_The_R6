@@ -9,7 +9,11 @@ export default function Home() {
             <div className="text-start ms-auto me-auto styled-background" style={{
                 backgroundImage: 'url("../images/Sketch.png")'
                 }}>
-                    <h1 className="display-4 styled-heading">ARTY</h1>
+                    <img 
+                        src="../images/ARTY.png" // Path to your title image
+                        alt="ARTY" 
+                        style={{ width: 'auto', height: '18vw' ,margin:'50px 0'}} // Adjust height as needed
+                    />
                     <div className="col-12">
                         <h1 className="display-7 mb-3">Unleash Your Creativity with Us</h1>
                         <p className="mb-2">Mesh the creativity of your mind with our empowering tools and let’s create magic.</p>
