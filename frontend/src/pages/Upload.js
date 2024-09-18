@@ -421,10 +421,10 @@ export default function Upload() {
                                 <br/>
                                 <div>
                                     <button type="button" onClick={() => setTool('brush')} className="search-btn" style={{ marginRight: '10px'}}>
-                                        <img src="../images/png-transparent-paintbrush-painting-black-brush-s-hand-monochrome-head.png" className="painting-icon" alt="brush"/>
+                                        <img src="../images/brush.png" className="painting-icon" alt="brush"/>
                                     </button>
                                     <button type="button" onPointerDown={undoLastAction} className="search-btn" style={{ marginRight: '10px' }}>
-                                        <img src="../images/be6c2fe2ca4a392ca28be1acc4f8ad44.jpg" className="painting-icon" alt="undo"/>
+                                        <img src="../images/eraser.jpg" className="painting-icon" alt="undo"/>
                                     </button>
                                     <label>Brush Size:</label>
                                     <input

@@ -73,9 +73,9 @@ export default function Search() {
             <form id="form" onSubmit={handleSubmit}> 
                 <center>
                     <img 
-                        src="../images/ARTY.png" // Path to your title image
+                        src="../images/ARTY.png"
                         alt="ARTY" 
-                        style={{ width: 'auto', height: '18vw' ,margin:'50px 0'}} // Adjust height as needed
+                        style={{ width: 'auto', height: '18vw' ,margin:'50px 0'}}
                     />
                     {/* Container for searchbar, upload icon, and search icon */}
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
@@ -139,19 +139,22 @@ export default function Search() {
             )}
 
             <br />
-            <div style={{ display: 'flex', gap: '3em', flexDirection: 'column' }}>
+
+            {/* Grid Container for images */}
+            <div className="image-grid">
                 {images.slice(0, visibleImages).map((url, index) => (
-                    <div key={index} style={{ display: 'flex', gap: '3em', textAlign: 'center' }}>
-                        <img className="results" src={url} alt={`Image ${index}`} style={{ maxWidth: '300px', maxHeight: '300px' }} />
+                    <div key={index} className="image-cell">
+                        <img className="results" src={url} alt={`Image ${index}`} />
                     </div>
                 ))}
-
-                {visibleImages < images.length && (
-                    <label onClick={loadMore} className="row" style={{ margin: 'auto', cursor: 'pointer', border: '2px solid white', borderRadius: '5px', textAlign: 'center', justifyContent: 'center' }}>
-                        More results...
-                    </label>
-                )}
             </div>
+
+            {visibleImages < images.length && (
+                <label onClick={loadMore} className="row" style={{ margin: 'auto', cursor: 'pointer', border: '2px solid white', borderRadius: '5px', textAlign: 'center', justifyContent: 'center' }}>
+                    More results...
+                </label>
+            )}
+
             <br />
         </div>
     );
