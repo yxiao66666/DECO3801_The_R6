@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
-// Search
 export default function Search() {
     const [images, setImages] = useState([]); // Store the image data
     const [visibleImages, setVisibleImages] = useState(9); // Control how many images are visible initially
     const [searchQuery, setSearchQuery] = useState(''); // Empty string for search query
     const [selectedImage, setSelectedImage] = useState(null); // State for the selected image file
+    const [loading, setLoading] = useState(false); // State for loading indicator
 
     useEffect(() => {
         fetchImages();
     }, []);
 
     const fetchImages = async () => {
+        setLoading(true); // Show loading icon
         try {
-            const imageResponse = await fetch('http://localhost:5000/'); 
-            const imageData = await imageResponse.json(); 
-            setImages(imageData); 
+            const imageResponse = await fetch('http://127.0.0.1:5000/');
+            const imageData = await imageResponse.json();
+            setImages(imageData);
         } catch (error) {
-            console.error("Error fetching images:", error); 
+            console.error("Error fetching images:", error);
+        } finally {
+            setLoading(false); // Hide loading icon
         }
     };
 
@@ -31,7 +34,8 @@ export default function Search() {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
+        setLoading(true); // Show loading icon
         try {
             const response = await fetch('http://127.0.0.1:5000/search', {
                 method: 'POST',
@@ -43,7 +47,7 @@ export default function Search() {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Search results:', result); 
+                console.log('Search results:', result);
 
                 // Convert the result object to an array if necessary
                 const resultArray = Object.values(result);
@@ -53,6 +57,8 @@ export default function Search() {
             }
         } catch (error) {
             console.error('Error:', error);
+        } finally {
+            setLoading(false); // Hide loading icon
         }
     };
 
@@ -70,7 +76,8 @@ export default function Search() {
     return (
         <div style={{ backgroundImage: 'url("../images/Sketch.png")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}>
-            <form id="form" onSubmit={handleSubmit}> 
+
+            <form id="form" onSubmit={handleSubmit}>
                 <center>
                     <img 
                         src="../images/ARTY.png"
@@ -131,6 +138,13 @@ export default function Search() {
                 </center>
             </form>
 
+            {/* Display loading icon while fetching images */}
+            {loading && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <img src="../images/loading.gif" alt="Loading..." style={{ width: '150px', height: '150px' }} />
+                </div>
+            )}
+
             {/* Preview of selected image */}
             {selectedImage && (
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -150,7 +164,7 @@ export default function Search() {
             </div>
 
             {visibleImages < images.length && (
-                <label onClick={loadMore} className="row" style={{ margin: 'auto', cursor: 'pointer', border: '2px solid white', borderRadius: '5px', textAlign: 'center', justifyContent: 'center' }}>
+                <label onClick={loadMore} className="row" style={{ margin: 'auto', cursor: 'pointer', border: '2px solid white', borderRadius: '5px', textAlign: 'center', justifyContent: 'center', width: '50%' }}>
                     More results...
                 </label>
             )}

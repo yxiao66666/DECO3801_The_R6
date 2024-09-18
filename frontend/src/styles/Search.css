@@ -23,25 +23,26 @@
 }
 
 /* Masonry layout for image results */
-.image-grid { /* Waterfall layout */
+.image-grid {
     column-count: 3; /* Number of columns in the masonry layout */
     column-gap: 20px; /* Gap between columns */
-    margin-top: 20px; /* Top margin for spacing */
-    margin-bottom: 20px /* Bottom margin for spacing */
+    margin: 20px auto; /* Center horizontally and add top/bottom margin */
+    width: 50%; /* Set maximum width to 70% */
 }
-  
-/* Individual image container */
+
+/* Ensure images fit within their container */
 .image-cell {
-    break-inside: avoid; /* Prevent image break between columns */
-    margin-bottom: 20px; /* Add space between images */
+    display: inline-block; /* Allow images to align properly in columns */
+    margin-bottom: 20px; /* Space below each image */
+    width: 100%; /* Make sure the cell takes full width in the column */
 }
-  
-/* Image styling within each cell */
+
 .results {
-    width: 100%; /* Let the image take the full width of its column */
-    height: auto; /* Maintain the image's natural height */
-    display: block; /* Ensure proper layout within columns */
+    width: 100%; /* Ensure images fit within their container */
+    display: block; /* Remove inline spacing */
+    margin: 0 auto; /* Center images horizontally within the cell */
 }
+
 
 /* Search button styling */
 .search-btn {
@@ -65,4 +66,23 @@
     width: 60px; /* Width of the painting icon */
     height: 60px; /* Height of the painting icon */
     filter: invert(1); /* Invert color to make icon white */
+}
+
+/* Responsive design */
+@media (max-width: 1400px) {
+    .image-grid {
+        width: 50%; /* Width for medium-sized screens */
+    }
+}
+
+@media (max-width: 1000px) {
+    .image-grid {
+        width: 70%; /* Width for small screens */
+    }
+}
+
+@media (max-width: 800px) {
+    .image-grid {
+        width: 100%; /* Width for extra small screens */
+    }
 }
