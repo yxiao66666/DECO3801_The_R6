@@ -44,6 +44,10 @@ export default function Search() {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Search results:', result); 
+
+                // Convert the result object to an array if necessary
+                const resultArray = Object.values(result);
+                setImages(resultArray); // Update images state with search results
             } else {
                 console.error('Search failed');
             }
@@ -136,9 +140,9 @@ export default function Search() {
 
             <br />
             <div style={{ display: 'flex', gap: '3em', flexDirection: 'column' }}>
-                {images.slice(0, visibleImages).map((image, index) => (
+                {images.slice(0, visibleImages).map((url, index) => (
                     <div key={index} style={{ display: 'flex', gap: '3em', textAlign: 'center' }}>
-                        <img className="results" src={image.url} alt={image.description} />
+                        <img className="results" src={url} alt={`Image ${index}`} style={{ maxWidth: '300px', maxHeight: '300px' }} />
                     </div>
                 ))}
 
