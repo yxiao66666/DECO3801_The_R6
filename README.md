@@ -27,8 +27,8 @@ The product is to be used as a side assisstant for artists to search for artwork
 * Cross-Platform Compatibility
 * History Logging
 * Search Engine
-* [Style Recognition](/controlnet/controlnet_outline#style-recognition)
-* [Assets Rigging](/controlnet/controlnet_outline.md#assets-rigging)
+* [Style Recognition](/backend/controlnet/README.md#style-recognition)
+* [Assets Rigging](/backend/controlnet/README.md#assets-rigging)
 
 > **Notes:**
 >
