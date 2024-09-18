@@ -10,9 +10,10 @@
 4. Run ```pipenv shell``` and run ```export FLASK_APP = app.py``` (MacOS), or ```set FLASK_APP = app.py``` (Terminal), or ```$env:FLASK_APP = app.py``` (Windows Powershell).
 5. ```flask run``` to start the application.
 
-
 > **The process could be easier if you are on VS code as you could set the python interpreter to the ```pipenv``` in your directory. This allows you to run the flask application like your normal code from the execution button at the top right corner.** <br>
 
 ## Database
 
-<img src = '../images/db.png'>
+Our database is based on PHPMyAdmin and the application interacts with it using SQL Alchemy. The implementation provides a protection from malicious access requests such as SQL injection. The overview of the relational database is summarised in the below image:
+
+<img src = '..\images\db.png' alt = 'database structure'>
