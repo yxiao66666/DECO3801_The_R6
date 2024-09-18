@@ -159,14 +159,6 @@ export default function Header() {
                             <li className="nav-item">
                                 <NavLink 
                                     className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
-                                    to="/about" 
-                                >
-                                    About
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink 
-                                    className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
                                     to="/search"
                                 >
                                     Search
@@ -178,6 +170,14 @@ export default function Header() {
                                     to="/upload"
                                 >
                                     Generator
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink 
+                                    className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
+                                    to="/about" 
+                                >
+                                    About
                                 </NavLink>
                             </li>
                         </ul>

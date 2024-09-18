@@ -11,7 +11,8 @@ export default function Upload() {
     const [originalWidth, setOriginalWidth] = useState(0);
     const [originalHeight, setOriginalHeight] = useState(0);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [imageChosen, setChosen] = useState(false)
+    const [imageChosen, setChosen] = useState(false);
+    const [showCanvas, setShowCanvas] = useState(false);
 
     const undoStack = useRef([]);
     const canvasRef = useRef(null);
@@ -35,21 +36,28 @@ export default function Upload() {
 
     // Initialize canvas context
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        const drawingCanvas = drawingCanvasRef.current;
-        const drawingCtx = drawingCanvas.getContext('2d');
+        if(showCanvas){
+            //canvas displayed for user
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
 
-        ctxRef.current = ctx;
-        drawingCtxRef.current = drawingCtx;
+            //canvas used to send to backend.
+            const drawingCanvas = drawingCanvasRef.current;
+            const drawingCtx = drawingCanvas.getContext('2d');
 
-        ctx.lineCap = 'round';
-        ctx.lineWidth = brushSize;
-        ctx.strokeStyle = '#FFFFFF';
+            ctxRef.current = ctx;
+            drawingCtxRef.current = drawingCtx;
 
-        drawingCtx.lineCap = 'round';
-        drawingCtx.lineWidth = brushSize;
-        drawingCtx.strokeStyle = '#FFFFFF';
+            ctx.lineCap = 'round';
+            ctx.lineWidth = brushSize;
+            ctx.strokeStyle = '#FFFFFF';
+
+            drawingCtx.lineCap = 'round';
+            drawingCtx.lineWidth = brushSize;
+            drawingCtx.strokeStyle = '#FFFFFF';
+
+        }
+        
     });
 
  
@@ -65,6 +73,7 @@ export default function Upload() {
 
     // handleCanvasChange for uploading and placing image on the canvas
     const handleCanvasChange = (event) => {
+        
         const selectedImage = event.target.files[0];
         if (selectedImage) {
             const img = new Image();
@@ -90,10 +99,13 @@ export default function Upload() {
                 const drawingCtx = drawingCanvas.getContext('2d');
                 drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
             };
+
+            
+        
         }
     };
 
-    // Start drawing on both the visible and hidden canvas
+    // drawing functions on both the visible and hidden canvas
     const startDrawing = (e) => {
         e.preventDefault();
         setIsDrawing(true);
@@ -123,6 +135,7 @@ export default function Upload() {
             clientX = e.clientX;
             clientY = e.clientY;
         }
+        
         // Adjust for the scaling factor if canvas has been resized by CSS
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
@@ -367,78 +380,88 @@ export default function Upload() {
                             />
                             <label htmlFor="imageUpload" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
                                 Browse
-                            </label>                   
-                        </div>
-                        <br />
-                        <br />
-
-                        <h1>Polish your work with inpainting, if you use this on iPad, two fingers double touch to move up/down the whole page</h1>
-                        <canvas
-                            ref={canvasRef}
-                            onMouseDown={startDrawing}
-                            onMouseUp={stopDrawing}
-                            onMouseMove={draw}
-                            onTouchMove={draw}
-                            onTouchEnd={stopDrawing}
-                            onTouchStart={startDrawing}
-                            width="800"
-                            height="600"
-                            style={{ backgroundColor:'white',display: 'start', width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}
-                        />
-                        <canvas 
-                            ref={drawingCanvasRef} 
-                            onMouseDown={startDrawing}
-                            onMouseUp={stopDrawing}
-                            onMouseMove={draw}
-                            onTouchMove={draw}
-                            onTouchEnd={stopDrawing}
-                            onTouchStart={startDrawing}
-                            width="500" 
-                            height="500" 
-                            style={{display:'none'}}
-                        />
-
-                        <br />
-                        <div>
-                            <button type="button" onClick={() => setTool('brush')} className="search-btn" style={{ marginRight: '10px'}}>
-                                <img src="../images/png-transparent-paintbrush-painting-black-brush-s-hand-monochrome-head.png" className="painting-icon" alt="brush"/>
-                            </button>
-                            <button type="button" onPointerDown={undoLastAction} className="search-btn" style={{ marginRight: '10px' }}>
-                                <img src="../images/be6c2fe2ca4a392ca28be1acc4f8ad44.jpg" className="painting-icon" alt="undo"/>
-                            </button>
-                            <label>Brush Size:</label>
-                            <input
-                                type="range"
-                                min="1"
-                                max="20"
-                                value={brushSize}
-                                onChange={(e) => setBrushSize(e.target.value)}
-                                style={{ marginLeft: '10px', marginRight:'10px'}}
-                            />
-                            <input
-                                multiple
-                                type="file"
-                                id="canvasUpload"
-                                accept=".png, .jpg, .jpeg"
-                                onChange={handleCanvasChange}
-                                style={{ display: 'none' }}
-                                
-                            />
-                            <label htmlFor="canvasUpload" onPointerDown={() => document.getElementById('canvasUpload').click()} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                                Choose an image
                             </label>
-                            <button type="button" onPointerDown={clearCanvas} style={{ backgroundColor:'black', color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'3px', }}>
-                                Clear canvas
-                            </button>  
-                           
-                    </div>
+                            <button type="button" onClick={() => setShowCanvas(!showCanvas)} style={{ backgroundColor:'black', color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'5px', }}>
+                                {showCanvas ? "No inpainting" : "With Inpainting"}
+                            </button>                   
+                        </div>
+
+                        
+
+                        <br />
+                        <br />
+                        {showCanvas && (
+                            <>
+                                <h1>Polish your work with inpainting, if you use this on iPad, two fingers double touch to move up/down the whole page</h1>
+                                <canvas
+                                    ref={canvasRef}
+                                    onMouseDown={startDrawing}
+                                    onMouseUp={stopDrawing}
+                                    onMouseMove={draw}
+                                    onTouchMove={draw}
+                                    onTouchEnd={stopDrawing}
+                                    onTouchStart={startDrawing}
+                                    width="800"
+                                    height="600"
+                                    style={{ backgroundColor:'white',display: 'start', width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}
+                                />
+                                <canvas 
+                                    ref={drawingCanvasRef} 
+                                    onMouseDown={startDrawing}
+                                    onMouseUp={stopDrawing}
+                                    onMouseMove={draw}
+                                    onTouchMove={draw}
+                                    onTouchEnd={stopDrawing}
+                                    onTouchStart={startDrawing}
+                                    width="500" 
+                                    height="500" 
+                                    style={{display:'none'}}
+                                />
+        
+                                <br/>
+                                <div>
+                                    <button type="button" onClick={() => setTool('brush')} className="search-btn" style={{ marginRight: '10px'}}>
+                                        <img src="../images/png-transparent-paintbrush-painting-black-brush-s-hand-monochrome-head.png" className="painting-icon" alt="brush"/>
+                                    </button>
+                                    <button type="button" onPointerDown={undoLastAction} className="search-btn" style={{ marginRight: '10px' }}>
+                                        <img src="../images/be6c2fe2ca4a392ca28be1acc4f8ad44.jpg" className="painting-icon" alt="undo"/>
+                                    </button>
+                                    <label>Brush Size:</label>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="20"
+                                        value={brushSize}
+                                        onChange={(e) => setBrushSize(e.target.value)}
+                                        style={{ marginLeft: '10px', marginRight:'10px'}}
+                                    />
+                                    <input
+                                        multiple
+                                        type="file"
+                                        id="canvasUpload"
+                                        accept=".png, .jpg, .jpeg"
+                                        onChange={handleCanvasChange}
+                                        style={{ display: 'none' }}
+                                        
+                                    />
+                                    <label htmlFor="canvasUpload" onPointerDown={() => document.getElementById('canvasUpload').click()} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                                        Choose an image
+                                    </label>
+                                    <button type="button" onPointerDown={clearCanvas} style={{ backgroundColor:'black', color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'3px', }}>
+                                        Clear canvas
+                                    </button>  
+                                
+                                </div>
+                            </>   
+                        )}
+                        
                     </div>
                 </div>
 
                 <br></br>
                 <br></br>
 
-                <h2>Text To Image</h2>
+                <h2>Add Text</h2>
                 <textarea className="form-control" id="textAreaExample1" rows="4" value={text} placeholder="Enter your description here..." onChange={e => setText(e.target.value)} style={{ width: '65%' }}></textarea>
                 
                 <br></br>
