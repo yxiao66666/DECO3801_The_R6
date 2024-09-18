@@ -50,7 +50,7 @@ class Users(db.Model):
     g_text = db.relationship('GenerateText', backref='users', cascade='all, delete-orphan')
     sd_images = db.relationship('SavedImage', backref='users', cascade='all, delete-orphan')
 
-@app.route('/users/get', methods = ['POST'])
+@app.route('/backend/users/get', methods = ['POST'])
 def get_user():
     '''
     Gets the user with the corresponding id
@@ -63,7 +63,7 @@ def get_user():
         user = Users.query.get(data['user_id'])
         return jsonify({'User': user})
         
-@app.route('/users/get/all', methods = ['GET'])
+@app.route('/backend/users/get/all', methods = ['GET'])
 def get_users():
     '''
     Gets all users
@@ -84,7 +84,7 @@ def get_users():
         ]
         return jsonify(users_list)
 
-@app.route('/users/insert', methods=['POST'])
+@app.route('/backend/users/insert', methods=['POST'])
 # @cross_origin
 def insert_user():
     '''
@@ -110,7 +110,7 @@ def insert_user():
             return {}, 500
     return {}, 405
 
-@app.route('/users/delete', methods = ['POST'])
+@app.route('/backend/users/delete', methods = ['POST'])
 def delete_user():
     if request.method == 'POST':
         try:
@@ -134,7 +134,7 @@ class SearchImage(db.Model):
     s_image_file_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-@app.route('/search_image/get', methods = ['POST'])
+@app.route('/backend/search_image/get', methods = ['POST'])
 def get_search_img():
     '''
     Gets the searched image with the corresponding id
@@ -147,7 +147,7 @@ def get_search_img():
         search_image = SearchImage.query.get(data['s_image_id'])
         return jsonify({'SearchImage': search_image})
 
-@app.route('/search_image/get/all', methods = ['GET'])
+@app.route('/backend/search_image/get/all', methods = ['GET'])
 def get_search_imgs():
     '''
     Gets all searched images
@@ -168,7 +168,7 @@ def get_search_imgs():
         ]
         return jsonify(search_imgs_list)
     
-@app.route('/search_image/insert', methods=['POST'])
+@app.route('/backend/search_image/insert', methods=['POST'])
 # @cross_origin
 def insert_search_image():
     '''
@@ -203,7 +203,7 @@ class SearchText(db.Model):
     s_text_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-@app.route('/search_text/get', methods = ['POST'])
+@app.route('/backend/search_text/get', methods = ['POST'])
 def get_search_text():
     '''
     Gets the text used to search with the corresponding id
@@ -216,7 +216,7 @@ def get_search_text():
         search_text = SearchText.query.get(data['s_text_id'])
         return jsonify({'SearchImage': search_text})
 
-@app.route('/search_text/get/all', methods = ['GET'])
+@app.route('/backend/search_text/get/all', methods = ['GET'])
 def get_search_texts():
     '''
     Gets all texts used for search
@@ -237,7 +237,7 @@ def get_search_texts():
         ]
         return jsonify(search_texts_list)
     
-@app.route('/search_text/insert', methods=['POST'])
+@app.route('/backend/search_text/insert', methods=['POST'])
 # @cross_origin
 def insert_search_text():
     '''
@@ -273,7 +273,7 @@ class GenerateImage(db.Model):
     g_image_file_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-@app.route('/generate_image/get', methods = ['POST'])
+@app.route('/backend/generate_image/get', methods = ['POST'])
 def get_generate_img():
     '''
     Gets the generated image used to search with the corresponding id
@@ -286,7 +286,7 @@ def get_generate_img():
         generate_image = GenerateImage.query.get(data['g_image_id'])
         return jsonify({'SearchImage': generate_image})
 
-@app.route('/generate_image/get/all', methods = ['GET'])
+@app.route('/backend/generate_image/get/all', methods = ['GET'])
 def get_generate_imgs():
     '''
     Gets all generated images
@@ -307,7 +307,7 @@ def get_generate_imgs():
         ]
         return jsonify(generate_imgs_list)
     
-@app.route('/generate_image/insert', methods=['POST'])
+@app.route('/backend/generate_image/insert', methods=['POST'])
 # @cross_origin
 def insert_generate_image():
     '''
@@ -342,7 +342,7 @@ class GenerateText(db.Model):
     g_text_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-@app.route('/generate_text/get', methods = ['POST'])
+@app.route('/backend/generate_text/get', methods = ['POST'])
 def get_generate_text():
     '''
     Gets the text used for image generation with the corresponding id
@@ -355,7 +355,7 @@ def get_generate_text():
         generate_text = GenerateText.query.get(data['g_text_id'])
         return jsonify({'SearchImage': generate_text})
 
-@app.route('/generate_text/get/all', methods = ['GET'])
+@app.route('/backend/generate_text/get/all', methods = ['GET'])
 def get_generate_texts():
     '''
     Gets all texts used to generate images
@@ -377,7 +377,7 @@ def get_generate_texts():
         ]
         return jsonify(generate_texts_list)
     
-@app.route('/generate_text/insert', methods=['POST'])
+@app.route('/backend/generate_text/insert', methods=['POST'])
 # @cross_origin
 def insert_generate_text():
     '''
@@ -413,7 +413,7 @@ class SavedImage(db.Model):
     sd_image_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-@app.route('/saved_image/get', methods = ['POST'])
+@app.route('/backend/saved_image/get', methods = ['POST'])
 def get_saved_img():
     '''
     Gets the saved image with the corresponding id
@@ -426,7 +426,7 @@ def get_saved_img():
         saved_image = SavedImage.query.get(data['sd_image_id'])
         return jsonify({'SearchImage': saved_image})
 
-@app.route('/saved_image/get/all', methods = ['GET'])
+@app.route('/backend/saved_image/get/all', methods = ['GET'])
 def get_saved_imgs():
     '''
     Gets all saved images
@@ -447,7 +447,7 @@ def get_saved_imgs():
         ]
         return jsonify(saved_imgs_list)
     
-@app.route('/saved_image/insert', methods=['POST'])
+@app.route('/backend/saved_image/insert', methods=['POST'])
 # @cross_origin
 def insert_saved_image():
     '''
@@ -473,7 +473,7 @@ def insert_saved_image():
             return {}, 500
     return {}, 405
 
-@app.route('/search', methods = ['POST'])
+@app.route('/backend/search', methods = ['POST'])
 @cross_origin()
 def search():
     '''
@@ -501,7 +501,7 @@ def search():
     else:
         return {}, 405
 
-@app.route('/upload', methods = ['POST'])
+@app.route('/backend/upload', methods = ['POST'])
 @cross_origin()
 def upload():
     if request.method != 'POST':
