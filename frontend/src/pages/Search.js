@@ -1,20 +1,19 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
-// Search 
+// Search
 export default function Search() {
-
     const [images, setImages] = useState([]); // Store the image data
     const [visibleImages, setVisibleImages] = useState(9); // Control how many images are visible initially
+    const [searchQuery, setSearchQuery] = useState(''); // Empty string for search query
+    const [selectedImage, setSelectedImage] = useState(null); // State for the selected image file
 
-    // Simulating fetching image data from backend
     useEffect(() => {
         fetchImages();
     }, []);
 
     const fetchImages = async () => {
         try {
-            // Fetch the search engine api
             const imageResponse = await fetch('http://localhost:5000/'); 
             const imageData = await imageResponse.json(); 
             setImages(imageData); 
@@ -23,38 +22,27 @@ export default function Search() {
         }
     };
 
-    // Function to load more images when the button is clicked
     const loadMore = () => {
-        setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 3 each time
+        setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 9 each time
     };
 
-
-    
-
-    // Chck if text entered
-    const [searchQuery, setSearchQuery] = useState(''); // Empty string
-
     const handleInputChange = (event) => {
-        // Update state if text entered
         setSearchQuery(event.target.value);
     };
 
     const handleSubmit = async (event) => {
-        // Keep this line to avoid page refresh and lost everything MUST HAVE OR ELSE ERROR
         event.preventDefault(); 
         try {
-            const response = await fetch('http://127.0.0.1:5000/search', { // A new url for search, different from upload
+            const response = await fetch('http://127.0.0.1:5000/search', {
                 method: 'POST',
-                // Mark the data type
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({query: searchQuery})
+                body: JSON.stringify({ query: searchQuery })
             });
 
             if (response.ok) {
                 const result = await response.json();
-                // Print out the result (search input) in console
                 console.log('Search results:', result); 
             } else {
                 console.error('Search failed');
@@ -63,45 +51,104 @@ export default function Search() {
             console.error('Error:', error);
         }
     };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+            const imageUrl = URL.createObjectURL(file); // Create a URL for the selected image
+            setSelectedImage(imageUrl); // Update state with the image URL
+            console.log("Uploaded file:", file);
+        } else {
+            alert('Please select a valid .png or .jpg file.');
+        }
+    };
+
     return (
-        <div style={{ backgroundImage:'url("../images/Sketch.png")',backgroundSize: 'cover', backgroundRepeat:'no-repeat',
-            backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px'}}>
+        <div style={{ backgroundImage: 'url("../images/Sketch.png")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}>
             <form id="form" onSubmit={handleSubmit}> 
                 <center>
-                    <h1 style={{fontFamily:'serif', fontSize:'18vw', color:'white'}}>ARTY</h1>
-                    {/* container for searchbar and icon */}
-                    <div style={{display:'flex', justifyContent:'center',alignItems:'center'}}>
+                    <img 
+                        src="../images/ARTY.png" // Path to your title image
+                        alt="ARTY" 
+                        style={{ width: 'auto', height: '18vw' ,margin:'50px 0'}} // Adjust height as needed
+                    />
+                    {/* Container for searchbar, upload icon, and search icon */}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                        
                         <input 
-                            style = {{paddingLeft:'15px', paddingRight:'15px'}}
+                            style={{ paddingLeft: '15px', paddingRight: '60px', width: '600px' }} // Adjust width to accommodate icons
                             className="searchbar" 
                             type="search" 
-                            placeholder="Search..." 
+                            placeholder="Upload and Search..." 
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
-                        <button className="search-btn" type="submit" aria-label="edit button later">
+
+                        {/* Hidden file input for upload */}
+                        <input
+                            type="file"
+                            accept=".png,.jpg"
+                            id="file-upload"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
+
+                        {/* Upload icon placed inside search bar */}
+                        <img 
+                            src="../images/upload.png" 
+                            alt="Upload Icon" 
+                            style={{
+                                position: 'relative',
+                                right: '50px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '24px',
+                                cursor: 'pointer',
+                                marginTop: '25px' 
+                            }}
+                            onClick={() => document.getElementById('file-upload').click()} // Trigger file input when clicked
+                        />
+
+                        {/* Search button with icon */}
+                        <button className="search-btn" type="submit" 
+                            aria-label="Search button" 
+                            style={{ 
+                                position: 'relative', 
+                                right: '0px', 
+                                top: '50%', 
+                                marginTop: '30px',
+                                transform: 'translateY(-50%)' 
+                            }}>
                             <img src="../images/search_icon.png" alt="Search Icon" className="search-icon" />
                         </button>
+                        
                     </div>
                 </center>
             </form>
-            <br></br>
-            <br></br>
-            <div style={{display:'flex',gap:'3em', flexDirection:'column'}}>
-                {images.slice(0,visibleImages).map((image, index) =>  (
-                    <div key={index} style={{display:'flex',gap:'3em',textAlign:'center'}}>
-                        <img className="results" src={image.url} alt={image.description}></img>
+
+            {/* Preview of selected image */}
+            {selectedImage && (
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                    <img src={selectedImage} alt="Selected Preview" style={{ maxWidth: '500px', maxHeight: '400px' }} />
+                </div>
+            )}
+
+            <br />
+            <div style={{ display: 'flex', gap: '3em', flexDirection: 'column' }}>
+                {images.slice(0, visibleImages).map((image, index) => (
+                    <div key={index} style={{ display: 'flex', gap: '3em', textAlign: 'center' }}>
+                        <img className="results" src={image.url} alt={image.description} />
                     </div>
-                    
                 ))}
 
                 {visibleImages < images.length && (
-                <label onClick={loadMore} className="row" style={{ margin:'auto', cursor: 'pointer', border:'2px solid white', borderRadius: '5px', textAlign:'center',justifyContent:'center'}}>
+                    <label onClick={loadMore} className="row" style={{ margin: 'auto', cursor: 'pointer', border: '2px solid white', borderRadius: '5px', textAlign: 'center', justifyContent: 'center' }}>
                         More results...
-                </label>
+                    </label>
                 )}
             </div>
-            <br></br>
+            <br />
         </div>
     );
 }
