@@ -1,124 +1,138 @@
+/* Custom styling for the navigation bar */
 .custom-navbar {
-    background-color: black;
+    background-color: black; /* Black background for the navbar */
 }
 
+/* Navbar brand (logo or title) styling */
 .navbar .navbar-brand {
-    color: white;
-    font-size: 22px;
-    font-family: fantasy;
+    color: white; /* White text color */
+    font-size: 22px; /* Font size for the brand name */
+    font-family: fantasy; /* Fantasy font style */
 }
 
+/* Hover effect for the brand name (no change in color) */
 .navbar .navbar-brand:hover {
-    color: white;
+    color: white; /* Ensure text remains white on hover */
 }
 
-/* make sure title stays white */
+/* Active state for the brand name (ensure white color) */
 .navbar .navbar-brand.active {
-    color: white;
+    color: white; /* White text color for active state */
 }
 
-/* make sure title stays white */
+/* Styling for the expanded navbar */
 .navbar.navbar-expand-lg {
-    background-color: black;
+    background-color: black; /* Black background for expanded navbar */
 }
 
+/* Styling for navigation links */
 .navbar-nav .nav-item .nav-link.option {
-    color: white;
-    padding-left: 30px;
-    padding-right: 30px;
-    transition: transform 0.3s;
+    color: white; /* White text color for navigation links */
+    padding-left: 30px; /* Padding on the left */
+    padding-right: 30px; /* Padding on the right */
+    transition: transform 0.3s; /* Smooth transition for the transform effect */
 }
 
-/* Hover enlarge effect */
+/* Hover effect for navigation links (enlarge on hover) */
 .navbar-nav .nav-item .nav-link.option:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Enlarge the link slightly on hover */
 }
 
-/* Bold active link */
+/* Bold styling for active navigation links */
 .nav-link.option.active-link {
-    font-weight: bold;
+    font-weight: bold; /* Bold text for active links */
 }
 
-
+/* Styling for the brand name in a different class */
 .brand-name {
-    color: white;
-    font-size: 22px;
-    font-family: fantasy;
+    color: white; /* White text color */
+    font-size: 22px; /* Font size */
+    font-family: fantasy; /* Fantasy font style */
 }
 
+/* Toggler icon styling for responsive navigation */
 .navbar-toggler-icon {
-    filter: invert(1);
+    filter: invert(1); /* Invert colors for visibility on dark backgrounds */
 }
 
+/* Styling for the popup overlay */
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    position: fixed; /* Fixed positioning */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    z-index: 1000; /* High z-index to overlay on top of other content */
 }
 
+/* Styling for the popup container */
 .popup-container {
-    background-color: white;
-    padding: 40px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
+    background-color: white; /* White background for the container */
+    padding: 40px; /* Padding inside the container */
+    border-radius: 8px; /* Rounded corners */
+    width: 90%; /* Full width with a maximum limit */
+    max-width: 500px; /* Maximum width */
+    position: relative; /* Relative positioning for child elements */
 }
 
+/* Styling for the form container */
 .form-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 40px auto;
+    width: 100%; /* Full width */
+    max-width: 600px; /* Maximum width */
+    margin: 40px auto; /* Center the container with top and bottom margins */
 }
 
+/* Input field styling */
 .input-field {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid gray;
-    padding: 8px 0;
-    outline: none;
-    font-size: 1em;
+    width: 100%; /* Full width */
+    border: none; /* No border */
+    border-bottom: 1px solid gray; /* Bottom border for the input */
+    padding: 8px 0; /* Padding inside the input field */
+    outline: none; /* Remove default outline */
+    font-size: 1em; /* Font size */
 }
 
+/* Styling for the 'Remember Me' checkbox section */
 .remember-me {
-    display: flex;
-    align-items: center;
-    font-size: 0.7em;
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+    font-size: 0.7em; /* Smaller font size */
 }
 
+/* Primary button styling */
 .btn-primary {
-    padding: 5px 10px;
-    width: 100%;
-    border: 1px solid blue;
-    border-radius: 5px;
-    background-color: blue;
-    color: white;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.3s;
+    padding: 5px 10px; /* Padding inside the button */
+    width: 100%; /* Full width */
+    border: 1px solid blue; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: blue; /* Blue background */
+    color: white; /* White text color */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions for background color and transform */
 }
 
+/* Hover effect for the primary button */
 .btn-primary:hover {
-    background-color: darkblue;
-    border-color: darkblue;
+    background-color: darkblue; /* Dark blue background on hover */
+    border-color: darkblue; /* Dark blue border on hover */
 }
 
+/* Footer section of the form */
 .form-footer {
-    font-size: 0.7em;
-    display: block;
-    text-align: center;
+    font-size: 0.7em; /* Smaller font size */
+    display: block; /* Display as block */
+    text-align: center; /* Center-align text */
 }
 
+/* Toggle button styling for switching forms */
 .form-toggle {
-    background: none;
-    color: blue;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
+    background: none; /* No background */
+    color: blue; /* Blue text color */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
 }

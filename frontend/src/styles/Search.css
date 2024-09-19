@@ -1,73 +1,88 @@
-.main{
+/* Main container with black background */
+.main {
     background-color: black;
-    height:100vw;
+    height: 100vw; /* Full viewport width height */
 }
 
-
+/* Text description styling with white color, cursive font, and text shadow */
 .description {
-    color:rgb(255, 255, 255);
-    font-size: 1.5em;
-    font-family: cursive;
-    text-shadow: 2px 4px 4px;
-
+    color: rgb(255, 255, 255); /* White text color */
+    font-size: 1.5em; /* Larger font size for emphasis */
+    font-family: cursive; /* Cursive font style */
+    text-shadow: 2px 4px 4px; /* Subtle shadow for text */
 }
 
-
+/* Search bar input styling */
 .searchbar {
-    height: 45px;
-    width: 575px;
-    font-size: 16px;
-    border-radius: 25px;
-    border:none;
-    outline:none;
+    height: 45px; /* Height of the search input field */
+    width: 575px; /* Width of the search bar */
+    font-size: 16px; /* Font size for the input text */
+    border-radius: 25px; /* Rounded edges for search bar */
+    border: none; /* No border for a cleaner look */
+    outline: none; /* Remove outline on focus */
 }
 
- 
-.results-container {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
+/* Masonry layout for image results */
+.image-grid {
+    column-count: 3; /* Number of columns in the masonry layout */
+    column-gap: 20px; /* Gap between columns */
+    margin: 20px auto; /* Center horizontally and add top/bottom margin */
+    width: 50%; /* Set maximum width to 70% */
 }
 
-/* Individual result item */
-.result-item {
-    max-width: 200px;
-}
-
-.result-image {
-    width: 100%;
-    border-radius: 5px;
-}
-
-.result-title {
-    margin-top: 0.5rem;
-    font-size: 1rem;
-}
-
-/* search icon */
-.search-btn {
-    background-color: black;
-    border: none;
-    cursor: pointer;
-    border-radius: 30px; 
-    justify-content: center;
-    align-items: center;
-}
-
-.search-icon {
-    width: 30px;
-    height: 30px;
-    filter: invert(1);
-}
-
-.painting-icon {
-    width: 60px;
-    height: 60px;
-    filter: invert(1);
-
+/* Ensure images fit within their container */
+.image-cell {
+    display: inline-block; /* Allow images to align properly in columns */
+    margin-bottom: 20px; /* Space below each image */
+    width: 100%; /* Make sure the cell takes full width in the column */
 }
 
 .results {
-    width:60%;
-    height:70%;
-}                  
+    width: 100%; /* Ensure images fit within their container */
+    display: block; /* Remove inline spacing */
+    margin: 0 auto; /* Center images horizontally within the cell */
+}
+
+
+/* Search button styling */
+.search-btn {
+    background-color: black; /* Black button background */
+    border: none; /* No border for the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 30px; /* Rounded button */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+}
+
+/* Search icon inside the search button */
+.search-icon {
+    width: 30px; /* Width of the search icon */
+    height: 30px; /* Height of the search icon */
+    filter: invert(1); /* Invert color to make icon white */
+}
+
+/* Painting icon styling (presumably used elsewhere in the UI) */
+.painting-icon {
+    width: 60px; /* Width of the painting icon */
+    height: 60px; /* Height of the painting icon */
+    filter: invert(1); /* Invert color to make icon white */
+}
+
+/* Responsive design */
+@media (max-width: 1400px) {
+    .image-grid {
+        width: 50%; /* Width for medium-sized screens */
+    }
+}
+
+@media (max-width: 1000px) {
+    .image-grid {
+        width: 70%; /* Width for small screens */
+    }
+}
+
+@media (max-width: 800px) {
+    .image-grid {
+        width: 100%; /* Width for extra small screens */
+    }
+}
