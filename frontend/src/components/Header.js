@@ -43,6 +43,13 @@ export default function Header() {
         const handleSubmit = async (event) => {
             event.preventDefault();
             console.log(inputs);
+
+            // If the password does not match
+            if (!haveAccount && inputs.password !== inputs.confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
             const url = isLoggedIn
                 ? 'http://localhost:5000/get-users'
                 : 'http://localhost:5000/create-users';
