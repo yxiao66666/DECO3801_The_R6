@@ -7,6 +7,7 @@ export default function Search() {
     const [searchQuery, setSearchQuery] = useState(''); // Empty string for search query
     const [selectedImage, setSelectedImage] = useState(null); // State for the selected image file
     const [loading, setLoading] = useState(false); // State for loading indicator
+    const baseUrl = 'http://127.0.0.1:5000/';
 
     useEffect(() => {
         fetchImages();
@@ -15,7 +16,7 @@ export default function Search() {
     const fetchImages = async () => {
         setLoading(true); // Show loading icon
         try {
-            const imageResponse = await fetch('http://127.0.0.1:5000/');
+            const imageResponse = await fetch(baseUrl);
             const imageData = await imageResponse.json();
             setImages(imageData);
         } catch (error) {
@@ -37,7 +38,7 @@ export default function Search() {
         event.preventDefault();
         setLoading(true); // Show loading icon
         try {
-            const response = await fetch('http://127.0.0.1:5000/backend/search', {
+            const response = await fetch(`${baseUrl}/backend/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -139,13 +140,11 @@ export default function Search() {
                     </div>
                 ))}
             </div>
-
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">
                     More results...
                 </label>
             )}
-
             <br />
         </div>
     );
