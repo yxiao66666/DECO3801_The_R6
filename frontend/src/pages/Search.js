@@ -37,7 +37,7 @@ export default function Search() {
         event.preventDefault();
         setLoading(true); // Show loading icon
         try {
-            const response = await fetch('http://127.0.0.1:5000/search', {
+            const response = await fetch('http://127.0.0.1:5000/backend/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,28 +74,19 @@ export default function Search() {
     };
 
     return (
-        <div style={{ backgroundImage: 'url("../images/Sketch.png")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center', backgroundColor: 'black', color: 'white', minHeight: '100vh', padding: '20px' }}>
-
+        <div className="background-container" style={{ backgroundImage: 'url("../images/Sketch.png")'}}>
             <form id="form" onSubmit={handleSubmit}>
                 <center>
-                    <img 
-                        src="../images/ARTY.png"
-                        alt="ARTY" 
-                        style={{ width: 'auto', height: '18vw' ,margin:'50px 0'}}
-                    />
+                    <img src="../images/ARTY.png" alt="ARTY" className="arty-image"/>
                     {/* Container for searchbar, upload icon, and search icon */}
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-                        
+                    <div className="searchbar-container">
                         <input 
-                            style={{ paddingLeft: '15px', paddingRight: '60px', width: '600px' }} // Adjust width to accommodate icons
                             className="searchbar" 
                             type="search" 
                             placeholder="Upload and Search..." 
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
-
                         {/* Hidden file input for upload */}
                         <input
                             type="file"
@@ -104,33 +95,18 @@ export default function Search() {
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
-
                         {/* Upload icon placed inside search bar */}
                         <img 
                             src="../images/upload.png" 
                             alt="Upload Icon" 
-                            style={{
-                                position: 'relative',
-                                right: '50px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: '24px',
-                                cursor: 'pointer',
-                                marginTop: '25px' 
-                            }}
+                            className="upload-icon"
                             onClick={() => document.getElementById('file-upload').click()} // Trigger file input when clicked
                         />
-
                         {/* Search button with icon */}
-                        <button className="search-btn" type="submit" 
-                            aria-label="Search button" 
-                            style={{ 
-                                position: 'relative', 
-                                right: '0px', 
-                                top: '50%', 
-                                marginTop: '30px',
-                                transform: 'translateY(-50%)' 
-                            }}>
+                        <button 
+                            className="search-btn" 
+                            type="submit" 
+                            aria-label="Search button">
                             <img src="../images/search_icon.png" alt="Search Icon" className="search-icon" />
                         </button>
                         
@@ -140,15 +116,16 @@ export default function Search() {
 
             {/* Display loading icon while fetching images */}
             {loading && (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <img src="../images/loading.gif" alt="Loading..." style={{ width: '150px', height: '150px' }} />
+                <div className="loading-container">
+                    <img src="../images/loading.gif" alt="Loading..." className="loading-icon" />
                 </div>
+
             )}
 
             {/* Preview of selected image */}
             {selectedImage && (
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                    <img src={selectedImage} alt="Selected Preview" style={{ maxWidth: '500px', maxHeight: '400px' }} />
+                <div className="image-preview-container">
+                    <img src={selectedImage} alt="Selected Preview" className="image-preview" />
                 </div>
             )}
 
@@ -164,7 +141,7 @@ export default function Search() {
             </div>
 
             {visibleImages < images.length && (
-                <label onClick={loadMore} className="row" style={{ margin: 'auto', cursor: 'pointer', border: '2px solid white', borderRadius: '5px', textAlign: 'center', justifyContent: 'center', width: '50%' }}>
+                <label onClick={loadMore} className="load-more">
                     More results...
                 </label>
             )}
