@@ -32,7 +32,7 @@ blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning
 blip = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
 
 # Initialising sdbackbone
-webui_url = 'http://127.0.0.1:7860'
+webui_url = 'http://127.0.0.1:7860' # TODO: Change the url to 
 bb = StableDiffusionBackBone(webui_url)
 
 # Creating Database
