@@ -8,3 +8,5 @@ frontend/node_modules/
 backend/Pipfile
 backend/Pipfile.lock
 uploads
+
+*.DS_Store
