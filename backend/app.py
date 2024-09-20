@@ -97,7 +97,7 @@ def get_users():
 @cross_origin()
 def insert_user():
     '''
-    Inserts the new search image to the database
+    Inserts the user to the database
 
     Returns:
         The corresponding response to the outcome of query
