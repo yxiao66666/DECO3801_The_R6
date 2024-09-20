@@ -13,7 +13,7 @@ export default function Search() {
     // State to handle loading indicator
     const [loading, setLoading] = useState(false);
     // Base URL for API requests
-    const baseUrl = 'http://127.0.0.1:5000/';
+    const baseUrl = 'http://127.0.0.1:5000';
 
     // Function to load more images by increasing the visible count
     const loadMore = () => {
