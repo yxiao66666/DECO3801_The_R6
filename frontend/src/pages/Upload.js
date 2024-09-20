@@ -19,6 +19,7 @@ export default function Upload() {
     const ctxRef = useRef(null);
     const drawingCanvasRef = useRef(null);
     const drawingCtxRef = useRef(null);
+    const baseUrl = 'http://127.0.0.1:5000/';
 
     useEffect(() => {
         const newPreviews = files.map(file => URL.createObjectURL(file));
@@ -233,7 +234,7 @@ export default function Upload() {
             formData.append('text', text);
             try {
                 console.log("submitted!");
-                const response = await fetch('http://localhost:5000/upload', {
+                const response = await fetch(`${baseUrl}/backend/upload`, {
                     method: 'POST',
                     body: formData,
                 });
@@ -305,7 +306,7 @@ export default function Upload() {
             formData.append('canvasImage', selectedImage);  
             try {
                 console.log("submitted!");
-                const response = await fetch('http://localhost:5000/upload', {
+                const response = await fetch(`${baseUrl}/backend/upload`, {
                     method: 'POST',
                     body: formData,
                 });
@@ -378,7 +379,7 @@ export default function Upload() {
                                 onChange={handleChange}
                                 style={{ display: 'none' }}
                             />
-                            <label htmlFor="imageUpload" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                            <label htmlFor="imageUpload" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', color: 'white' }}>
                                 Browse
                             </label>
                             <button type="button" onClick={() => setShowCanvas(!showCanvas)} style={{ backgroundColor:'black', color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'5px', }}>
@@ -468,7 +469,7 @@ export default function Upload() {
                 <br></br>
 
                 <input type="submit" id="submit" style={{ display: 'none' }} />
-                <label htmlFor="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                <label htmlFor="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', color: 'white'}}>
                     Generate
                 </label>
     
