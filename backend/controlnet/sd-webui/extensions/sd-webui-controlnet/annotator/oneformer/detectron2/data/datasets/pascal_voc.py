@@ -59,7 +59,7 @@ def load_voc_instances(dirname: str, split: str, class_names: Union[List[str], T
             # difficult = int(obj.find("difficult").text)
             # if difficult == 1:
             # continue
-            bbox = obj.find("bndbox")
+            bbox = obj.find("bnox")
             bbox = [float(bbox.find(x).text) for x in ["xmin", "ymin", "xmax", "ymax"]]
             # Original annotations are integers in the range [1, W or H]
             # Assuming they mean 1-based pixel indices (inclusive),

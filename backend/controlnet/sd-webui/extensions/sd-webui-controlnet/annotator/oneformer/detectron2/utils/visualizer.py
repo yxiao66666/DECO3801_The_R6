@@ -14,7 +14,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from PIL import Image
 
 from annotator.oneformer.detectron2.data import MetadataCatalog
-from annotator.oneformer.detectron2.structures import BitMasks, Boxes, BoxMode, Keypoints, PolygonMasks, RotatedBoxes
+from annotator.oneformer.detectron2.structures import BitMasks, Boxes, BoxMode, Keypoints, PolygonMasks, Rotateoxes
 from annotator.oneformer.detectron2.utils.file_io import PathManager
 
 from .colormap import random_color
@@ -616,9 +616,9 @@ class Visualizer:
     ):
         """
         Args:
-            boxes (Boxes, RotatedBoxes or ndarray): either a :class:`Boxes`,
+            boxes (Boxes, Rotateoxes or ndarray): either a :class:`Boxes`,
                 or an Nx4 numpy array of XYXY_ABS format for the N objects in a single image,
-                or a :class:`RotatedBoxes`,
+                or a :class:`Rotateoxes`,
                 or an Nx5 numpy array of (x_center, y_center, width, height, angle_degrees) format
                 for the N objects in a single image,
             labels (list[str]): the text to be displayed for each instance.
@@ -1206,7 +1206,7 @@ class Visualizer:
         """
         Convert different format of boxes to an NxB array, where B = 4 or 5 is the box dimension.
         """
-        if isinstance(boxes, Boxes) or isinstance(boxes, RotatedBoxes):
+        if isinstance(boxes, Boxes) or isinstance(boxes, Rotateoxes):
             return boxes.tensor.detach().numpy()
         else:
             return np.asarray(boxes)

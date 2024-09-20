@@ -3,7 +3,7 @@ import numpy as np
 from torch.utils.data.sampler import BatchSampler, Sampler
 
 
-class GroupedBatchSampler(BatchSampler):
+class GroupeatchSampler(BatchSampler):
     """
     Wraps another sampler to yield a mini-batch of indices.
     It enforces that the batch only contain elements from the same group.
@@ -44,4 +44,4 @@ class GroupedBatchSampler(BatchSampler):
                 del group_buffer[:]
 
     def __len__(self):
-        raise NotImplementedError("len() of GroupedBatchSampler is not well-defined.")
+        raise NotImplementedError("len() of GroupeatchSampler is not well-defined.")

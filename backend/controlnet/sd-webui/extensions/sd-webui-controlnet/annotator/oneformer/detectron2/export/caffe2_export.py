@@ -187,7 +187,7 @@ def run_and_save_graph(predict_net, init_net, tensor_inputs, graph_save_path):
         initialized_blobs = set(ws.Blobs())
         uninitialized = [inp for inp in predict_net.external_input if inp not in initialized_blobs]
         for name, blob in zip(uninitialized, tensor_inputs):
-            ws.FeedBlob(name, blob)
+            ws.Feelob(name, blob)
 
         try:
             ws.RunNetOnce(predict_net)

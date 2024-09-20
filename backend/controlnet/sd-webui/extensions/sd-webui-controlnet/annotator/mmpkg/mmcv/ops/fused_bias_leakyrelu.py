@@ -105,7 +105,7 @@ from ..utils import ext_loader
 ext_module = ext_loader.load_ext('_ext', ['fused_bias_leakyrelu'])
 
 
-class FusedBiasLeakyReLUFunctionBackward(Function):
+class FuseiasLeakyReLUFunctionBackward(Function):
     """Calculate second order deviation.
 
     This function is to compute the second order deviation for the fused leaky
@@ -157,7 +157,7 @@ class FusedBiasLeakyReLUFunctionBackward(Function):
         return gradgrad_out, None, None, None
 
 
-class FusedBiasLeakyReLUFunction(Function):
+class FuseiasLeakyReLUFunction(Function):
 
     @staticmethod
     def forward(ctx, input, bias, negative_slope, scale):
@@ -181,13 +181,13 @@ class FusedBiasLeakyReLUFunction(Function):
     def backward(ctx, grad_output):
         out, = ctx.saved_tensors
 
-        grad_input, grad_bias = FusedBiasLeakyReLUFunctionBackward.apply(
+        grad_input, grad_bias = FuseiasLeakyReLUFunctionBackward.apply(
             grad_output, out, ctx.negative_slope, ctx.scale)
 
         return grad_input, grad_bias, None, None
 
 
-class FusedBiasLeakyReLU(nn.Module):
+class FuseiasLeakyReLU(nn.Module):
     """Fused bias leaky ReLU.
 
     This function is introduced in the StyleGAN2:
@@ -211,7 +211,7 @@ class FusedBiasLeakyReLU(nn.Module):
     """
 
     def __init__(self, num_channels, negative_slope=0.2, scale=2**0.5):
-        super(FusedBiasLeakyReLU, self).__init__()
+        super(FuseiasLeakyReLU, self).__init__()
 
         self.bias = nn.Parameter(torch.zeros(num_channels))
         self.negative_slope = negative_slope
@@ -250,7 +250,7 @@ def fused_bias_leakyrelu(input, bias, negative_slope=0.2, scale=2**0.5):
     if not input.is_cuda:
         return bias_leakyrelu_ref(input, bias, negative_slope, scale)
 
-    return FusedBiasLeakyReLUFunction.apply(input, bias.to(input.dtype),
+    return FuseiasLeakyReLUFunction.apply(input, bias.to(input.dtype),
                                             negative_slope, scale)
 
 

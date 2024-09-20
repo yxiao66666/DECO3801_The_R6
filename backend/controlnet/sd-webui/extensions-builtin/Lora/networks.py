@@ -287,7 +287,7 @@ def load_networks(names, te_multipliers=None, unet_multipliers=None, dyn_dims=No
             already_loaded[net.name] = net
         for emb_name, embedding in net.bundle_embeddings.items():
             if embedding.loaded:
-                emb_db.register_embedding_by_name(None, shared.sd_model, emb_name)
+                emb_register_embedding_by_name(None, shared.sd_model, emb_name)
 
     loaded_networks.clear()
 
@@ -341,7 +341,7 @@ def load_networks(names, te_multipliers=None, unet_multipliers=None, dyn_dims=No
         loaded_networks.append(net)
 
         for emb_name, embedding in net.bundle_embeddings.items():
-            if embedding.loaded is None and emb_name in emb_db.word_embeddings:
+            if embedding.loaded is None and emb_name in emb_word_embeddings:
                 logger.warning(
                     f'Skip bundle embedding: "{emb_name}"'
                     ' as it was already loaded from embeddings folder'
@@ -349,11 +349,11 @@ def load_networks(names, te_multipliers=None, unet_multipliers=None, dyn_dims=No
                 continue
 
             embedding.loaded = False
-            if emb_db.expected_shape == -1 or emb_db.expected_shape == embedding.shape:
+            if emb_expected_shape == -1 or emb_expected_shape == embedding.shape:
                 embedding.loaded = True
-                emb_db.register_embedding(embedding, shared.sd_model)
+                emb_register_embedding(embedding, shared.sd_model)
             else:
-                emb_db.skipped_embeddings[name] = embedding
+                emb_skipped_embeddings[name] = embedding
 
     if failed_to_load_networks:
         lora_not_found_message = f'Lora not found: {", ".join(failed_to_load_networks)}'

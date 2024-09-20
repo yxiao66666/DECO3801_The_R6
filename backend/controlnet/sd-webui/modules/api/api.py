@@ -764,13 +764,13 @@ class Api:
             return {embedding.name: convert_embedding(embedding) for embedding in embeddings.values()}
 
         return {
-            "loaded": convert_embeddings(db.word_embeddings),
-            "skipped": convert_embeddings(db.skipped_embeddings),
+            "loaded": convert_embeddings(word_embeddings),
+            "skipped": convert_embeddings(skipped_embeddings),
         }
 
     def refresh_embeddings(self):
         with self.queue_lock:
-            sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings(force_reload=True)
+            sd_hijack.model_hijack.embedding_load_textual_inversion_embeddings(force_reload=True)
 
     def refresh_checkpoints(self):
         with self.queue_lock:
@@ -784,7 +784,7 @@ class Api:
         try:
             shared.state.begin(job="create_embedding")
             filename = create_embedding(**args) # create empty embedding
-            sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings() # reload embeddings so new one can be immediately used
+            sd_hijack.model_hijack.embedding_load_textual_inversion_embeddings() # reload embeddings so new one can be immediately used
             return models.CreateResponse(info=f"create embedding filename: {filename}")
         except AssertionError as e:
             return models.TrainResponse(info=f"create embedding error: {e}")

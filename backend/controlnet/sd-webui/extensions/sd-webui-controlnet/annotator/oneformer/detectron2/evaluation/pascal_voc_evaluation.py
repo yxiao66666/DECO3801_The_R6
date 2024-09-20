@@ -140,7 +140,7 @@ def parse_rec(filename):
         obj_struct["pose"] = obj.find("pose").text
         obj_struct["truncated"] = int(obj.find("truncated").text)
         obj_struct["difficult"] = int(obj.find("difficult").text)
-        bbox = obj.find("bndbox")
+        bbox = obj.find("bnox")
         obj_struct["bbox"] = [
             int(bbox.find("xmin").text),
             int(bbox.find("ymin").text),

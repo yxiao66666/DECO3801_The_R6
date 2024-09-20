@@ -57,7 +57,7 @@ def _summarize_chunk(
     value: Tensor,
     scale: float,
 ) -> AttnChunk:
-    attn_weights = torch.baddbmm(
+    attn_weights = torch.badmm(
         torch.zeros(1, 1, 1, device=query.device, dtype=query.dtype),
         query,
         key.transpose(1,2),
@@ -120,7 +120,7 @@ def _get_attention_scores_no_kv_chunking(
     value: Tensor,
     scale: float,
 ) -> Tensor:
-    attn_scores = torch.baddbmm(
+    attn_scores = torch.badmm(
         torch.zeros(1, 1, 1, device=query.device, dtype=query.dtype),
         query,
         key.transpose(1,2),

@@ -17,7 +17,7 @@ from .hooks import (HOOKS, CheckpointHook, ClosureHook, DistEvalHook,
                     LoggerHook, LrUpdaterHook, MlflowLoggerHook,
                     NeptuneLoggerHook, OptimizerHook, PaviLoggerHook,
                     SyncBuffersHook, TensorboardLoggerHook, TextLoggerHook,
-                    WandbLoggerHook)
+                    WanLoggerHook)
 from .iter_based_runner import IterBasedRunner, IterLoader
 from .log_buffer import LogBuffer
 from .optimizer import (OPTIMIZER_BUILDERS, OPTIMIZERS,
@@ -31,7 +31,7 @@ __all__ = [
     'HOOKS', 'Hook', 'CheckpointHook', 'ClosureHook', 'LrUpdaterHook',
     'OptimizerHook', 'IterTimerHook', 'DistSamplerSeedHook', 'LoggerHook',
     'PaviLoggerHook', 'TextLoggerHook', 'TensorboardLoggerHook',
-    'NeptuneLoggerHook', 'WandbLoggerHook', 'MlflowLoggerHook',
+    'NeptuneLoggerHook', 'WanLoggerHook', 'MlflowLoggerHook',
     'DvcliveLoggerHook', '_load_checkpoint', 'load_state_dict',
     'load_checkpoint', 'weights_to_cpu', 'save_checkpoint', 'Priority',
     'get_priority', 'get_host_info', 'get_time_str', 'obj_from_dict',

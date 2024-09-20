@@ -31,8 +31,8 @@ from zoedepth.models.depth_model import DepthModel
 from zoedepth.models.base_models.midas import MidasCore
 from zoedepth.models.layers.attractor import AttractorLayer, AttractorLayerUnnormed
 from zoedepth.models.layers.dist_layers import ConditionalLogBinomial
-from zoedepth.models.layers.localbins_layers import (Projector, SeedBinRegressor,
-                                            SeedBinRegressorUnnormed)
+from zoedepth.models.layers.localbins_layers import (Projector, SeeinRegressor,
+                                            SeeinRegressorUnnormed)
 from zoedepth.models.layers.patch_transformer import PatchTransformerEncoder
 from zoedepth.models.model_io import load_state_from_resource
 
@@ -107,16 +107,16 @@ class ZoeDepthNK(DepthModel):
         )
 
         if bin_centers_type == "normed":
-            SeedBinRegressorLayer = SeedBinRegressor
+            SeeinRegressorLayer = SeeinRegressor
             Attractor = AttractorLayer
         elif bin_centers_type == "softplus":
-            SeedBinRegressorLayer = SeedBinRegressorUnnormed
+            SeeinRegressorLayer = SeeinRegressorUnnormed
             Attractor = AttractorLayerUnnormed
         elif bin_centers_type == "hybrid1":
-            SeedBinRegressorLayer = SeedBinRegressor
+            SeeinRegressorLayer = SeeinRegressor
             Attractor = AttractorLayerUnnormed
         elif bin_centers_type == "hybrid2":
-            SeedBinRegressorLayer = SeedBinRegressorUnnormed
+            SeeinRegressorLayer = SeeinRegressorUnnormed
             Attractor = AttractorLayer
         else:
             raise ValueError(
@@ -125,7 +125,7 @@ class ZoeDepthNK(DepthModel):
         # We have bins for each bin conf.
         # Create a map (ModuleDict) of 'name' -> seed_bin_regressor
         self.seed_bin_regressors = nn.ModuleDict(
-            {conf['name']: SeedBinRegressorLayer(btlnck_features, conf["n_bins"], mlp_dim=bin_embedding_dim//2, min_depth=conf["min_depth"], max_depth=conf["max_depth"])
+            {conf['name']: SeeinRegressorLayer(btlnck_features, conf["n_bins"], mlp_dim=bin_embedding_dim//2, min_depth=conf["min_depth"], max_depth=conf["max_depth"])
              for conf in bin_conf}
         )
 

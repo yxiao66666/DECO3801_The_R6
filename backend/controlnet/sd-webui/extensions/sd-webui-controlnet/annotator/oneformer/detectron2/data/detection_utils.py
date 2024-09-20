@@ -19,7 +19,7 @@ from annotator.oneformer.detectron2.structures import (
     Instances,
     Keypoints,
     PolygonMasks,
-    RotatedBoxes,
+    Rotateoxes,
     polygons_to_bitmask,
 )
 from annotator.oneformer.detectron2.utils.file_io import PathManager
@@ -473,7 +473,7 @@ def annotations_to_instances_rotated(annos, image_size):
     """
     boxes = [obj["bbox"] for obj in annos]
     target = Instances(image_size)
-    boxes = target.gt_boxes = RotatedBoxes(boxes)
+    boxes = target.gt_boxes = Rotateoxes(boxes)
     boxes.clip(image_size)
 
     classes = [obj["category_id"] for obj in annos]
