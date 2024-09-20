@@ -8,7 +8,9 @@ export default function Header() {
     const [showPopup, setShowPopup] = useState(false);
     const [isLoggedIn] = useState(false); 
     const [haveAccount, setHaveAccount] = useState(false); 
-
+    // Base URL for API requests
+    const baseUrl = 'http://127.0.0.1:5000';
+    
     const handleLogin = () => {
         setHaveAccount(true);
     };
@@ -51,8 +53,8 @@ export default function Header() {
             }
 
             const url = isLoggedIn
-                ? 'http://localhost:5000/get-users'
-                : 'http://localhost:5000/create-users';
+                ? `${baseUrl}/backend/users/get`
+                :  `${baseUrl}/backend/users/insert`;
         
             try {
                 const response = isLoggedIn
