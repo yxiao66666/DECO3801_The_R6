@@ -9,22 +9,6 @@ export default function Search() {
     const [loading, setLoading] = useState(false); // State for loading indicator
     const baseUrl = 'http://127.0.0.1:5000/';
 
-    useEffect(() => {
-        fetchImages();
-    }, []);
-
-    const fetchImages = async () => {
-        setLoading(true); // Show loading icon
-        try {
-            const imageResponse = await fetch(baseUrl);
-            const imageData = await imageResponse.json();
-            setImages(imageData);
-        } catch (error) {
-            console.error("Error fetching images:", error);
-        } finally {
-            setLoading(false); // Hide loading icon
-        }
-    };
 
     const loadMore = () => {
         setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 9 each time
@@ -123,7 +107,7 @@ export default function Search() {
 
             )}
 
-            {/* Preview of selected image */}
+            {/* Preview of selected image Grid */}
             {selectedImage && (
                 <div className="image-preview-container">
                     <img src={selectedImage} alt="Selected Preview" className="image-preview" />
