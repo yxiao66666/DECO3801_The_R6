@@ -379,12 +379,12 @@ export default function Upload() {
                                 onChange={handleChange}
                                 style={{ display: 'none' }}
                             />
-                            <label htmlFor="imageUpload" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', color: 'white' }}>
+                            <label htmlFor="imageUpload" style={{ backgroundColor:'black',width:'7em',color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
                                 Browse
                             </label>
-                            <button type="button" onClick={() => setShowCanvas(!showCanvas)} style={{ backgroundColor:'black', color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'5px', }}>
+                            <button type="button" onClick={() => setShowCanvas(!showCanvas)} style={{ width:'9em',color:'white',backgroundColor:'black', cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'5px',fontWeight:'bold'  }}>
                                 {showCanvas ? "No inpainting" : "With Inpainting"}
-                            </button>                   
+                            </button>                     
                         </div>
 
                         
@@ -469,7 +469,7 @@ export default function Upload() {
                 <br></br>
 
                 <input type="submit" id="submit" style={{ display: 'none' }} />
-                <label htmlFor="submit" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', color: 'white'}}>
+                <label htmlFor="submit" style={{ width:'7em',color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
                     Generate
                 </label>
     
