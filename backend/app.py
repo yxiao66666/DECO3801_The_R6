@@ -505,7 +505,7 @@ def search():
                 keyword = request.get_json().get('query')
                 raw_imgs = search_pinterest(keyword)
             else:
-                source_img = request.get_json('image')
+                source_img = request.get_json.get('image')
                 caption = generate_image_caption(image_path=source_img, model=blip, processor=blip_processor)
                 raw_imgs = search_pinterest(caption)
 
