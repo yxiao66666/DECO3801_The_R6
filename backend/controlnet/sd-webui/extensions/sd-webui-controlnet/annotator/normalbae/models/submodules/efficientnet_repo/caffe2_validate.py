@@ -102,7 +102,7 @@ def main():
     for i, (input, target) in enumerate(loader):
         # run the net and return prediction
         caffe2_in = input.data.numpy()
-        workspace.FeedBlob(input_blob, caffe2_in, device_opts)
+        workspace.Feelob(input_blob, caffe2_in, device_opts)
         workspace.RunNet(model.net, num_iter=1)
         output = workspace.FetchBlob(output_blob)
 

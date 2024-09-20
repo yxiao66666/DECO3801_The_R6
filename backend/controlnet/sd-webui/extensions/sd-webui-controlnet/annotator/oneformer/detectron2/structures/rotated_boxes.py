@@ -8,7 +8,7 @@ from annotator.oneformer.detectron2.layers.rotated_boxes import pairwise_iou_rot
 from .boxes import Boxes
 
 
-class RotatedBoxes(Boxes):
+class Rotateoxes(Boxes):
     """
     This structure stores a list of rotated boxes as a Nx5 torch.Tensor.
     It supports some common methods about boxes
@@ -220,18 +220,18 @@ class RotatedBoxes(Boxes):
 
         self.tensor = tensor
 
-    def clone(self) -> "RotatedBoxes":
+    def clone(self) -> "Rotateoxes":
         """
-        Clone the RotatedBoxes.
+        Clone the Rotateoxes.
 
         Returns:
-            RotatedBoxes
+            Rotateoxes
         """
-        return RotatedBoxes(self.tensor.clone())
+        return Rotateoxes(self.tensor.clone())
 
     def to(self, device: torch.device):
         # Boxes are assumed float32 and does not support to(dtype)
-        return RotatedBoxes(self.tensor.to(device=device))
+        return Rotateoxes(self.tensor.to(device=device))
 
     def area(self) -> torch.Tensor:
         """
@@ -317,34 +317,34 @@ class RotatedBoxes(Boxes):
         keep = (widths > threshold) & (heights > threshold)
         return keep
 
-    def __getitem__(self, item) -> "RotatedBoxes":
+    def __getitem__(self, item) -> "Rotateoxes":
         """
         Returns:
-            RotatedBoxes: Create a new :class:`RotatedBoxes` by indexing.
+            Rotateoxes: Create a new :class:`Rotateoxes` by indexing.
 
         The following usage are allowed:
 
-        1. `new_boxes = boxes[3]`: return a `RotatedBoxes` which contains only one box.
+        1. `new_boxes = boxes[3]`: return a `Rotateoxes` which contains only one box.
         2. `new_boxes = boxes[2:10]`: return a slice of boxes.
         3. `new_boxes = boxes[vector]`, where vector is a torch.ByteTensor
            with `length = len(boxes)`. Nonzero elements in the vector will be selected.
 
-        Note that the returned RotatedBoxes might share storage with this RotatedBoxes,
+        Note that the returned Rotateoxes might share storage with this Rotateoxes,
         subject to Pytorch's indexing semantics.
         """
         if isinstance(item, int):
-            return RotatedBoxes(self.tensor[item].view(1, -1))
+            return Rotateoxes(self.tensor[item].view(1, -1))
         b = self.tensor[item]
-        assert b.dim() == 2, "Indexing on RotatedBoxes with {} failed to return a matrix!".format(
+        assert b.dim() == 2, "Indexing on Rotateoxes with {} failed to return a matrix!".format(
             item
         )
-        return RotatedBoxes(b)
+        return Rotateoxes(b)
 
     def __len__(self) -> int:
         return self.tensor.shape[0]
 
     def __repr__(self) -> str:
-        return "RotatedBoxes(" + str(self.tensor) + ")"
+        return "Rotateoxes(" + str(self.tensor) + ")"
 
     def inside_box(self, box_size: Tuple[int, int], boundary_threshold: int = 0) -> torch.Tensor:
         """
@@ -456,20 +456,20 @@ class RotatedBoxes(Boxes):
         self.tensor[:, 4] = torch.atan2(scale_x * s, scale_y * c) * 180 / math.pi
 
     @classmethod
-    def cat(cls, boxes_list: List["RotatedBoxes"]) -> "RotatedBoxes":
+    def cat(cls, boxes_list: List["Rotateoxes"]) -> "Rotateoxes":
         """
-        Concatenates a list of RotatedBoxes into a single RotatedBoxes
+        Concatenates a list of Rotateoxes into a single Rotateoxes
 
         Arguments:
-            boxes_list (list[RotatedBoxes])
+            boxes_list (list[Rotateoxes])
 
         Returns:
-            RotatedBoxes: the concatenated RotatedBoxes
+            Rotateoxes: the concatenated Rotateoxes
         """
         assert isinstance(boxes_list, (list, tuple))
         if len(boxes_list) == 0:
             return cls(torch.empty(0))
-        assert all([isinstance(box, RotatedBoxes) for box in boxes_list])
+        assert all([isinstance(box, Rotateoxes) for box in boxes_list])
 
         # use torch.cat (v.s. layers.cat) so the returned boxes never share storage with input
         cat_boxes = cls(torch.cat([b.tensor for b in boxes_list], dim=0))
@@ -487,7 +487,7 @@ class RotatedBoxes(Boxes):
         yield from self.tensor
 
 
-def pairwise_iou(boxes1: RotatedBoxes, boxes2: RotatedBoxes) -> None:
+def pairwise_iou(boxes1: Rotateoxes, boxes2: Rotateoxes) -> None:
     """
     Given two lists of rotated boxes of size N and M,
     compute the IoU (intersection over union)
@@ -495,8 +495,8 @@ def pairwise_iou(boxes1: RotatedBoxes, boxes2: RotatedBoxes) -> None:
     The box order must be (x_center, y_center, width, height, angle).
 
     Args:
-        boxes1, boxes2 (RotatedBoxes):
-            two `RotatedBoxes`. Contains N & M rotated boxes, respectively.
+        boxes1, boxes2 (Rotateoxes):
+            two `Rotateoxes`. Contains N & M rotated boxes, respectively.
 
     Returns:
         Tensor: IoU, sized [N,M].

@@ -6,7 +6,7 @@ import os
 import torch
 from annotator.oneformer.pycocotools.cocoeval import COCOeval, maskUtils
 
-from annotator.oneformer.detectron2.structures import BoxMode, RotatedBoxes, pairwise_iou_rotated
+from annotator.oneformer.detectron2.structures import BoxMode, Rotateoxes, pairwise_iou_rotated
 from annotator.oneformer.detectron2.utils.file_io import PathManager
 
 from .coco_evaluation import COCOEvaluator
@@ -58,8 +58,8 @@ class RotatedCOCOeval(COCOeval):
         if self.is_rotated(dt) or self.is_rotated(gt):
             # TODO: take is_crowd into consideration
             assert all(c == 0 for c in is_crowd)
-            dt = RotatedBoxes(self.boxlist_to_tensor(dt, output_box_dim=5))
-            gt = RotatedBoxes(self.boxlist_to_tensor(gt, output_box_dim=5))
+            dt = Rotateoxes(self.boxlist_to_tensor(dt, output_box_dim=5))
+            gt = Rotateoxes(self.boxlist_to_tensor(gt, output_box_dim=5))
             return pairwise_iou_rotated(dt, gt)
         else:
             # This is the same as the classical COCO evaluation

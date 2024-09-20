@@ -87,7 +87,7 @@ function setupExtraNetworksForTab(tabname) {
             var sortedCards = Array.from(cards);
             sortedCards.sort(function(cardA, cardB) {
                 var a = cardA.dataset[sortKeyDataField];
-                var b = cardB.dataset[sortKeyDataField];
+                var b = cardataset[sortKeyDataField];
                 if (!isNaN(a) && !isNaN(b)) {
                     return parseInt(a) - parseInt(b);
                 }

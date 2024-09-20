@@ -69,7 +69,7 @@ export class ControlNetUnit {
     this.tabNav = tabs.querySelector('.tab-nav');
     this.tabIndex = childIndex(tab) - 1; // -1 because tab-nav is also at the same level.
 
-    this.attachEnabledButtonListener();
+    this.attachEnableuttonListener();
     this.attachControlTypeRadioListener();
     this.attachTabNavChangeObserver();
     this.attachImageUploadListener();
@@ -161,7 +161,7 @@ export class ControlNetUnit {
     tabNavButton.appendChild(span);
   }
 
-  attachEnabledButtonListener() {
+  attachEnableuttonListener() {
     this.enabledCheckbox.addEventListener('change', () => {
       this.updateActiveState();
       this.updateActiveUnitCount();

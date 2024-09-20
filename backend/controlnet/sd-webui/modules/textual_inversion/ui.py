@@ -9,9 +9,9 @@ from modules import sd_hijack, shared
 def create_embedding(name, initialization_text, nvpt, overwrite_old):
     filename = modules.textual_inversion.textual_inversion.create_embedding(name, nvpt, overwrite_old, init_text=initialization_text)
 
-    sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings()
+    sd_hijack.model_hijack.embedding_load_textual_inversion_embeddings()
 
-    return gr.Dropdown.update(choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys())), f"Created: {filename}", ""
+    return gr.Dropdown.update(choices=sorted(sd_hijack.model_hijack.embedding_word_embeddings.keys())), f"Created: {filename}", ""
 
 
 def train_embedding(*args):

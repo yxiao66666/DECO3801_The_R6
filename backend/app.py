@@ -17,10 +17,15 @@ from controlnet.sd_backbone import StableDiffusionBackBone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import LONGTEXT
 
+# Database
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.mysql import LONGTEXT
+
 
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant'
 # Folder to temporarily save generation results
 GENERATION_FOLDER = './generations'
@@ -499,6 +504,14 @@ def search():
     Returns:
         Response: A JSON response with a unique id for each image.
     '''
+    '''
+    Retrive data from the Pinterest API using the keyword or an image submitted by the user.
+
+    This endpoint returns a list of images as a JSON boject.
+
+    Returns:
+        Response: A JSON response with a unique id for each image.
+    '''
     if request.method == 'POST':
         try:
             if 'query' in request.get_json():
@@ -591,4 +604,8 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
+    with app.app_context():
+        db.create_all()
+
+        app.run(host='localhost', debug=True)
         app.run(host='localhost', debug=True)

@@ -8,7 +8,7 @@ def setup_wandb(cfg, args):
     if comm.is_main_process():
         init_args = {
             k.lower(): v
-            for k, v in cfg.WANDB.items()
+            for k, v in cfg.WANitems()
             if isinstance(k, str) and k not in ["config"]
         }
         # only include most related part to avoid too big table
@@ -26,7 +26,7 @@ def setup_wandb(cfg, args):
             init_args["name"] = os.path.basename(args.config_file)
         else:
             init_args["name"] = init_args["name"] + '_' + os.path.basename(args.config_file)
-        wandb.init(**init_args)
+        waninit(**init_args)
 
 
 class BaseRule(object):
@@ -89,7 +89,7 @@ class WandbWriter(EventWriter):
         # tensorboard writer. So we access its internal fields directly from here.
         if len(storage._vis_data) >= 1:
             stats["image"] = [
-                wandb.Image(img, caption=img_name)
+                wanImage(img, caption=img_name)
                 for img_name, img, step_num in storage._vis_data
             ]
             # Storage stores all image data and rely on this writer to clear them.
@@ -105,8 +105,8 @@ class WandbWriter(EventWriter):
                 data = [
                     [label, val] for (label, val) in zip(bucket_limits, bucket_counts)
                 ]
-                table = wandb.Table(data=data, columns=["label", "value"])
-                return wandb.plot.bar(table, "label", "value", title=tag)
+                table = wanTable(data=data, columns=["label", "value"])
+                return wanplot.bar(table, "label", "value", title=tag)
 
             stats["hist"] = [create_bar(**params) for params in storage._histograms]
 
@@ -114,7 +114,7 @@ class WandbWriter(EventWriter):
 
         if len(stats) == 0:
             return
-        wandb.log(stats, step=storage.iter)
+        wanlog(stats, step=storage.iter)
 
     def close(self):
-        wandb.finish()
+        wanfinish()

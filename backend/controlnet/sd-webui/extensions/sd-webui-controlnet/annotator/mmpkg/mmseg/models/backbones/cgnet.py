@@ -50,7 +50,7 @@ class GlobalContextExtractor(nn.Module):
         return out
 
 
-class ContextGuidedBlock(nn.Module):
+class ContextGuidelock(nn.Module):
     """Context Guided Block for CGNet.
 
     This class consists of four components: local feature extractor,
@@ -86,7 +86,7 @@ class ContextGuidedBlock(nn.Module):
                  norm_cfg=dict(type='BN', requires_grad=True),
                  act_cfg=dict(type='PReLU'),
                  with_cp=False):
-        super(ContextGuidedBlock, self).__init__()
+        super(ContextGuidelock, self).__init__()
         self.with_cp = with_cp
         self.downsample = downsample
 
@@ -270,7 +270,7 @@ class CGNet(nn.Module):
         self.level1 = nn.ModuleList()
         for i in range(num_blocks[0]):
             self.level1.append(
-                ContextGuidedBlock(
+                ContextGuidelock(
                     cur_channels if i == 0 else num_channels[1],
                     num_channels[1],
                     dilations[0],
@@ -290,7 +290,7 @@ class CGNet(nn.Module):
         self.level2 = nn.ModuleList()
         for i in range(num_blocks[1]):
             self.level2.append(
-                ContextGuidedBlock(
+                ContextGuidelock(
                     cur_channels if i == 0 else num_channels[2],
                     num_channels[2],
                     dilations[1],

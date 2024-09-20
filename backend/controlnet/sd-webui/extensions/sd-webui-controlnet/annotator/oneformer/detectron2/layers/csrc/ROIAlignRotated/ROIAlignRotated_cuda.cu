@@ -222,7 +222,7 @@ __global__ void RoIAlignRotatedForward(
 }
 
 template <typename T>
-__global__ void RoIAlignRotatedBackwardFeature(
+__global__ void RoIAlignRotateackwardFeature(
     const int nthreads,
     const T* top_diff,
     const int num_rois,
@@ -320,7 +320,7 @@ __global__ void RoIAlignRotatedBackwardFeature(
       } // ix
     } // iy
   } // CUDA_1D_KERNEL_LOOP
-} // RoIAlignRotatedBackward
+} // RoIAlignRotateackward
 
 at::Tensor ROIAlignRotated_forward_cuda(
     const at::Tensor& input,
@@ -422,7 +422,7 @@ at::Tensor ROIAlignRotated_backward_cuda(
   auto grad_ = grad.contiguous(), rois_ = rois.contiguous();
   AT_DISPATCH_FLOATING_TYPES(
       grad.scalar_type(), "ROIAlignRotated_backward", [&] {
-        RoIAlignRotatedBackwardFeature<scalar_t><<<grid, block, 0, stream>>>(
+        RoIAlignRotateackwardFeature<scalar_t><<<grid, block, 0, stream>>>(
             grad.numel(),
             grad_.data_ptr<scalar_t>(),
             num_rois,

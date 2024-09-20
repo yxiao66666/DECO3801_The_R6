@@ -36,21 +36,21 @@ class WandbLoggerHook(LoggerHook):
         if self.wandb is None:
             self.import_wandb()
         if self.init_kwargs:
-            self.wandb.init(**self.init_kwargs)
+            self.waninit(**self.init_kwargs)
         else:
-            self.wandb.init()
+            self.waninit()
 
     @master_only
     def log(self, runner):
         tags = self.get_loggable_tags(runner)
         if tags:
             if self.with_step:
-                self.wandb.log(
+                self.wanlog(
                     tags, step=self.get_iter(runner), commit=self.commit)
             else:
                 tags['global_step'] = self.get_iter(runner)
-                self.wandb.log(tags, commit=self.commit)
+                self.wanlog(tags, commit=self.commit)
 
     @master_only
     def after_run(self, runner):
-        self.wandb.join()
+        self.wanjoin()

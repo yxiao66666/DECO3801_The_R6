@@ -6,10 +6,10 @@ from .distributed_sampler import (
     TrainingSampler,
 )
 
-from .grouped_batch_sampler import GroupedBatchSampler
+from .grouped_batch_sampler import GroupeatchSampler
 
 __all__ = [
-    "GroupedBatchSampler",
+    "GroupeatchSampler",
     "TrainingSampler",
     "RandomSubsetTrainingSampler",
     "InferenceSampler",

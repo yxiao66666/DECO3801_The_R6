@@ -323,7 +323,7 @@
 * support resizable columns for touch (tablets) ([#15002](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/15002))
 
 ### Extensions and API:
-* Removed packages from requirements: basicsr, gfpgan, realesrgan; as well as their dependencies: absl-py, addict, beautifulsoup4, future, gdown, grpcio, importlib-metadata, lmdb, lpips, Markdown, platformdirs, PySocks, soupsieve, tb-nightly, tensorboard-data-server, tomli, Werkzeug, yapf, zipp, soupsieve
+* Removed packages from requirements: basicsr, gfpgan, realesrgan; as well as their dependencies: absl-py, addict, beautifulsoup4, future, gdown, grpcio, importlib-metadata, lm, lpips, Markdown, platformdirs, PySocks, soupsieve, tb-nightly, tensorboard-data-server, tomli, Werkzeug, yapf, zipp, soupsieve
 * Enable task ids for API ([#14314](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/14314))
 * add override_settings support for infotext API
 * rename generation_parameters_copypaste module to infotext_utils
@@ -907,7 +907,7 @@
 
 ### Features:
  * add UI to edit defaults
- * token merging (via dbolya/tomesd)
+ * token merging (via olya/tomesd)
  * settings tab rework: add a lot of additional explanations and links
  * load extensions' Git metadata in parallel to loading the main program to save a ton of time during startup
  * update extensions table: show branch, show date in separate column, and show version from tags if available

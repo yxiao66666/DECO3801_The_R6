@@ -105,7 +105,7 @@ from ..utils import ext_loader
 upfirdn2d_ext = ext_loader.load_ext('_ext', ['upfirdn2d'])
 
 
-class UpFirDn2dBackward(Function):
+class UpFirDn2ackward(Function):
 
     @staticmethod
     def forward(ctx, grad_output, kernel, grad_kernel, up, down, pad, g_pad,
@@ -225,7 +225,7 @@ class UpFirDn2d(Function):
     def backward(ctx, grad_output):
         kernel, grad_kernel = ctx.saved_tensors
 
-        grad_input = UpFirDn2dBackward.apply(
+        grad_input = UpFirDn2ackward.apply(
             grad_output,
             kernel,
             grad_kernel,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
@@ -12,6 +13,7 @@ export default function Search() {
 
     const loadMore = () => {
         setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 9 each time
+        setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 9 each time
     };
 
     const handleInputChange = (event) => {
@@ -21,6 +23,8 @@ export default function Search() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true); // Show loading icon
+        event.preventDefault();
+        setLoading(true); // Show loading icon
         try {
             const response = await fetch(`${baseUrl}/backend/search`, {
                 method: 'POST',
@@ -28,10 +32,16 @@ export default function Search() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ query: searchQuery })
+                body: JSON.stringify({ query: searchQuery })
             });
 
             if (response.ok) {
                 const result = await response.json();
+                console.log('Search results:', result);
+
+                // Convert the result object to an array if necessary
+                const resultArray = Object.values(result);
+                setImages(resultArray); // Update images state with search results
                 console.log('Search results:', result);
 
                 // Convert the result object to an array if necessary
@@ -44,8 +54,22 @@ export default function Search() {
             console.error('Error:', error);
         } finally {
             setLoading(false); // Hide loading icon
+        } finally {
+            setLoading(false); // Hide loading icon
         }
     };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+            const imageUrl = URL.createObjectURL(file); // Create a URL for the selected image
+            setSelectedImage(imageUrl); // Update state with the image URL
+            console.log("Uploaded file:", file);
+        } else {
+            alert('Please select a valid .png or .jpg file.');
+        }
+    };
+
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -68,6 +92,7 @@ export default function Search() {
                         <input 
                             className="searchbar" 
                             type="search" 
+                            placeholder="Upload and Search..." 
                             placeholder="Upload and Search..." 
                             onChange={handleInputChange}
                             value={searchQuery}
@@ -94,6 +119,7 @@ export default function Search() {
                             aria-label="Search button">
                             <img src="../images/search_icon.png" alt="Search Icon" className="search-icon" />
                         </button>
+                        
                         
                     </div>
                 </center>

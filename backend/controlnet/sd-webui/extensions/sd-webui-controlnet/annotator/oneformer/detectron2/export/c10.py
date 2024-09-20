@@ -10,7 +10,7 @@ from annotator.oneformer.detectron2.layers.roi_align_rotated import ROIAlignRota
 from annotator.oneformer.detectron2.modeling import poolers
 from annotator.oneformer.detectron2.modeling.proposal_generator import rpn
 from annotator.oneformer.detectron2.modeling.roi_heads.mask_head import mask_rcnn_inference
-from annotator.oneformer.detectron2.structures import Boxes, ImageList, Instances, Keypoints, RotatedBoxes
+from annotator.oneformer.detectron2.structures import Boxes, ImageList, Instances, Keypoints, Rotateoxes
 
 from .shared import alias, to_device
 
@@ -24,14 +24,14 @@ class Caffe2Boxes(Boxes):
     """
     Representing a list of detectron2.structures.Boxes from minibatch, each box
     is represented by a 5d vector (batch index + 4 coordinates), or a 6d vector
-    (batch index + 5 coordinates) for RotatedBoxes.
+    (batch index + 5 coordinates) for Rotateoxes.
     """
 
     def __init__(self, tensor):
         assert isinstance(tensor, torch.Tensor)
         assert tensor.dim() == 2 and tensor.size(-1) in [4, 5, 6], tensor.size()
         # TODO: make tensor immutable when dim is Nx5 for Boxes,
-        # and Nx6 for RotatedBoxes?
+        # and Nx6 for Rotateoxes?
         self.tensor = tensor
 
 
@@ -417,8 +417,8 @@ class Caffe2FastRCNNOutputsInference:
         proposal_boxes = proposals[0].proposal_boxes
         if isinstance(proposal_boxes, Caffe2Boxes):
             rois = Caffe2Boxes.cat([p.proposal_boxes for p in proposals])
-        elif isinstance(proposal_boxes, RotatedBoxes):
-            rois = RotatedBoxes.cat([p.proposal_boxes for p in proposals])
+        elif isinstance(proposal_boxes, Rotateoxes):
+            rois = Rotateoxes.cat([p.proposal_boxes for p in proposals])
         elif isinstance(proposal_boxes, Boxes):
             rois = Boxes.cat([p.proposal_boxes for p in proposals])
         else:
