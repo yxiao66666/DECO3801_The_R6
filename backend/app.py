@@ -518,26 +518,28 @@ def search():
         Response: A JSON response with a unique id for each image.
 
     Requires:
-        'query' != None or '' -> the JSON cannot contain an empty string or item for the key
-        'image' != None or '' -> the JSON cannot contain an empty string or item for the key
+        the type of 'query' == String
+        the type of 'image' == Path to File
     '''
     if request.method == 'POST':
         try:
-            if 'query' in request.get_json():
-                keyword = request.get_json().get('query')
-                raw_imgs = search_pinterest(keyword)
-            else:
-                source_img = request.get_json().get('image')
+            source_img = request.get_json().get('image').strip()
+            keyword = request.get_json().get('query')
+
+            if source_img != None and source_img != '':
                 caption = generate_image_caption(image_path=source_img, model=blip, processor=blip_processor)
                 raw_imgs = search_pinterest(caption)
-
+            elif keyword != None and keyword != '':
+                raw_imgs = search_pinterest(keyword)
+            else:
+                return {}, 200
             images = response_pull_images(raw_imgs)
             response = dict()
             for i in range(len(images)):
                 response[i] = images[i]
             return jsonify(response), 200
         except Exception as e:
-            return {}, 500
+            return {'Exception Raised: ' : e}, 500
     else:
         return {}, 405
 
