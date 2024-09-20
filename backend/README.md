@@ -1,5 +1,12 @@
 # Backend
 
+## Process
+
+1. Install all dependencies referring to [Dependencies](#dependencies)
+2. Make a ssh tunnel to the uqcloud by entering the command `ssh -L 3306:localhost:3306 -J your_student_account@remote.labs.eait.uq.edu.au your_student_account@arty.zones.eait.uq.edu.au`. Make sure to keep this termianl open. (NOTE: If this does not work you may have to set your ssh key to the EAIT Remote Desktop first!)
+3. Run `backend/app.py` from a different terminal, and ensure that this is kept open.
+4. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
+
 ## Dependencies
 
 - flask
@@ -7,6 +14,7 @@
 - flask_sqlalchemy
 - pillow
 - pymysql
+- pytorch
 - requests
 - sqlalchemy
 - transformers
@@ -14,10 +22,10 @@
 Run the command below to install the dependencies. 
 
 ```bash
-pip install flask flask_cors flask_sqlalchemy pillow pymysql requests sqlalchemy transformers
+pip install flask flask_cors flask_sqlalchemy pillow pymysql torch requests sqlalchemy transformers
 ```
 
-> For the dependencies of the Stable Diffusion model, refer to [this documentation](controlnet\README.md)
+> For the dependencies of the Stable Diffusion model, refer to [the README in controlnet folder](controlnet\README.md)
 
 ## Database
 

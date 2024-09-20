@@ -101,7 +101,7 @@ def get_users():
 @cross_origin()
 def insert_user():
     '''
-    Inserts the new search image to the database
+    Inserts the new user to the database
 
     Returns:
         The corresponding response to the outcome of query
@@ -125,6 +125,12 @@ def insert_user():
 @app.route('/backend/users/delete', methods = ['POST'])
 @cross_origin()
 def delete_user():
+    '''
+    Deletes the user with corresponding id from the database
+
+    Returns:
+        The corresponding response to the outcome of query
+    '''
     if request.method == 'POST':
         try:
             data = request.get_json()
@@ -223,7 +229,7 @@ class SearchText(db.Model):
 @cross_origin()
 def get_search_text():
     '''
-    Gets the text used to search with the corresponding id
+    Gets the text used to search images with the corresponding id
 
     Returns:
         JSON with infomation of the text used to search with the corresponding id or
@@ -239,7 +245,7 @@ def get_search_text():
 @cross_origin()
 def get_search_texts():
     '''
-    Gets all texts used for search
+    Gets all texts used to search images
 
     Returns:
         JSON with all texts used for search
@@ -297,7 +303,7 @@ class GenerateImage(db.Model):
 @cross_origin()
 def get_generate_img():
     '''
-    Gets the generated image used to search with the corresponding id
+    Gets the generated image with the corresponding id
 
     Returns:
         JSON with infomation of the generated image used to search with the corresponding id or
@@ -387,7 +393,7 @@ def get_generate_text():
 @cross_origin()
 def get_generate_texts():
     '''
-    Gets all texts used to generate images
+    Gets all prompts used to generate images
 
     Returns:
         JSON with all texts used to generate images
@@ -523,8 +529,8 @@ def search():
     '''
     if request.method == 'POST':
         try:
-            source_img = request.get_json().get('image').strip()
-            keyword = request.get_json().get('query')
+            source_img = request.get_json().get('image')
+            keyword = request.get_json().get('query').strip()
 
             if source_img != None and source_img != '':
                 caption = generate_image_caption(image_path=source_img, model=blip, processor=blip_processor)
