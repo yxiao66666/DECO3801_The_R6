@@ -1,8 +1,94 @@
 /* Main container with black background */
 .main {
+/* Main container with black background */
+.main {
     background-color: black;
     height: 100vw; /* Full viewport width height */
 }
+
+.background-container {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: black;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+}
+  
+.arty-image {
+    width: auto;
+    height: 18vw;
+    margin: 50px 0;
+}
+  
+.searchbar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.searchbar {
+    padding-left: 15px;
+    padding-right: 60px; /* Adjust width to accommodate icons */
+    width: 600px;
+}
+  
+.upload-icon {
+    position: relative;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    cursor: pointer;
+    margin-top: 25px;
+}
+  
+.search-btn {
+    position: relative;
+    right: 0;
+    top: 50%;
+    margin-top: 30px;
+    transform: translateY(-50%);
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.loading-icon {
+    width: 150px;
+    height: 150px;
+}
+
+
+.image-preview-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+  
+.image-preview {
+    max-width: 500px;
+    max-height: 400px;
+}
+  
+.load-more {
+    margin: auto;
+    cursor: pointer;
+    border: 2px solid white;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    justify-content: center;
+    width: 50%;
+    display: flex
+    
+}
+
 
 /* Text description styling with white color, cursive font, and text shadow */
 .description {
@@ -59,10 +145,37 @@
     width: 30px; /* Width of the search icon */
     height: 30px; /* Height of the search icon */
     filter: invert(1); /* Invert color to make icon white */
+    width: 30px; /* Width of the search icon */
+    height: 30px; /* Height of the search icon */
+    filter: invert(1); /* Invert color to make icon white */
 }
 
 /* Painting icon styling (presumably used elsewhere in the UI) */
+/* Painting icon styling (presumably used elsewhere in the UI) */
 .painting-icon {
+    width: 60px; /* Width of the painting icon */
+    height: 60px; /* Height of the painting icon */
+    filter: invert(1); /* Invert color to make icon white */
+}
+
+/* Responsive design */
+@media (max-width: 1400px) {
+    .image-grid {
+        width: 50%; /* Width for medium-sized screens */
+    }
+}
+
+@media (max-width: 1000px) {
+    .image-grid {
+        width: 70%; /* Width for small screens */
+    }
+}
+
+@media (max-width: 800px) {
+    .image-grid {
+        width: 100%; /* Width for extra small screens */
+    }
+}
     width: 60px; /* Width of the painting icon */
     height: 60px; /* Height of the painting icon */
     filter: invert(1); /* Invert color to make icon white */
