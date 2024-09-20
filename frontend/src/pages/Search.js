@@ -2,32 +2,41 @@ import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
-    const [images, setImages] = useState([]); // Store the image data
-    const [visibleImages, setVisibleImages] = useState(9); // Control how many images are visible initially
-    const [searchQuery, setSearchQuery] = useState(''); // Empty string for search query
-    const [selectedImage, setSelectedImage] = useState(null); // State for the selected image file
-    const [loading, setLoading] = useState(false); // State for loading indicator
+    // State to store the image data
+    const [images, setImages] = useState([]);
+    // State to control how many images are visible initially
+    const [visibleImages, setVisibleImages] = useState(9);
+    // State to store the search query
+    const [searchQuery, setSearchQuery] = useState('');
+    // State to store the selected image file
+    const [selectedImage, setSelectedImage] = useState(null);
+    // State to handle loading indicator
+    const [loading, setLoading] = useState(false);
+    // Base URL for API requests
     const baseUrl = 'http://127.0.0.1:5000/';
 
-
+    // Function to load more images by increasing the visible count
     const loadMore = () => {
-        setVisibleImages(prevVisible => prevVisible + 9); // Increase the visible images by 9 each time
+        setVisibleImages(prevVisible => prevVisible + 9);
     };
 
+    // Function to handle input change for the search query
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
+    // Function to handle form submission and fetch search results
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true); // Show loading icon
+        setLoading(true); // Show loading icon while fetching data
+
         try {
             const response = await fetch(`${baseUrl}/backend/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query: searchQuery })
+                body: JSON.stringify({ query: searchQuery }) // Send the search query to the backend
             });
 
             if (response.ok) {
@@ -36,17 +45,18 @@ export default function Search() {
 
                 // Convert the result object to an array if necessary
                 const resultArray = Object.values(result);
-                setImages(resultArray); // Update images state with search results
+                setImages(resultArray); // Update state with search results
             } else {
                 console.error('Search failed');
             }
         } catch (error) {
             console.error('Error:', error);
         } finally {
-            setLoading(false); // Hide loading icon
+            setLoading(false); // Hide loading icon after fetching data
         }
     };
 
+    // Function to handle file input change and update selected image
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
@@ -59,11 +69,12 @@ export default function Search() {
     };
 
     return (
-        <div className="background-container" style={{ backgroundImage: 'url("../images/Sketch.png")'}}>
+        <div className="background-container" style={{ backgroundImage: 'url("../images/Sketch.png")' }}>
             <form id="form" onSubmit={handleSubmit}>
                 <center>
-                    <img src="../images/ARTY.png" alt="ARTY" className="arty-image"/>
-                    {/* Container for searchbar, upload icon, and search icon */}
+                    {/* Logo image */}
+                    <img src="../images/ARTY.png" alt="ARTY" className="arty-image" />
+                    {/* Container for search bar, upload icon, and search button */}
                     <div className="searchbar-container">
                         <input 
                             className="searchbar" 
@@ -72,7 +83,7 @@ export default function Search() {
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
-                        {/* Hidden file input for upload */}
+                        {/* Hidden file input for image upload */}
                         <input
                             type="file"
                             accept=".png,.jpg"
@@ -80,7 +91,7 @@ export default function Search() {
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
-                        {/* Upload icon placed inside search bar */}
+                        {/* Upload icon to trigger file input */}
                         <img 
                             src="../images/upload.png" 
                             alt="Upload Icon" 
@@ -94,29 +105,23 @@ export default function Search() {
                             aria-label="Search button">
                             <img src="../images/search_icon.png" alt="Search Icon" className="search-icon" />
                         </button>
-                        
                     </div>
                 </center>
             </form>
-
             {/* Display loading icon while fetching images */}
             {loading && (
                 <div className="loading-container">
                     <img src="../images/loading.gif" alt="Loading..." className="loading-icon" />
                 </div>
-
             )}
-
-            {/* Preview of selected image Grid */}
+            {/* Preview of the selected image */}
             {selectedImage && (
                 <div className="image-preview-container">
                     <img src={selectedImage} alt="Selected Preview" className="image-preview" />
                 </div>
             )}
-
             <br />
-
-            {/* Grid Container for images */}
+            {/* Grid Container for displaying images */}
             <div className="image-grid">
                 {images.slice(0, visibleImages).map((url, index) => (
                     <div key={index} className="image-cell">
@@ -124,10 +129,9 @@ export default function Search() {
                     </div>
                 ))}
             </div>
+            {/* Load more button if there are more images to display */}
             {visibleImages < images.length && (
-                <label onClick={loadMore} className="load-more">
-                    More results...
-                </label>
+                <label onClick={loadMore} className="load-more">More results...</label>
             )}
             <br />
         </div>
