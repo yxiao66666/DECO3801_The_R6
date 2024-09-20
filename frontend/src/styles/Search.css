@@ -80,12 +80,15 @@
     margin: auto;
     cursor: pointer;
     border: 2px solid white;
+    color: white;
     border-radius: 5px;
     text-align: center;
     justify-content: center;
     width: 50%;
+    display: flex
+    
 }
-  
+
 
 /* Text description styling with white color, cursive font, and text shadow */
 .description {
