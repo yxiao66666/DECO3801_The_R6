@@ -68,19 +68,6 @@ export default function Search() {
         }
     };
 
-
-    // Function to handle file input change and update selected image
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
-            const imageUrl = URL.createObjectURL(file); // Create a URL for the selected image
-            setSelectedImage(imageUrl); // Update state with the image URL
-            console.log("Uploaded file:", file);
-        } else {
-            alert('Please select a valid .png or .jpg file.');
-        }
-    };
-
     return (
         <div className="background-container" style={{ backgroundImage: 'url("../images/Sketch.png")' }}>
             <form id="form" onSubmit={handleSubmit}>
@@ -92,7 +79,6 @@ export default function Search() {
                         <input 
                             className="searchbar" 
                             type="search" 
-                            placeholder="Upload and Search..." 
                             placeholder="Upload and Search..." 
                             onChange={handleInputChange}
                             value={searchQuery}
