@@ -1,88 +1,80 @@
 /* User home page styling */
 .user-home {
-    font-family: Arial, sans-serif; /* Font family for the user home page */
-    text-align: center; /* Center-align text */
-    padding: 20px; /* Padding around the content */
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
 
 /* Header section styling */
 .user-home-header {
-    background-size: cover; /* Cover the background area with the image */
-    background-position: center; /* Center the background image */
-    padding: 100px; /* Padding around the content */
-    text-align: center; /* Center-align text */
-    color: black; /* Black text color */
-    font-size: small; /* Small font size */
-    width: 100%; /* Full width */
-    min-height: 700px; /* Minimum height */
+    background-size: cover;
+    background-position: center;
+    padding: 100px;
+    text-align: center;
+    color: black;
+    font-size: small;
+    width: 100%;
+    min-height: 700px;
 }
 
 /* Content section styling */
 .user-home-content {
-    margin-bottom: 20px; /* Space below the content */
+    margin-bottom: 20px;
 }
 
 /* User works list styling */
 .user-works ul {
-    list-style-type: none; /* Remove default list bullets */
-    padding: 0; /* Remove padding */
+    list-style-type: none;
+    padding: 0;
 }
 
 .user-works li {
-    margin: 10px 0; /* Space between list items */
-}
-
-/* Footer section styling */
-.user-home-footer {
-    margin-top: 20px; /* Space above the footer */
-}
-
-/* Logout button styling */
-.logout-button {
-    padding: 10px 20px; /* Padding inside the button */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Rounded corners */
-    background-color: blue; /* Blue background color */
-    color: white; /* White text color */
-    font-size: 16px; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth background color transition */
-}
-
-.logout-button:hover {
-    background-color: darkblue; /* Darker blue background on hover */
+    margin: 10px 0;
 }
 
 /* User options section styling */
 .user-options {
-    display: flex; /* Flexbox layout */
-    justify-content: center; /* Center-align items horizontally */
-    gap: 70px; /* Space between items */
+    display: flex;
+    justify-content: center;
+    gap: 90px; /* Adjusted space between items */
 }
 
-/* Option link styling */
-.option-link {
-    display: flex; /* Flexbox layout for alignment */
-    align-items: center; /* Center-align items vertically */
+/* Button styling */
+.button {
+    padding: 8px 20px; /* Padding inside the button */
+    border: 2px solid white; /* White border */
+    border-radius: 20px; 
+    background-color: black; /* Black background color */
+    color: white; /* White text color */
+    font-size: 16px; /* Font size */
     cursor: pointer; /* Pointer cursor on hover */
-    font-size: 18px; /* Font size */
-    color: black; /* Black text color */
-    text-decoration: none; /* Remove underline from links */
-    transition: color 0.3s; /* Smooth color transition */
+    transition: background-color 0.3s, transform 0.3s,box-shadow 0.3s ease; /* Smooth transitions */
+
 }
 
-.option-link:hover {
-    text-decoration: underline; /* Underline on hover */
-}
-
-/* Icon styling within option links */
-.option-icon {
-    width: 20px; /* Icon width */
-    height: 20px; /* Icon height */
-    margin-right: 10px; /* Space between icon and text */
+.button:hover {
+    background-color: white; /* White background on hover */
+    color: black; /* Black text on hover */
+    /* border: 2px solid rgb(0, 0, 0); White border */
+    transition: box-shadow 0.3s ease;
+    box-shadow: 0 0 8px rgb(0, 0, 0); 
 }
 
 /* Margin for user works section */
 .user-works {
-    margin-top: 50px; /* Space above the user works section */
+    margin-top: 50px;
+}
+
+.user-avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.user-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }

@@ -8,9 +8,7 @@ export default function Userhome() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Here you would fetch user data from your backend
-        // For now, we'll use dummy data
-        const fetchedEmail = "user@example.com"; // Replace with actual fetched email
+        const fetchedEmail = "@user"; // Replace with actual fetched email
         const fetchedWorks = [
             "Artwork 1",
             "Artwork 2",
@@ -22,7 +20,6 @@ export default function Userhome() {
     }, []);
 
     const handleLogout = () => {
-        // Handle logout logic here (e.g., clearing tokens, etc.)
         navigate("/"); // Redirect to homepage
     };
 
@@ -34,20 +31,23 @@ export default function Userhome() {
         <div className="user-home">
             <header className="user-home-header" style={{backgroundImage:'url("../images/user_bg.png")'}}>
                 <br /><br />
+                <div className="user-avatar-container">
+                    <img src="../images/user_profile.jpg" alt="User Avatar" className="user-avatar" />
+                </div>
                 <h1>Welcome, {userEmail}</h1>
                 <br /><br /><br />
                 <div className="user-options">
-                    <span className="option-link" onClick={scrollToWorks}>
+                    <button className="button" onClick={scrollToWorks}>
                         My Works
-                    </span>
-                    <span className="option-link" onClick={handleLogout}>
+                    </button>
+                    <button className="button" onClick={handleLogout}>
                         Logout
-                    </span>
+                    </button>
                 </div>
             </header>
             <main className="user-home-content">
                 <section className="user-works" id="user-works">
-                    <h4>Your Works</h4>
+                    <h4>My Works</h4>
                     <ul>
                         {userWorks.map((work, index) => (
                             <li key={index}>{work}</li>
