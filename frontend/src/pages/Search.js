@@ -111,7 +111,7 @@ export default function Search() {
             {/* Display loading icon while fetching images */}
             {loading && (
                 <div className="loading-container">
-                    <img src="../images/loading.gif" alt="Loading..." className="loading-icon" />
+                    <img src="../images/loading-icon.gif" alt="Loading..." className="loading-icon" />
                 </div>
             )}
             {/* Preview of the selected image */}

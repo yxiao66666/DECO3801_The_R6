@@ -1,25 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
+import "../styles/Upload.css";
 
 export default function Upload() {
     const [files, setFiles] = useState([]);
     const [text, setText] = useState('');
+    const [textvisible, setTextVisible] = useState(false);
     const [previews, setPreviews] = useState([]); 
     const [aiOptions, setAiOptions] = useState([]);
-    const [brushSize, setBrushSize] = useState(15);
-    const [tool, setTool] = useState('brush');
     const [isDrawing, setIsDrawing] = useState(false);
     const [originalWidth, setOriginalWidth] = useState(0);
     const [originalHeight, setOriginalHeight] = useState(0);
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageChosen, setChosen] = useState(false);
     const [showCanvas, setShowCanvas] = useState(false);
+    const [isDrawingEnd, setIsDrawingEnd] = useState(false);
+    // State to handle loading indicator
+    const [loading, setLoading] = useState(false);
+
+
+    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+    const [rect, setRects] = useState([]);
 
     const undoStack = useRef([]);
     const canvasRef = useRef(null);
-    const ctxRef = useRef(null);
     const drawingCanvasRef = useRef(null);
-    const drawingCtxRef = useRef(null);
-    const baseUrl = 'http://127.0.0.1:5000/';
+   
 
     useEffect(() => {
         const newPreviews = files.map(file => URL.createObjectURL(file));
@@ -35,48 +40,33 @@ export default function Upload() {
         setAiOptions(updatedOptions);
     };
 
-    // Initialize canvas context
-    useEffect(() => {
-        if(showCanvas){
-            //canvas displayed for user
-            const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
-
-            //canvas used to send to backend.
-            const drawingCanvas = drawingCanvasRef.current;
-            const drawingCtx = drawingCanvas.getContext('2d');
-
-            ctxRef.current = ctx;
-            drawingCtxRef.current = drawingCtx;
-
-            ctx.lineCap = 'round';
-            ctx.lineWidth = brushSize;
-            ctx.strokeStyle = '#FFFFFF';
-
-            drawingCtx.lineCap = 'round';
-            drawingCtx.lineWidth = brushSize;
-            drawingCtx.strokeStyle = '#FFFFFF';
-
-        }
-        
-    });
 
  
     // Original handleChange function to handle file uploads
     const handleChange = (event) => {
         const selectedFiles = event.target.files;
         if (selectedFiles.length > 0) {
+            if(selectedFiles.length > 3) {
+                alert("Please choose no more than 3 images");
+                return
+            }
             setFiles(Array.from(selectedFiles));
             const newPreviews = Array.from(selectedFiles).map(file => URL.createObjectURL(file));
             setPreviews(newPreviews);
         }
     };
 
+    const handleClick = () => {
+        if(textvisible) {
+            setText('');
+        }
+        setTextVisible(prev => !prev);
+    }
+
     // handleCanvasChange for uploading and placing image on the canvas
     const handleCanvasChange = (event) => {
-        
         const selectedImage = event.target.files[0];
-        if (selectedImage) {
+        if (selectedImage ) {
             const img = new Image();
             img.src = URL.createObjectURL(selectedImage);
             img.onload = () => {
@@ -84,11 +74,24 @@ export default function Upload() {
                 const ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Center and scale image to fit canvas
-                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                const x = (canvas.width / 2) - (img.width / 2) * scale;
-                const y = (canvas.height / 2) - (img.height / 2) * scale;
-                ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                
+                const canvasAspectRatio = canvas.width / canvas.height;
+                const imgAspectRatio = img.width / img.height;
+
+                let drawWidth, drawHeight;
+
+                if (imgAspectRatio > canvasAspectRatio) {
+                    drawWidth = canvas.width;
+                    drawHeight = drawWidth / imgAspectRatio;
+                } else {
+                    drawHeight = canvas.height;
+                    drawWidth = drawHeight * imgAspectRatio;
+                }
+
+                const offsetX = (canvas.width - drawWidth) / 2;
+                const offsetY = (canvas.height - drawHeight) / 2;
+
+                ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
                 setSelectedImage(selectedImage);
                 setOriginalWidth(img.width);
@@ -97,88 +100,124 @@ export default function Upload() {
 
                 // Reset mask canvas for drawing
                 const drawingCanvas = drawingCanvasRef.current;
+                drawingCanvas.width = img.width;
+                drawingCanvas.height = img.height;
                 const drawingCtx = drawingCanvas.getContext('2d');
                 drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
             };
 
-            
-        
+
         }
+        
+        
     };
 
     // drawing functions on both the visible and hidden canvas
     const startDrawing = (e) => {
         e.preventDefault();
-        setIsDrawing(true);
-        draw(e); // Start drawing immediately
-    };
+        if(!selectedImage){
+            alert("Please choose an image first");
+            return;
+        }
+        else{
+            setIsDrawing(true);
+            setIsDrawingEnd(false);
+            const canvas = canvasRef.current;
+            const rect = canvas.getBoundingClientRect();
 
+            //correct mousedown position
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            setStartPos({ x, y });
+            setRects(prev => [...prev, { x, y, width: 0, height: 0 }]);
+
+        }
+        
+    }
+
+    const draw = (e) => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        const rectBounds = canvas.getBoundingClientRect();
+    
+        if (isDrawing) {
+            e.preventDefault();
+    
+            // 获取当前鼠标位置
+            const currentX = e.clientX - rectBounds.left;
+            const currentY = e.clientY - rectBounds.top;
+    
+            const width = currentX - startPos.x;
+            const height = currentY - startPos.y;
+    
+            
+    
+            // 绘制已上传的图片
+            const img = new Image();
+            img.src = selectedImage; // 使用已选择的图片
+            img.onload = () => {
+                // 重新绘制画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空画布
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 绘制图片
+                
+                // 绘制已保存的矩形
+                rect.forEach(r => {
+                    ctx.strokeStyle = 'black';
+                    ctx.strokeRect(r.x, r.y, r.width, r.height);
+                });
+    
+                // 绘制当前框选的矩形
+                ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)'; // 框选的颜色
+                ctx.strokeRect(startPos.x, startPos.y, width, height);
+            };
+        }
+    };
+    
     const stopDrawing = (e) => {
         e.preventDefault();
         setIsDrawing(false);
-        ctxRef.current.beginPath();
-        drawingCtxRef.current.beginPath(); // Reset drawing on the mask canvas
-    };
-
-    const draw = (e) => {
+    
         if (!isDrawing) return;
-        e.preventDefault();
     
         const canvas = canvasRef.current;
-        const rect = canvas.getBoundingClientRect();  // Get canvas size and position
-        
-        let clientX, clientY;
-
-        if (e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
-        }
-        
-        // Adjust for the scaling factor if canvas has been resized by CSS
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
+        const rectBounds = canvas.getBoundingClientRect();
+        const width = e.clientX - rectBounds.left - startPos.x;
+        const height = e.clientY - rectBounds.top - startPos.y;
     
-        const x = (clientX - rect.left) * scaleX;  // Adjusting the X coordinate
-        const y = (clientY - rect.top) * scaleY;   // Adjusting the Y coordinate
+        const newRect = { x: startPos.x, y: startPos.y, width, height };
+        setRects(prev => [...prev, newRect]);
     
-        // Draw on visible canvas
-        const ctx = ctxRef.current;
-        ctx.lineWidth = brushSize;
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = tool === 'eraser' ? '#000000' : '#FFFFFF';
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-    
-        // Draw on hidden mask canvas
-        const drawingCtx = drawingCtxRef.current;
-        drawingCtx.lineWidth = brushSize;
-        drawingCtx.lineCap = 'round';
-        drawingCtx.strokeStyle = tool === 'eraser' ? '#000000' : '#FFFFFF'; // White strokes on mask
-        drawingCtx.lineTo(x, y);
-        drawingCtx.stroke();
-        drawingCtx.beginPath();
-        drawingCtx.moveTo(x, y);
-
-        saveCanvasState();
+        // 重新绘制以确保框选矩形被渲染
+        draw(e);
     };
+    
+    
     
 
     const clearCanvas = () => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-
         const drawingCanvas = drawingCanvasRef.current;
         const drawingCtx = drawingCanvas.getContext('2d');
         drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); 
         setChosen(false);
-        setSelectedImage('');
+        setRects([]);
     };
+
+    const drawMask = (newRect) => {
+        const drawingCanvas = drawingCanvasRef.current;
+        const drawingCtx = drawingCanvas.getContext('2d');
+        drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        
+        // Draw white rectangle for the mask
+        drawingCtx.fillStyle = 'white';
+        drawingCtx.fillRect(newRect.x, newRect.y, newRect.width, newRect.height);
+        
+        // Ensure the rest is black
+        const maskWidth = drawingCanvas.width;
+        const maskHeight = drawingCanvas.height;
+        drawingCtx.fillStyle = 'black';
+        drawingCtx.fillRect(0, 0, maskWidth, maskHeight);
+
+    }
 
 
     // Save the current canvas state for undo
@@ -217,6 +256,7 @@ export default function Upload() {
     // Handle file upload and submit together
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
 
         // Export the mask (hidden canvas) as a black and white image
         const drawingCanvas = drawingCanvasRef.current;
@@ -234,7 +274,7 @@ export default function Upload() {
             formData.append('text', text);
             try {
                 console.log("submitted!");
-                const response = await fetch(`${baseUrl}/backend/upload`, {
+                const response = await fetch('http://localhost:5000/upload', {
                     method: 'POST',
                     body: formData,
                 });
@@ -306,7 +346,7 @@ export default function Upload() {
             formData.append('canvasImage', selectedImage);  
             try {
                 console.log("submitted!");
-                const response = await fetch(`${baseUrl}/backend/upload`, {
+                const response = await fetch('http://localhost:5000/upload', {
                     method: 'POST',
                     body: formData,
                 });
@@ -332,62 +372,77 @@ export default function Upload() {
     
 
     return (
-    <div style={{ backgroundImage: 'url("../images/Sketch.png")', backgroundColor: 'black', color: 'white', backgroundSize: 'cover',
-        backgroundPosition: 'center', minHeight: '100vh'}}>
+    <div style={{backgroundColor:'black', minHeight:'100vh'}}>
         <center>
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <div className="container" style={{ margin: 'auto', fontFamily: 'Arial, sans-serif' }}>
-                    <h2>Want AI pictures? Upload your work here!</h2>
+
+                    <br/>
                     <div className="avatar-upload" style={{ width: '100%' }}>
                         <div className="avatar-preview" style={{ width: '100%', display: 'flex', flexDirection: 'row', gap: '10px' }}>
                             {previews.length === 0 && (
-                                <div id="defaultPreview" style={{
-                                    width: '70%', height: '33em', justifyContent: 'center', alignItems: 'center',
-                                    margin: '0% auto', backgroundImage: 'url(/images/hum-2.jpg)',
-                                    backgroundSize: 'cover', backgroundPosition: 'center', border: '2px solid white', borderRadius: '5px'}}>
+                                <div id="defaultPreview" style={{ backgroundImage: 'url(/images/hum-2.gif)',invert:-1}}>
+                                    <h2>-Upload your work-</h2>
                                 </div>
                             )}
                             {previews.map((preview, index) => (
                                 <div key={index} style={{ width: '100%', position: 'relative' }}>
-                                    <div id="imagePreview" style={{
-                                        width: '100%', height: '20em', backgroundImage: `url(${preview})`,
-                                        backgroundSize: 'cover', backgroundPosition: 'center', border: '2px solid white', borderRadius: '5px'}}>
+                                    <div id="imagePreview" style={{backgroundImage: `url(${preview})`}}>
+                                        
                                     </div>
 
                                     {/* Selection Box for AI Options */}
                                     <select
                                         value={aiOptions[index]}
                                         onChange={(e) => handleOptionChange(index, e.target.value)}
-                                        style={{ position: 'absolute', top: '10px', right: '10px', padding: '5px', borderRadius: '5px' }}>
+                                        >
                                         <option value="AI Options">AI options</option>
-                                        <option value="Inpaint">Inpaint</option>
-                                        <option value="Canny">Canny</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Inpaint">Canny</option>
+                                        <option value="Canny">mlsd</option>
+                                        <option value="Other">openpose_faceonly</option>
+                                        <option value="Other">openpose_hand</option>
+                                        <option value="Other">dw_openpose_full</option>
+                                        <option value="Other">animal_openpose</option>
+                                        <option value="Other">depth_anything_v2</option>
+                                        <option value="Other">seg_ofade20k</option>
+                                        <option value="Other">seg_anime_face</option>
+                                        <option value="Other">shuffle</option>
+                                        <option value="Other">t2ia_color_grid</option>
                                     </select>
-                                    <br></br>
-                                    <br></br>
+                                    
                                 </div>
                             ))}
+                            <br></br>
+                            <br></br>
+                            <div className="avatar-edit">
+                                <input
+                                    multiple
+                                    type="file"
+                                    id="imageUpload"
+                                    accept=".png, .jpg, .jpeg"
+                                    onChange={handleChange}
+                                    style={{ display: 'none' }}
+                                />
+                                <button className="function-btn" type="button" htmlFor="imageUpload" onPointerDown={() => document.getElementById('imageUpload').click()} >
+                                    Browse
+                                </button>
+                                <button className="function-btn" type="button" onClick={() => setShowCanvas(!showCanvas)} >
+                                    {showCanvas ? "No inpainting" : "With Inpainting"}
+                                </button>
+                                <button
+                                    className="function-btn"
+                                    type="button"
+                                    htmlFor="textAreaExample1" onClick={handleClick} 
+                                >
+                                    {textvisible? "No text" : "With text"}
+                                </button>
+                                <input className="function-btn" type="submit" id="submit" style={{ display: 'none' }} />
+                                <button className="function-btn" htmlFor="submit">
+                                    Generate
+                                </button>
+                                                  
+                            </div>
                         </div>
-                        <br></br>
-                        <div className="avatar-edit">
-                            <input
-                                multiple
-                                type="file"
-                                id="imageUpload"
-                                accept=".png, .jpg, .jpeg"
-                                onChange={handleChange}
-                                style={{ display: 'none' }}
-                            />
-                            <label htmlFor="imageUpload" style={{ backgroundColor:'black',width:'7em',color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                                Browse
-                            </label>
-                            <button type="button" onClick={() => setShowCanvas(!showCanvas)} style={{ width:'9em',color:'white',backgroundColor:'black', cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'5px',fontWeight:'bold'  }}>
-                                {showCanvas ? "No inpainting" : "With Inpainting"}
-                            </button>                     
-                        </div>
-
-                        
 
                         <br />
                         <br />
@@ -404,7 +459,7 @@ export default function Upload() {
                                     onTouchStart={startDrawing}
                                     width="800"
                                     height="600"
-                                    style={{ backgroundColor:'white',display: 'start', width: '50em', height: '50em', border: '1px solid white', marginTop: '10px' }}
+                                    style={{ backgroundColor:'white',display: 'start', border: '3px solid #ccc', marginTop: '10px' }}
                                 />
                                 <canvas 
                                     ref={drawingCanvasRef} 
@@ -420,22 +475,10 @@ export default function Upload() {
                                 />
         
                                 <br/>
-                                <div>
-                                    <button type="button" onClick={() => setTool('brush')} className="search-btn" style={{ marginRight: '10px'}}>
-                                        <img src="../images/brush.png" className="painting-icon" alt="brush"/>
+                                <div style={{display:'flex', alignItems:'center',justifyContent:'center'}}>
+                                    <button type="button" onPointerDown={undoLastAction} className="painting-tool" >
+                                        <img src="../images/undo.png" className="painting-icon" alt="undo"/>
                                     </button>
-                                    <button type="button" onPointerDown={undoLastAction} className="search-btn" style={{ marginRight: '10px' }}>
-                                        <img src="../images/eraser.jpg" className="painting-icon" alt="undo"/>
-                                    </button>
-                                    <label>Brush Size:</label>
-                                    <input
-                                        type="range"
-                                        min="1"
-                                        max="20"
-                                        value={brushSize}
-                                        onChange={(e) => setBrushSize(e.target.value)}
-                                        style={{ marginLeft: '10px', marginRight:'10px'}}
-                                    />
                                     <input
                                         multiple
                                         type="file"
@@ -445,12 +488,16 @@ export default function Upload() {
                                         style={{ display: 'none' }}
                                         
                                     />
-                                    <label htmlFor="canvasUpload" onPointerDown={() => document.getElementById('canvasUpload').click()} style={{ cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                                        Choose an image
-                                    </label>
-                                    <button type="button" onPointerDown={clearCanvas} style={{ backgroundColor:'black', color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px',marginLeft:'3px', }}>
-                                        Clear canvas
-                                    </button>  
+                                    <div style={{alignItems:'center'}}>
+                                        <button className="function-btn" type="button" htmlFor="canvasUpload" onPointerDown={() => document.getElementById('canvasUpload').click()}>
+                                            Choose an image
+                                        </button>
+                                        <button className="function-btn" type="button" onPointerDown={clearCanvas} >
+                                            Clear canvas
+                                        </button> 
+
+                                    </div>
+                                     
                                 
                                 </div>
                             </>   
@@ -462,22 +509,33 @@ export default function Upload() {
                 <br></br>
                 <br></br>
 
-                <h2>Add Text</h2>
-                <textarea className="form-control" id="textAreaExample1" rows="4" value={text} placeholder="Enter your description here..." onChange={e => setText(e.target.value)} style={{ width: '65%' }}></textarea>
-                
-                <br></br>
-                <br></br>
-
-                <input type="submit" id="submit" style={{ display: 'none' }} />
-                <label htmlFor="submit" style={{ width:'7em',color:'white',cursor: 'pointer', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                    Generate
-                </label>
+                {textvisible && (
+                    <textarea 
+                        className="form-control" 
+                        id="textAreaExample1" 
+                        rows="4" 
+                        value={text} 
+                        placeholder="Enter your description here..." 
+                        onChange={e => setText(e.target.value)} 
+                        style={{ width: '65%'}}
+                    ></textarea>
+                )} 
+                <br/>
+                <br/>
+                {loading && (
+                <div className="loading-overlay">
+                    <div className="loading-container">
+                        <img src="../images/loading-icon.gif" alt="Loading..." className="loading-icon" />
+                    </div>
+                </div>
+                )}
     
             </form>
             
         </center>
         
     </div>
+    
     
   );
 }
