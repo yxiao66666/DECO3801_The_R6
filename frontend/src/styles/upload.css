@@ -91,14 +91,7 @@ select {
 
 }
 
-
-
 label:hover, button:hover {
     transform:letter-spacing 0.5s ease;
     letter-spacing: 0.05rem; 
 }
-
-
-
-
-

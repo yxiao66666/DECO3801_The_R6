@@ -17,14 +17,14 @@ export default function Upload() {
     // State to handle loading indicator
     const [loading, setLoading] = useState(false);
 
-
     const [startPos, setStartPos] = useState({ x: 0, y: 0 });
     const [rect, setRects] = useState([]);
 
     const undoStack = useRef([]);
     const canvasRef = useRef(null);
     const drawingCanvasRef = useRef(null);
-   
+    // Base URL for API requests
+    const baseUrl = 'http://127.0.0.1:5000';
 
     useEffect(() => {
         const newPreviews = files.map(file => URL.createObjectURL(file));
@@ -40,8 +40,6 @@ export default function Upload() {
         setAiOptions(updatedOptions);
     };
 
-
- 
     // Original handleChange function to handle file uploads
     const handleChange = (event) => {
         const selectedFiles = event.target.files;
@@ -105,11 +103,7 @@ export default function Upload() {
                 const drawingCtx = drawingCanvas.getContext('2d');
                 drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
             };
-
-
         }
-        
-        
     };
 
     // drawing functions on both the visible and hidden canvas
@@ -130,9 +124,7 @@ export default function Upload() {
             const y = e.clientY - rect.top;
             setStartPos({ x, y });
             setRects(prev => [...prev, { x, y, width: 0, height: 0 }]);
-
         }
-        
     }
 
     const draw = (e) => {
@@ -143,31 +135,29 @@ export default function Upload() {
         if (isDrawing) {
             e.preventDefault();
     
-            // 获取当前鼠标位置
+            // Get current curser position
             const currentX = e.clientX - rectBounds.left;
             const currentY = e.clientY - rectBounds.top;
     
             const width = currentX - startPos.x;
             const height = currentY - startPos.y;
-    
-            
-    
-            // 绘制已上传的图片
+
+            // Uploaded image
             const img = new Image();
-            img.src = selectedImage; // 使用已选择的图片
+            img.src = selectedImage; // Use the uploaded images
             img.onload = () => {
-                // 重新绘制画布
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空画布
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 绘制图片
+                // Redraw canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
                 
-                // 绘制已保存的矩形
+                // Create the rectangle for canvas
                 rect.forEach(r => {
                     ctx.strokeStyle = 'black';
                     ctx.strokeRect(r.x, r.y, r.width, r.height);
                 });
     
-                // 绘制当前框选的矩形
-                ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)'; // 框选的颜色
+                // Size of the canvas
+                ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)'; // Colour of the canvas
                 ctx.strokeRect(startPos.x, startPos.y, width, height);
             };
         }
@@ -186,13 +176,9 @@ export default function Upload() {
     
         const newRect = { x: startPos.x, y: startPos.y, width, height };
         setRects(prev => [...prev, newRect]);
-    
-        // 重新绘制以确保框选矩形被渲染
+
         draw(e);
     };
-    
-    
-    
 
     const clearCanvas = () => {
         const drawingCanvas = drawingCanvasRef.current;
@@ -274,7 +260,7 @@ export default function Upload() {
             formData.append('text', text);
             try {
                 console.log("submitted!");
-                const response = await fetch('http://localhost:5000/upload', {
+                const response = await fetch(`${baseUrl}/backend/upload`, {
                     method: 'POST',
                     body: formData,
                 });
@@ -346,7 +332,7 @@ export default function Upload() {
             formData.append('canvasImage', selectedImage);  
             try {
                 console.log("submitted!");
-                const response = await fetch('http://localhost:5000/upload', {
+                const response = await fetch(`${baseUrl}/backend/upload`, {
                     method: 'POST',
                     body: formData,
                 });
@@ -361,22 +347,14 @@ export default function Upload() {
             } catch (error) {
                 console.error('Error:', error);
             }
-
-        };
-        
-
-        
-        
+        }; 
     };
-
-    
 
     return (
     <div style={{backgroundColor:'black', minHeight:'100vh'}}>
         <center>
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <div className="container" style={{ margin: 'auto', fontFamily: 'Arial, sans-serif' }}>
-
                     <br/>
                     <div className="avatar-upload" style={{ width: '100%' }}>
                         <div className="avatar-preview" style={{ width: '100%', display: 'flex', flexDirection: 'row', gap: '10px' }}>
@@ -439,16 +417,16 @@ export default function Upload() {
                                 <input className="function-btn" type="submit" id="submit" style={{ display: 'none' }} />
                                 <button className="function-btn" htmlFor="submit">
                                     Generate
-                                </button>
-                                                  
+                                </button>          
                             </div>
                         </div>
 
                         <br />
                         <br />
+
                         {showCanvas && (
                             <>
-                                <h1>Polish your work with inpainting, if you use this on iPad, two fingers double touch to move up/down the whole page</h1>
+                                <h1 style={{color:'white'}}>Polish your work with inpainting, if you use this on iPad, two fingers double touch to move up/down the whole page</h1>
                                 <canvas
                                     ref={canvasRef}
                                     onMouseDown={startDrawing}
@@ -473,8 +451,9 @@ export default function Upload() {
                                     height="500" 
                                     style={{display:'none'}}
                                 />
-        
+
                                 <br/>
+
                                 <div style={{display:'flex', alignItems:'center',justifyContent:'center'}}>
                                     <button type="button" onPointerDown={undoLastAction} className="painting-tool" >
                                         <img src="../images/undo.png" className="painting-icon" alt="undo"/>
@@ -486,7 +465,6 @@ export default function Upload() {
                                         accept=".png, .jpg, .jpeg"
                                         onChange={handleCanvasChange}
                                         style={{ display: 'none' }}
-                                        
                                     />
                                     <div style={{alignItems:'center'}}>
                                         <button className="function-btn" type="button" htmlFor="canvasUpload" onPointerDown={() => document.getElementById('canvasUpload').click()}>
@@ -495,14 +473,10 @@ export default function Upload() {
                                         <button className="function-btn" type="button" onPointerDown={clearCanvas} >
                                             Clear canvas
                                         </button> 
-
                                     </div>
-                                     
-                                
                                 </div>
                             </>   
                         )}
-                        
                     </div>
                 </div>
 
