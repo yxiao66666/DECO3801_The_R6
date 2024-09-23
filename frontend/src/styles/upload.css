@@ -1,0 +1,104 @@
+
+.painting-tool {
+    background-color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 30px; 
+    justify-content: center;
+    align-items: center;
+}
+
+#defaultPreview {
+    width: 70%;
+    height: 38em;
+    margin: 0 auto;
+    background-Size: cover;
+    background-Position: center;
+    border: 2px solid white;
+    border-Radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+
+#imagePreview {
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #ccc;
+    border-Radius: 5px;
+    background-color: aliceblue;
+    width: 20vw;
+    height: 20vw;
+}
+
+.avatar-edit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:1em;
+
+}
+
+select {
+    position:absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    width:12%;
+    border-Radius: 5px;
+    border: 1px solid #ccc;
+    background-color:darkgray;
+    color:white;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.loading-icon {
+    width: 35vw;
+    height: 25vw;
+  
+}
+
+.function-btn{
+    color:white;
+    background-color:black;
+    cursor: pointer;
+    border-radius: 10px;
+    width:15em;
+    padding: 10px;
+    border: 1px solid #ccc;
+
+}
+
+
+
+label:hover, button:hover {
+    transform:letter-spacing 0.5s ease;
+    letter-spacing: 0.05rem; 
+}
+
+
+
+
+

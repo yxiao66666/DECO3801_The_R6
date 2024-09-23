@@ -58,8 +58,9 @@
 }
   
 .loading-icon {
-    width: 150px;
-    height: 150px;
+    width: 35vw;
+    height: 25vw;
+  
 }
 
 
@@ -145,7 +146,7 @@
     filter: invert(1); /* Invert color to make icon white */
 }
 
-/* Painting icon styling (presumably used elsewhere in the UI) */
+
 .painting-icon {
     width: 60px; /* Width of the painting icon */
     height: 60px; /* Height of the painting icon */
@@ -155,18 +156,18 @@
 /* Responsive design */
 @media (max-width: 1400px) {
     .image-grid {
-        width: 50%; /* Width for medium-sized screens */
+        width: 70%; /* Width for medium-sized screens */
     }
 }
 
 @media (max-width: 1000px) {
     .image-grid {
-        width: 70%; /* Width for small screens */
+        width: 80%; /* Width for small screens */
     }
 }
 
 @media (max-width: 800px) {
     .image-grid {
-        width: 100%; /* Width for extra small screens */
+        width: 90%; /* Width for extra small screens */
     }
 }
