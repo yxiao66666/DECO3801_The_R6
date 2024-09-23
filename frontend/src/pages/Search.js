@@ -117,8 +117,10 @@ export default function Search() {
             </form>
             {/* Display loading icon while fetching images */}
             {loading && (
-                <div className="loading-container">
-                    <img src="../images/loading-icon.gif" alt="Loading..." className="loading-icon" />
+                <div className="loading-overlay">
+                    <div className="loading-container">
+                        <img src="../images/loading-icon.gif" alt="Loading..." className="loading-icon" />
+                    </div>
                 </div>
             )}
             {/* Preview of the selected image */}
