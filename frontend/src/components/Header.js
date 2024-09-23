@@ -8,7 +8,7 @@ export default function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true'); 
     const [haveAccount, setHaveAccount] = useState(false); 
     const baseUrl = 'http://127.0.0.1:5000';
-    const navigate = useNavigate(); // Initialize the useNavigate hook
+    const navigate = useNavigate(); // Initialise the useNavigate hook
 
     const handleLogin = () => {
         setIsLoggedIn(true);
@@ -59,7 +59,6 @@ export default function Header() {
             event.preventDefault();
             console.log(inputs);
         
-            // Determine the URL based on the login/signup state
             const url = haveAccount
                 ? `${baseUrl}/backend/users/authenticate`
                 : `${baseUrl}/backend/users/insert`;
@@ -83,6 +82,8 @@ export default function Header() {
                         const data = await response.json();
                         console.log("Login successful:", data);
                         localStorage.setItem('userEmail', inputs.email); // Store the email in localStorage
+                        localStorage.setItem('userId', data.user_id); // Store the user ID in localStorage
+                        console.log("Stored user ID:", data.user_id); // Log the stored user ID
                         onLogin(); // Set the user as logged in
                         closePopup();
                     } else if (response.status === 401) {
@@ -108,7 +109,7 @@ export default function Header() {
                 console.error('Error making request:', error);
             }
         };
-                        
+                                
         return (
             <div className="popup-overlay" onClick={handleOverlayClick}>
                 <div className="popup-container">

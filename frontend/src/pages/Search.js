@@ -1,77 +1,163 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
-    // State to store the image data
+    const [userId, setUserId] = useState(null);
     const [images, setImages] = useState([]);
-    // State to control how many images are visible initially
     const [visibleImages, setVisibleImages] = useState(9);
-    // State to store the search query
     const [searchQuery, setSearchQuery] = useState('');
-    // State to store the selected image file
     const [selectedImage, setSelectedImage] = useState(null);
-    // State to handle loading indicator
     const [loading, setLoading] = useState(false);
-    // Base URL for API requests
+    const [savedImages, setSavedImages] = useState(new Set());
     const baseUrl = 'http://127.0.0.1:5000';
 
-    // Function to load more images by increasing the visible count
+    useEffect(() => {
+        const id = localStorage.getItem('userId');
+        console.log("Retrieved user ID:", id); // Log to verify
+        setUserId(id);
+
+        // Fetch saved images for the user
+        if (id) {
+            fetchSavedImages(id);
+        }
+    }, [userId]); // Runs when userId changes
+
+    const fetchSavedImages = async (id) => {
+        try {
+            const response = await fetch(`${baseUrl}/backend/saved_image/get/user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: id }),
+            });
+            if (response.ok) {
+                const savedImageArray = await response.json();
+                const savedImageSet = new Set(savedImageArray.map(image => image.sd_image_path));
+                setSavedImages(savedImageSet);
+            } else {
+                console.error('Failed to fetch saved images');
+            }
+        } catch (error) {
+            console.error('Error fetching saved images:', error);
+        }
+    };
+
     const loadMore = () => {
         setVisibleImages(prevVisible => prevVisible + 9);
     };
 
-    // Function to handle input change for the search query
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
-    // Function to handle form submission and fetch search results
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true); // Show loading icon while fetching data
+        setLoading(true);
     
         try {
             const formData = new FormData();
-            formData.append('query', searchQuery); // Always send the search query
+            formData.append('query', searchQuery);
     
-            // If there's an image selected, append it to the form data
             const fileInput = document.getElementById('file-upload');
             if (fileInput && fileInput.files.length > 0) {
-                formData.append('image', fileInput.files[0]); // Append the selected image
+                formData.append('image', fileInput.files[0]);
             }
     
             const response = await fetch(`${baseUrl}/backend/search`, {
                 method: 'POST',
-                body: formData, // Send the form data
+                body: formData,
             });
     
             if (response.ok) {
                 const result = await response.json();
                 console.log('Search results:', result);
-    
-                // Convert the result object to an array if necessary
                 const resultArray = Object.values(result);
-                setImages(resultArray); // Update state with search results
+                setImages(resultArray);
             } else {
                 console.error('Search failed');
             }
         } catch (error) {
             console.error('Error:', error);
         } finally {
-            setLoading(false); // Hide loading icon after fetching data
+            setLoading(false);
         }
     };
-    
 
-    // Function to handle file input change and update selected image
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
-            const imageUrl = URL.createObjectURL(file); // Create a URL for the selected image
-            setSelectedImage(imageUrl); // Update state with the image URL
+            const imageUrl = URL.createObjectURL(file);
+            setSelectedImage(imageUrl);
             console.log("Uploaded file:", file);
         } else {
             alert('Please select a valid .png or .jpg file.');
+        }
+    };
+
+    const toggleSaveImage = async (imageUrl) => {
+        const newSavedImages = new Set(savedImages);
+        if (newSavedImages.has(imageUrl)) {
+            await deleteSavedImage(imageUrl); // Call the delete function
+            newSavedImages.delete(imageUrl); // Remove if already saved
+        } else {
+            newSavedImages.add(imageUrl); // Add if not saved
+            console.log('Saving image with:', {
+                user_id: userId, // Use the state variable here
+                sd_image_path: imageUrl,
+            });
+
+            if (!userId) {
+                console.error("User ID is not available. Cannot save image.");
+                return; // Exit the function if userId is null
+            }
+
+            // Make the API call to save the image
+            try {
+                const response = await fetch(`${baseUrl}/backend/saved_image/insert`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        sd_image_path: imageUrl,
+                    }),
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to save image');
+                }
+            } catch (error) {
+                console.error('Error saving image:', error);
+            }
+        }
+        setSavedImages(newSavedImages);
+    };
+
+    const deleteSavedImage = async (imageUrl) => {
+        if (!userId) {
+            console.error("User ID is not available. Cannot delete image.");
+            return; // Exit if userId is null
+        }
+
+        try {
+            const response = await fetch(`${baseUrl}/backend/saved_image/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    sd_image_path: imageUrl,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete saved image');
+            }
+        } catch (error) {
+            console.error('Error deleting image:', error);
         }
     };
 
@@ -79,9 +165,7 @@ export default function Search() {
         <div className="background-container" style={{ backgroundImage: 'url("../images/Sketch.png")' }}>
             <form id="form" onSubmit={handleSubmit}>
                 <center>
-                    {/* Logo image */}
                     <img src="../images/ARTY.png" alt="ARTY" className="arty-image" />
-                    {/* Container for search bar, upload icon, and search button */}
                     <div className="searchbar-container">
                         <input 
                             className="searchbar" 
@@ -90,7 +174,6 @@ export default function Search() {
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
-                        {/* Hidden file input for image upload */}
                         <input
                             type="file"
                             accept=".png,.jpg"
@@ -98,14 +181,12 @@ export default function Search() {
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
-                        {/* Upload icon to trigger file input */}
                         <img 
                             src="../images/upload.png" 
                             alt="Upload Icon" 
                             className="upload-icon"
-                            onClick={() => document.getElementById('file-upload').click()} // Trigger file input when clicked
+                            onClick={() => document.getElementById('file-upload').click()}
                         />
-                        {/* Search button with icon */}
                         <button 
                             className="search-btn" 
                             type="submit" 
@@ -115,7 +196,6 @@ export default function Search() {
                     </div>
                 </center>
             </form>
-            {/* Display loading icon while fetching images */}
             {loading && (
                 <div className="loading-overlay">
                     <div className="loading-container">
@@ -123,22 +203,26 @@ export default function Search() {
                     </div>
                 </div>
             )}
-            {/* Preview of the selected image */}
             {selectedImage && (
                 <div className="image-preview-container">
                     <img src={selectedImage} alt="Selected Preview" className="image-preview" />
                 </div>
             )}
             <br />
-            {/* Grid Container for displaying images */}
             <div className="image-grid">
                 {images.slice(0, visibleImages).map((url, index) => (
-                    <div key={index} className="image-cell">
+                    <div key={index} className="image-cell" style={{ position: 'relative' }}>
                         <img className="results" src={url} alt={`Searched result ${index}`} />
+                        <img 
+                            src={savedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
+                            alt={savedImages.has(url) ? "Saved Icon" : "Save Icon"} 
+                            className="upload-icon" 
+                            onClick={() => toggleSaveImage(url)} 
+                            style={{ position: 'absolute', top: '-9px', right: '1px' }}
+                        />
                     </div>
                 ))}
             </div>
-            {/* Load more button if there are more images to display */}
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">More results...</label>
             )}
