@@ -71,19 +71,18 @@ def get_user():
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.get(data['user_id'])
-        work = SavedImage.query.get(data['user_id'])
+        #work = SavedImage.query.get(data['user_id'])
 
         if user:
             return jsonify({
                 'email': user.user_email, 
                 'id': user.user_id,
-                'works': work.sd_image_path,
+                #'works': work.sd_image_path,
             }), 200
         
         return jsonify({'error': 'User not found'}), 404
-        
     return {}, 405
-        
+
 @app.route('/backend/users/get/all', methods = ['GET'])
 @cross_origin()
 def get_users():
@@ -106,6 +105,28 @@ def get_users():
         ]
         return jsonify(users_list), 200
     return {}, 405
+
+@app.route('/backend/users/get_id', methods=['POST'])
+@cross_origin()
+def display_user():
+    '''
+    Gets the user ID based on the provided email.
+
+    Returns:
+        JSON with the user ID or an error message if not found.
+    '''
+    if request.method == 'POST':
+        data = request.get_json()
+        user = Users.query.filter_by(user_email=data['email']).first()
+        
+        if user:
+            return jsonify({'user_id': user.user_id}), 200
+        
+        return jsonify({'error': 'User not found'}), 404
+        
+    return {}, 405
+
+
 
 @app.route('/backend/users/insert', methods=['POST'])
 @cross_origin()
@@ -495,22 +516,6 @@ class SavedImage(db.Model):
     sd_image_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-@app.route('/backend/saved_image/get', methods = ['POST'])
-@cross_origin()
-def get_saved_img():
-    '''
-    Gets the saved image with the corresponding id
-
-    Returns:
-        JSON with infomation of the saved image with the corresponding id or
-        None if the handed id does not exist
-    '''
-    if request.method == 'POST':
-        data = request.get_json()
-        saved_image = SavedImage.query.get(data['sd_image_id'])
-        return jsonify({'SearchImage': saved_image}), 200
-    return {}, 405
-
 @app.route('/backend/saved_image/get/all', methods = ['GET'])
 @cross_origin()
 def get_saved_imgs():
@@ -533,7 +538,7 @@ def get_saved_imgs():
         ]
         return jsonify(saved_imgs_list), 200
     return {}, 405
-    
+
 @app.route('/backend/saved_image/insert', methods=['POST'])
 @cross_origin()
 def insert_saved_image():
@@ -557,6 +562,83 @@ def insert_saved_image():
         except Exception as e:
             db.session.rollback()
             return {'Exception Raised: ' : e}, 500
+    return {}, 405
+
+@app.route('/backend/saved_image/delete', methods=['DELETE'])
+@cross_origin()
+def delete_saved_image():
+    '''
+    Deletes the saved image from the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id and sd_image_path.
+    '''
+    if request.method == 'DELETE':
+        try:
+            data = request.get_json()
+            user_id = data['user_id']
+            sd_image_path = data['sd_image_path']
+
+            # Query to find the saved image
+            saved_image = SavedImage.query.filter_by(user_id=user_id, sd_image_path=sd_image_path).first()
+            if saved_image:
+                db.session.delete(saved_image)
+                db.session.commit()
+                return jsonify({'message': 'Image deleted successfully'}), 200
+            else:
+                return jsonify({'message': 'Image not found'}), 404
+
+        except Exception as e:
+            db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
+    return {}, 405
+
+
+@app.route('/backend/saved_image/get/user', methods=['POST'])
+@cross_origin()
+def get_saved_imgs_for_user():
+    '''
+    Gets all saved images for a specific user
+
+    Returns:
+        JSON with all saved images for the specified user
+    '''
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+
+        saved_imgs = SavedImage.query.filter_by(user_id=user_id).all()
+        saved_imgs_list = [
+            {
+                "sd_image_id": saved_img.sd_image_id,
+                "user_id": saved_img.user_id,
+                "sd_image_path": saved_img.sd_image_path,
+                "created_at": saved_img.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for saved_img in saved_imgs
+        ]
+        return jsonify(saved_imgs_list), 200
+    return {}, 405
+
+@app.route('/backend/saved_image/get', methods=['POST'])
+@cross_origin()
+def get_saved_img():
+    '''
+    Gets the saved image with the corresponding id
+
+    Returns:
+        JSON with information of the saved image with the corresponding id or
+        None if the handed id does not exist
+    '''
+    if request.method == 'POST':
+        data = request.get_json()
+        saved_image = SavedImage.query.get(data['sd_image_id'])
+        if saved_image:
+            return jsonify({'SearchImage': saved_image}), 200
+        return {'error': 'Image not found'}, 404
     return {}, 405
 
 @app.route('/backend/search', methods=['POST'])
