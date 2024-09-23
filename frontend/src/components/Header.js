@@ -82,6 +82,7 @@ export default function Header() {
                     if (response.status === 200) {
                         const data = await response.json();
                         console.log("Login successful:", data);
+                        localStorage.setItem('userEmail', inputs.email); // Store the email in localStorage
                         onLogin(); // Set the user as logged in
                         closePopup();
                     } else if (response.status === 401) {
@@ -107,7 +108,7 @@ export default function Header() {
                 console.error('Error making request:', error);
             }
         };
-                
+                        
         return (
             <div className="popup-overlay" onClick={handleOverlayClick}>
                 <div className="popup-container">

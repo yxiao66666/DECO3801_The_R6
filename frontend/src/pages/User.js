@@ -10,28 +10,48 @@ export default function Userhome() {
 
     useEffect(() => {
         const fetchUserData = async () => {
-        const userId = 1; // TODO: Need to fetch id based on user email
-        const userWorks = [
-            "Artwork 1",
-            "Artwork 2",
-            "Artwork 3"
-        ]; // Replace with actual fetched works
-        setUserWorks(userWorks); // TODO: NOT WORKING YET
-        
-            const response = await fetch(`${baseUrl}/backend/users/get`, {
+            const email = localStorage.getItem('userEmail'); 
+            if (!email) {
+                console.error('No email found in localStorage');
+                return;
+            }
+    
+            const idResponse = await fetch(`${baseUrl}/backend/users/get_id`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_id: userId }),
+                body: JSON.stringify({ email }),
             });
     
-            if (response.ok) {
-                const data = await response.json();
-                setUserEmail(data.email);
-                //setUserWorks(data.works); TODO: NOT WORKING YET
+            if (idResponse.ok) {
+                const idData = await idResponse.json();
+                const userId = idData.user_id;
+    
+                // Fetch the user details using the user ID
+                const userResponse = await fetch(`${baseUrl}/backend/users/get`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId }),
+                });
+
+                const userWorks = [
+                    "Artwork 1",
+                    "Artwork 2",
+                    "Artwork 3"
+                ]; // Need to Replace with actual fetched works
+                setUserWorks(userWorks); // TODO: NOT WORKING YET
+
+                if (userResponse.ok) {
+                    const data = await userResponse.json();
+                    setUserEmail(data.email);
+                } else {
+                    console.error('Failed to fetch user data:', userResponse.statusText);
+                }
             } else {
-                console.error('Failed to fetch user data:', response.statusText);
+                console.error('Failed to fetch user ID:', idResponse.statusText);
             }
         };
     
@@ -41,11 +61,19 @@ export default function Userhome() {
 
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn'); // Clear login state
-        navigate("/"); // Redirect to the login/signup page
+        localStorage.removeItem('userEmail'); // Clear user email from localStorage
+        navigate("/"); // Redirect to the Home page
     };
     
     const scrollToWorks = () => {
         document.getElementById("user-works").scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // This function gets everything infront of the @ in a email
+    // Input: Ben@google.com -> Output: Ben
+    const getUsernameFromEmail = (email) => {
+        const atIndex = email.indexOf('@');
+        return atIndex !== -1 ? email.substring(0, atIndex) : email;
     };
 
     return (
@@ -55,7 +83,7 @@ export default function Userhome() {
                 <div className="user-avatar-container">
                     <img src="../images/user_profile.jpg" alt="User Avatar" className="user-avatar" />
                 </div>
-                <h1>Welcome, {userEmail}</h1>
+                <h1>Welcome, {getUsernameFromEmail(userEmail)}</h1>
                 <br /><br /><br />
                 <div className="user-options">
                     <button className="button" onClick={scrollToWorks}>

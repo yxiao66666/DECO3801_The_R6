@@ -71,19 +71,18 @@ def get_user():
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.get(data['user_id'])
-        work = SavedImage.query.get(data['user_id'])
+        #work = SavedImage.query.get(data['user_id'])
 
         if user:
             return jsonify({
                 'email': user.user_email, 
                 'id': user.user_id,
-                'works': work.sd_image_path,
+                #'works': work.sd_image_path,
             }), 200
         
         return jsonify({'error': 'User not found'}), 404
-        
     return {}, 405
-        
+
 @app.route('/backend/users/get/all', methods = ['GET'])
 @cross_origin()
 def get_users():
@@ -106,6 +105,28 @@ def get_users():
         ]
         return jsonify(users_list), 200
     return {}, 405
+
+@app.route('/backend/users/get_id', methods=['POST'])
+@cross_origin()
+def display_user():
+    '''
+    Gets the user ID based on the provided email.
+
+    Returns:
+        JSON with the user ID or an error message if not found.
+    '''
+    if request.method == 'POST':
+        data = request.get_json()
+        user = Users.query.filter_by(user_email=data['email']).first()
+        
+        if user:
+            return jsonify({'user_id': user.user_id}), 200
+        
+        return jsonify({'error': 'User not found'}), 404
+        
+    return {}, 405
+
+
 
 @app.route('/backend/users/insert', methods=['POST'])
 @cross_origin()
