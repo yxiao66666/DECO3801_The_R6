@@ -58,22 +58,31 @@ class Users(db.Model):
     g_text = db.relationship('GenerateText', backref='users', cascade='all, delete-orphan')
     sd_images = db.relationship('SavedImage', backref='users', cascade='all, delete-orphan')
 
-@app.route('/backend/users/get', methods = ['POST'])
+@app.route('/backend/users/get', methods=['POST'])
 @cross_origin()
 def get_user():
     '''
     Gets the user with the corresponding id
 
     Returns:
-        JSON with infomation of the user with the corresponding id or
+        JSON with information of the user with the corresponding id or
         None if the handed id does not exist
     '''
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.get(data['user_id'])
-        return jsonify({'User': user}), 200
-    return {}, 405 
+        work = SavedImage.query.get(data['user_id'])
 
+        if user:
+            return jsonify({
+                'email': user.user_email, 
+                'id': user.user_id,
+                'works': work.sd_image_path,
+            }), 200
+        
+        return jsonify({'error': 'User not found'}), 404
+        
+    return {}, 405
         
 @app.route('/backend/users/get/all', methods = ['GET'])
 @cross_origin()
@@ -102,7 +111,7 @@ def get_users():
 @cross_origin()
 def insert_user():
     '''
-    Inserts the new user to the database
+    Inserts the new user to the database if the email does not already exist.
 
     Returns:
         The corresponding response to the outcome of query
@@ -110,17 +119,54 @@ def insert_user():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_user = Users(user_email = data['user_email'],
-                            user_password = data['user_password'])
+            user_email = data['user_email']
+
+            # Check if the user already exists
+            existing_user = Users.query.filter_by(user_email=user_email).first()
+            if existing_user:
+                return jsonify({'message': 'Email already exists'}), 400
+
+            # Create new user
+            new_user = Users(user_email=user_email,
+                             user_password=data['user_password'])
             db.session.add(new_user)
             db.session.commit()
             return jsonify({'user_id': new_user.user_id,
                             'user_email': new_user.user_email,
-                            'user_password': new_user.user_password,
                             'created_at': new_user.created_at}), 201
         except Exception as e:
             db.session.rollback()
-            return {'Exception Raised: ' : e}, 500
+            return {'Exception Raised: ': str(e)}, 500
+    return {}, 405
+
+@app.route('/backend/users/authenticate', methods=['POST'])
+@cross_origin()
+def authenticate_user():
+    '''
+    Authenticates the user by checking the email and password against the database.
+
+    Returns:
+        The corresponding response to the outcome of query
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            user_email = data['user_email']
+            user_password = data['user_password']
+
+            # Find the user by email
+            user = Users.query.filter_by(user_email=user_email).first()
+            if user and user.user_password == user_password:
+                return jsonify({
+                    'user_id': user.user_id,
+                    'user_email': user.user_email,
+                    'created_at': user.created_at
+                }), 200  # Successful authentication
+            else:
+                return jsonify({'message': 'Invalid email or password'}), 401  # Unauthorized
+
+        except Exception as e:
+            return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
 @app.route('/backend/users/delete', methods = ['POST'])

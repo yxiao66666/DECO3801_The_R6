@@ -6,30 +6,51 @@ export default function Userhome() {
     const [userEmail, setUserEmail] = useState("");
     const [userWorks, setUserWorks] = useState([]);
     const navigate = useNavigate();
+    const baseUrl = 'http://127.0.0.1:5000';
 
     useEffect(() => {
-        const fetchedEmail = "@user"; // Replace with actual fetched email
-        const fetchedWorks = [
+        const fetchUserData = async () => {
+        const userId = 1; // TODO: Need to fetch id based on user email
+        const userWorks = [
             "Artwork 1",
             "Artwork 2",
             "Artwork 3"
         ]; // Replace with actual fetched works
-
-        setUserEmail(fetchedEmail);
-        setUserWorks(fetchedWorks);
+        setUserWorks(userWorks); // TODO: NOT WORKING YET
+        
+            const response = await fetch(`${baseUrl}/backend/users/get`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userId }),
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                setUserEmail(data.email);
+                //setUserWorks(data.works); TODO: NOT WORKING YET
+            } else {
+                console.error('Failed to fetch user data:', response.statusText);
+            }
+        };
+    
+        fetchUserData();
     }, []);
+    
 
     const handleLogout = () => {
-        navigate("/"); // Redirect to homepage
+        localStorage.removeItem('isLoggedIn'); // Clear login state
+        navigate("/"); // Redirect to the login/signup page
     };
-
+    
     const scrollToWorks = () => {
         document.getElementById("user-works").scrollIntoView({ behavior: 'smooth' });
     };
 
     return (
         <div className="user-home">
-            <header className="user-home-header" style={{backgroundImage:'url("../images/user_bg.png")'}}>
+            <header className="user-home-header" style={{ backgroundImage: 'url("../images/user_bg.png")' }}>
                 <br /><br />
                 <div className="user-avatar-container">
                     <img src="../images/user_profile.jpg" alt="User Avatar" className="user-avatar" />
