@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
@@ -29,20 +29,26 @@ export default function Search() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true); // Show loading icon while fetching data
-
+    
         try {
+            const formData = new FormData();
+            formData.append('query', searchQuery); // Always send the search query
+    
+            // If there's an image selected, append it to the form data
+            const fileInput = document.getElementById('file-upload');
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('image', fileInput.files[0]); // Append the selected image
+            }
+    
             const response = await fetch(`${baseUrl}/backend/search`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ query: searchQuery }) // Send the search query to the backend
+                body: formData, // Send the form data
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
                 console.log('Search results:', result);
-
+    
                 // Convert the result object to an array if necessary
                 const resultArray = Object.values(result);
                 setImages(resultArray); // Update state with search results
@@ -55,6 +61,7 @@ export default function Search() {
             setLoading(false); // Hide loading icon after fetching data
         }
     };
+    
 
     // Function to handle file input change and update selected image
     const handleFileChange = (event) => {
@@ -125,7 +132,7 @@ export default function Search() {
             <div className="image-grid">
                 {images.slice(0, visibleImages).map((url, index) => (
                     <div key={index} className="image-cell">
-                        <img className="results" src={url} alt={`Image ${index}`} />
+                        <img className="results" src={url} alt={`Searched result ${index}`} />
                     </div>
                 ))}
             </div>
