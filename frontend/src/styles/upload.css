@@ -95,3 +95,55 @@ label:hover, button:hover {
     transform:letter-spacing 0.5s ease;
     letter-spacing: 0.05rem; 
 }
+
+
+
+
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .avatar-preview {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    #defaultPreview {
+      width: 90%;
+      height: 30em;
+    }
+  
+    #imagePreview {
+      width: 60vw;
+      height: 60vw;
+    }
+  
+    .function-btn {
+      width: 12em;
+      padding: 8px;
+      font-size: 14px;
+    }
+  
+    select {
+      width: 30%;
+    }
+  
+    canvas {
+      max-width: 100%;
+      height: auto !important;
+    }
+  
+    textarea {
+      width: 90% !important;
+    }
+  
+    .loading-icon {
+      width: 50vw;
+      height: 35vw;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #defaultPreview {
+      height: 25em;
+    }
+}  
