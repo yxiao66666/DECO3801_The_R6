@@ -274,57 +274,57 @@ export default function Upload() {
                                             <option value="AI Options">AI options</option>
                                             <optgroup label="Canny">
                                                 <option value="Canny_low">Canny (Low Intensity)</option>
-                                                <option value="Canny_medium">Canny (Medium Intensity)</option>
+                                                <option value="Canny_medium">Canny (Balance Intensity)</option>
                                                 <option value="Canny_high">Canny (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="mlsd">
                                                 <option value="mlsd_low">mlsd (Low Intensity)</option>
-                                                <option value="mlsd_medium">mlsd (Medium Intensity)</option>
+                                                <option value="mlsd_medium">mlsd (Balance Intensity)</option>
                                                 <option value="mlsd_high">mlsd (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="openpose_faceonly">
                                                 <option value="openpose_faceonly_low">openpose_faceonly (Low Intensity)</option>
-                                                <option value="openpose_faceonly_medium">openpose_faceonly (Medium Intensity)</option>
+                                                <option value="openpose_faceonly_medium">openpose_faceonly (Balance Intensity)</option>
                                                 <option value="openpose_faceonly_high">openpose_faceonly (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="openpose_hand">
                                                 <option value="openpose_hand_low">openpose_hand (Low Intensity)</option>
-                                                <option value="openpose_hand_medium">openpose_hand (Medium Intensity)</option>
+                                                <option value="openpose_hand_medium">openpose_hand (Balance Intensity)</option>
                                                 <option value="openpose_hand_high">openpose_hand (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="dw_openpose_full">
                                                 <option value="dw_openpose_full_low">dw_openpose_full (Low Intensity)</option>
-                                                <option value="dw_openpose_full_medium">dw_openpose_full (Medium Intensity)</option>
+                                                <option value="dw_openpose_full_medium">dw_openpose_full (Balance Intensity)</option>
                                                 <option value="dw_openpose_full_high">dw_openpose_full (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="animal_openpose">
                                                 <option value="animal_openpose_low">animal_openpose (Low Intensity)</option>
-                                                <option value="animal_openpose_medium">animal_openpose (Medium Intensity)</option>
+                                                <option value="animal_openpose_medium">animal_openpose (Balance Intensity)</option>
                                                 <option value="animal_openpose_high">animal_openpose (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="depth_anything_v2">
                                                 <option value="depth_anything_v2_low">depth_anything_v2 (Low Intensity)</option>
-                                                <option value="depth_anything_v2_medium">depth_anything_v2 (Medium Intensity)</option>
+                                                <option value="depth_anything_v2_medium">depth_anything_v2 (Balance Intensity)</option>
                                                 <option value="depth_anything_v2_high">depth_anything_v2 (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="seg_ofade20k">
                                                 <option value="seg_ofade20k_low">seg_ofade20k (Low Intensity)</option>
-                                                <option value="seg_ofade20k_medium">seg_ofade20k (Medium Intensity)</option>
+                                                <option value="seg_ofade20k_medium">seg_ofade20k (Balance Intensity)</option>
                                                 <option value="seg_ofade20k_high">seg_ofade20k (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="seg_anime_face">
                                                 <option value="seg_anime_face_low">seg_anime_face (Low Intensity)</option>
-                                                <option value="seg_anime_face_medium">seg_anime_face (Medium Intensity)</option>
+                                                <option value="seg_anime_face_medium">seg_anime_face (Balance Intensity)</option>
                                                 <option value="seg_anime_face_high">seg_anime_face (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="shuffle">
                                                 <option value="shuffle_low">shuffle (Low Intensity)</option>
-                                                <option value="shuffle_medium">shuffle (Medium Intensity)</option>
+                                                <option value="shuffle_medium">shuffle (Balance Intensity)</option>
                                                 <option value="shuffle_high">shuffle (High Intensity)</option>
                                             </optgroup>
                                             <optgroup label="t2ia_color_grid">
                                                 <option value="t2ia_color_grid_low">t2ia_color_grid (Low Intensity)</option>
-                                                <option value="t2ia_color_grid_medium">t2ia_color_grid (Medium Intensity)</option>
+                                                <option value="t2ia_color_grid_medium">t2ia_color_grid (Balance Intensity)</option>
                                                 <option value="t2ia_color_grid_high">t2ia_color_grid (High Intensity)</option>
                                             </optgroup>
                                         </select>
@@ -427,6 +427,7 @@ export default function Upload() {
                     )}
                     <br />
                     <br />
+                    
                     {loading && (
                         <div className="loading-overlay">
                             <div className="loading-container">

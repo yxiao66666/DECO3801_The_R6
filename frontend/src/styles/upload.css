@@ -100,7 +100,7 @@ label:hover, button:hover {
 
 
 
-/* 响应式设计 */
+/* responsive */
 @media (max-width: 768px) {
     .avatar-preview {
       flex-direction: column;

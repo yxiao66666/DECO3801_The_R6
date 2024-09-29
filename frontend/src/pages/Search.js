@@ -74,6 +74,7 @@ export default function Search() {
                 console.log('Search results:', result);
                 const resultArray = Object.values(result);
                 setImages(resultArray);
+                setSelectedImage(null);
             } else {
                 console.error('Search failed');
             }
@@ -162,7 +163,7 @@ export default function Search() {
     };
 
     return (
-        <div className="background-container" style={{ backgroundImage: 'url("../images/Sketch.png")' }}>
+        <div className="background-container" >
             <form id="form" onSubmit={handleSubmit}>
                 <center>
                     <img src="../images/ARTY.png" alt="ARTY" className="arty-image" />
