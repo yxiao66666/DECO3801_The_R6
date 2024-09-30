@@ -158,6 +158,10 @@
   }
 }
 
+.single_advisor_profile {
+  margin: 10px auto; /* Center cards with auto margin */
+}
+
 /* Social media icons inside the advisor profile */
 .single_advisor_profile .advisor_thumb .social-info {
   position: absolute; /* Absolute positioning */
