@@ -59,6 +59,12 @@ export default function Header() {
             event.preventDefault();
             console.log(inputs);
         
+            // Check if the passwords match for signup
+            if (!haveAccount && inputs.password !== inputs.confirmPassword) {
+                alert("Passwords do not match. Please try again.");
+                return; // Stop further execution if passwords don't match
+            }
+        
             const url = haveAccount
                 ? `${baseUrl}/backend/users/authenticate`
                 : `${baseUrl}/backend/users/insert`;
@@ -109,7 +115,7 @@ export default function Header() {
                 console.error('Error making request:', error);
             }
         };
-                                
+                                        
         return (
             <div className="popup-overlay" onClick={handleOverlayClick}>
                 <div className="popup-container">
