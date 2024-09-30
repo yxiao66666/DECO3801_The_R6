@@ -2,27 +2,28 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import "../styles/Upload.css";
 
 export default function Upload() {
-    const [files, setFiles] = useState([]);
-    const [text, setText] = useState('');
-    const [textvisible, setTextVisible] = useState(false);
-    const [previews, setPreviews] = useState([]);
-    const [aiOptions, setAiOptions] = useState([]);
-    const [isDrawing, setIsDrawing] = useState(false);
-    const [originalWidth, setOriginalWidth] = useState(0);
-    const [originalHeight, setOriginalHeight] = useState(0);
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [showCanvas, setShowCanvas] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-    const [rect, setRects] = useState([]);
-    const [currentRect, setCurrentRect] = useState(null);
-    const canvasRef = useRef(null);
-    const drawingCanvasRef = useRef(null);
-    const undoStack = useRef([]);
-    const [cachedImage, setCachedImage] = useState(null);
+    const [files, setFiles] = useState([]);  // Array of selected files
+    const [text, setText] = useState('');  // Text input state
+    const [textvisible, setTextVisible] = useState(false);  // Toggle visibility of text input
+    const [previews, setPreviews] = useState([]);  // Previews of the selected images
+    const [aiOptions, setAiOptions] = useState([]);  // Options for AI image processing
+    const [isDrawing, setIsDrawing] = useState(false);  // Flag to determine if the user is drawing on the canvas
+    const [originalWidth, setOriginalWidth] = useState(0);  // Width of the selected image
+    const [originalHeight, setOriginalHeight] = useState(0);  // Height of the selected image
+    const [selectedImage, setSelectedImage] = useState(null);  // The currently selected image for drawing
+    const [showCanvas, setShowCanvas] = useState(false);  // Flag to toggle the visibility of the canvas
+    const [loading, setLoading] = useState(false);  // Loading state for the submission process
+    const [startPos, setStartPos] = useState({ x: 0, y: 0 });  // Starting position for drawing rectangles
+    const [rect, setRects] = useState([]);  // Array to hold the drawn rectangles
+    const [currentRect, setCurrentRect] = useState(null);  // The rectangle currently being drawn
+    const canvasRef = useRef(null);  // Reference to the main canvas element
+    const drawingCanvasRef = useRef(null);  // Reference to the drawing canvas element
+    const undoStack = useRef([]);  // Stack to keep track of actions for undo functionality
+    const [cachedImage, setCachedImage] = useState(null);  // Cached version of the selected image
 
     const baseUrl = 'http://127.0.0.1:5000';
 
+    // useEffect hook to generate image previews when files are selected
     useEffect(() => {
         const newPreviews = files.map(file => URL.createObjectURL(file));
         setPreviews(newPreviews);
@@ -30,9 +31,10 @@ export default function Upload() {
         return () => newPreviews.forEach(preview => URL.revokeObjectURL(preview));
     }, [files]);
 
+    // Function to draw the image and any drawn rectangles on the canvas
     const drawImageOnCanvas = useCallback((ctx) => {
         if (!cachedImage || !ctx) return;
-
+        // Calculate scaling and offsets to center the image in the canvas
         const imgScale = Math.min(ctx.canvas.width / originalWidth, ctx.canvas.height / originalHeight);
         const offsetX = (ctx.canvas.width - originalWidth * imgScale) / 2;
         const offsetY = (ctx.canvas.height - originalHeight * imgScale) / 2;
@@ -40,20 +42,24 @@ export default function Upload() {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(cachedImage, offsetX, offsetY, originalWidth * imgScale, originalHeight * imgScale);
 
+        // Set styles for drawing rectangles
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 2;
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        // Draw all the rectangles from the rect array
         rect.forEach(r => {
             ctx.fillRect(offsetX + r.x * imgScale, offsetY + r.y * imgScale, r.width * imgScale, r.height * imgScale);
             ctx.strokeRect(offsetX + r.x * imgScale, offsetY + r.y * imgScale, r.width * imgScale, r.height * imgScale);
         });
 
+        // Draw the current rectangle if it's being drawn
         if (currentRect) {
             ctx.fillRect(offsetX + currentRect.x * imgScale, offsetY + currentRect.y * imgScale, currentRect.width * imgScale, currentRect.height * imgScale);
             ctx.strokeRect(offsetX + currentRect.x * imgScale, offsetY + currentRect.y * imgScale, currentRect.width * imgScale, currentRect.height * imgScale);
         }
     }, [cachedImage, originalWidth, originalHeight, rect, currentRect]);
 
+    // useEffect hook to draw the image when the canvas or cached image changes
     useEffect(() => {
         if (canvasRef.current && cachedImage) {
             const ctx = canvasRef.current.getContext('2d');
@@ -61,12 +67,14 @@ export default function Upload() {
         }
     }, [cachedImage, drawImageOnCanvas]);
 
+    // Function to update AI options when selected in the dropdown
     const handleOptionChange = (index, value) => {
         const updatedOptions = [...aiOptions];
         updatedOptions[index] = value;
         setAiOptions(updatedOptions);
     };
 
+    // Handle file selection and enforce a maximum of 3 images
     const handleChange = (event) => {
         const selectedFiles = event.target.files;
         if (selectedFiles.length > 0) {
@@ -78,6 +86,7 @@ export default function Upload() {
         }
     };
 
+    // Toggle the visibility of the text input and clear the text if it was visible
     const handleClick = () => {
         if (textvisible) {
             setText('');
@@ -85,6 +94,7 @@ export default function Upload() {
         setTextVisible(prev => !prev);
     };
 
+    // Handle selection of an image to display on the canvas
     const handleCanvasChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
@@ -102,6 +112,7 @@ export default function Upload() {
         }
     };
 
+    // Clear the canvas and reset the drawn rectangles and undo stack
     const clearCanvas = () => {
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
@@ -109,7 +120,7 @@ export default function Upload() {
             setRects([]);
             setCurrentRect(null);
             undoStack.current = [];
-            
+            // Redraw the image on the cleared canvas
             if (cachedImage) {
                 const imgScale = Math.min(ctx.canvas.width / originalWidth, ctx.canvas.height / originalHeight);
                 const offsetX = (ctx.canvas.width - originalWidth * imgScale) / 2;
@@ -119,6 +130,7 @@ export default function Upload() {
         }
     };
 
+    // Undo the last drawn rectangle
     const undoLastAction = () => {
         if (rect.length > 0) {
             const newRects = rect.slice(0, -1);
@@ -132,6 +144,7 @@ export default function Upload() {
         }
     };
 
+    // Start drawing a rectangle when the user clicks on the canvas
     const startDrawing = (e) => {
         if (!selectedImage) {
             alert("Please choose image first");
@@ -151,6 +164,7 @@ export default function Upload() {
         setCurrentRect({ x, y, width: 0, height: 0 });
     };
 
+    // Finish drawing a rectangle when the user releases the mouse
     const draw = (e) => {
         if (!isDrawing || !canvasRef.current) return;
 
@@ -176,46 +190,46 @@ export default function Upload() {
         setIsDrawing(false);
 
         if (currentRect && currentRect.width !== 0 && currentRect.height !== 0) {
-            setRects(prev => [...prev, currentRect]);
+            setRects(prev => [...prev, currentRect]); // Add the new rectangle to the array
             setCurrentRect(null);
         }
 
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
+            // Redraw the canvas with the updated rectangles
             drawImageOnCanvas(ctx);
         }
     };
 
+    // Handle file submission and send the selected files and drawn rectangles to the backend
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
-
         const drawingCanvas = drawingCanvasRef.current;
         const formData = new FormData();
-
+    
         if (files.length > 0) {
             files.forEach((file, index) => {
+                // Logging the files and options
+                console.log(`Appending file: ${file.name}, Option: ${aiOptions[index]}`);
                 formData.append(`image${index}`, file);
                 formData.append(`option${index}`, aiOptions[index]);
             });
         }
-
+    
         formData.append('text', text);
-
         if (selectedImage && drawingCanvas) {
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = originalWidth;
             exportCanvas.height = originalHeight;
             const exportCtx = exportCanvas.getContext('2d');
-
             exportCtx.fillStyle = '#000000';
             exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-
             exportCtx.fillStyle = 'white';
             rect.forEach(r => {
                 exportCtx.fillRect(r.x, r.y, r.width, r.height);
             });
-
+    
             const maskBlob = await new Promise((resolve, reject) => {
                 exportCanvas.toBlob((blob) => {
                     if (blob) {
@@ -225,17 +239,20 @@ export default function Upload() {
                     }
                 }, 'image/png');
             });
-
             formData.append('maskImage', maskBlob);
             formData.append('canvasImage', selectedImage);
         }
-
+    
+        // Debugging the formData
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1] instanceof Blob ? pair[1].name : pair[1]}`);
+        }
+    
         try {
             const response = await fetch(`${baseUrl}/backend/upload`, {
                 method: 'POST',
                 body: formData,
             });
-
             if (response.ok) {
                 const result = await response.json();
                 console.log('AI generated image:', result);
@@ -330,8 +347,6 @@ export default function Upload() {
                                         </select>
                                     </div>
                                 ))}
-
-
                                 <br />
                                 <br />
                                 <div className="avatar-edit">
