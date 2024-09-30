@@ -10,6 +10,8 @@ from flask_cors import CORS, cross_origin
 
 from search_engine_access import generate_image_caption, search_pinterest, response_pull_images
 from transformers import BlipProcessor, BlipForConditionalGeneration
+from PIL import Image
+from io import BytesIO
 
 from controlnet.sd_backbone import StableDiffusionBackBone
 
@@ -710,71 +712,123 @@ def search():
     return {}, 405
 
 
-@app.route('/backend/upload', methods = ['POST'])
+@app.route('/backend/upload', methods=['POST'])
 @cross_origin()
 def upload():
     if request.method != 'POST':
         return {}, 405
-    
-    bb.reset()
 
-    # Handle image files and associated options
-    idx = 0
-    while True:
-        image_key = f'image{idx}'
-        option_key = f'option{idx}'
+    try:
+        print("Form Data:", request.form)
+        print("Files:", request.files)
 
-        image_file = request.files.get(image_key)
-        option_value = request.form.get(option_key)
+        bb.reset()
 
-        if image_file and option_value:
-            bb.add_control_unit(
-                unit_num=idx,
-                image_path=image_file,
-                module=option_value,
-                # TODO: missing intensity
+        # Initialize counters
+        image_count = 0
+        valid_images = []
+
+        # Loop through the image files and options
+        for idx in range(3):
+            image_key = f'image{idx}'
+            option_key = f'option{idx}'
+
+            image_file = request.files.get(image_key)
+            option_value = request.form.get(option_key)
+
+            if image_file and option_value:
+                image_pil = Image.open(image_file)
+                print(f"Image {idx}: {image_pil} (type: {type(image_pil)})")  # Debugging print
+                image_bytes = BytesIO()
+                image_pil.save(image_bytes, format='PNG')
+                image_bytes.seek(0)
+
+                # Pass to your function
+                bb.add_control_unit(
+                    unit_num=image_count,
+                    image_path=image_bytes,
+                    module=option_value
+                )
+                valid_images.append(option_value)
+                image_count += 1  # Increment valid image count
+            else:
+                if image_file or option_value:
+                    print(f"Missing option or image for index {idx}")
+
+        # Check if at least one valid image and option were provided
+        if image_count == 0:
+            return jsonify({'error': 'At least one image and corresponding AI option are required.'}), 400
+
+        # Handle canvas and mask images if provided
+        canvas_image = request.files.get('canvasImage')
+        mask_image = request.files.get('maskImage')
+
+        if canvas_image:
+            print(f"Processing canvas image: {canvas_image.filename}")
+            canvas_pil_image = Image.open(canvas_image)
+            canvas_bytes = BytesIO()
+            canvas_pil_image.save(canvas_bytes, format='PNG')
+            canvas_bytes.seek(0)
+            bb.add_inpaint_image(canvas_bytes)
+
+        if mask_image:
+            print(f"Processing mask image: {mask_image.filename}")
+            mask_pil_image = Image.open(mask_image)
+            mask_bytes = BytesIO()
+            mask_pil_image.save(mask_bytes, format='PNG')
+            mask_bytes.seek(0)
+            bb.add_inpaint_mask(mask_bytes)
+
+        # Handle the text prompt
+        prompt = request.form.get('text')
+        print(f"Prompt: {prompt}")
+
+        # Decide which process to run
+        output = None
+        if canvas_image and mask_image:
+            print("Running img2img_inpaint process...")
+            output = bb.img2img_inpaint(
+                prompt=prompt if prompt else None,  
+                keep_aspect_ratio=True
             )
+        elif prompt:
+            print("Running txt2img process...")
+            output = bb.txt2img(prompt=prompt)
         else:
-            break
+            print("Running img2img_inpaint process (no prompt)...")
+            output = bb.img2img_inpaint()
 
-        idx += 1
+        # Check if output is valid
+        if output is None:
+            return jsonify({'error': 'No images were generated.'}), 500
 
-    prompt = request.form.get('text')
-    inpaint_image = request.files.get('canvasImage')
-    # TODO: missing inpaint mask
-    inpaint_mask = None
-    # TODO: missing keep aspect ratio flag
-    
-    if inpaint_image and inpaint_mask:
-        bb.add_inpaint_image(inpaint_image)
-        bb.add_inpaint_mask(inpaint_mask)
-        output = bb.img2img_inpaint(
-            prompt=prompt,
-            # TODO: missing keep aspect ratio flag
-        )
-    else:
-        output = bb.txt2img(prompt=prompt)
-    
-    response = {}
-    for idx, img in enumerate(output):
-        file_name = f'{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{prompt}_{idx}.png'
-        file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
-        img.save(file_path, format='PNG')
-        
-        response[idx] = file_name
-    
-    @after_this_request
-    def delete_generations(r):
-        '''delete generated images after they got sent back'''
-        for file in response.values():
-            file_path = os.path.join(app.config['GENERATION_FOLDER'], file)
-            try:
-                os.remove(file_path)
-            except Exception as e:
-                print(f"Error deleting file {file}: {e}")
-        return r
-    
-    return jsonify(response), 200
+        # Save the output images and prepare a response
+        response = {}
+        for idx, img in enumerate(output):
+            if img is None:
+                continue  # Skip any None images
+            file_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_output_{idx}.png"
+            file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
+            img.save(file_path, format='PNG')
+            response[idx] = file_name
+
+        # Clean up the generated images after sending the response
+        @after_this_request
+        def delete_generated_images(response):
+            for file in response.values():
+                file_path = os.path.join(app.config['GENERATION_FOLDER'], file)
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    print(f"Error deleting file {file}: {e}")
+            return response
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return jsonify({'error': 'An internal server error occurred'}), 500
+
 
 
 if __name__ == '__main__':
@@ -785,5 +839,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-        app.run(host='localhost', debug=True)
         app.run(host='localhost', debug=True)
