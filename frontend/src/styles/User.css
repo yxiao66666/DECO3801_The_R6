@@ -31,6 +31,14 @@
     margin: 10px 0;
 }
 
+/* Section heading text styling */
+h4 {
+    font-family: cursive; /* Cursive font style */
+    font-size: 4em; /* Large font size */
+    color: black; /* Black text */
+    font-weight: bold; /* Bold text */
+  }
+
 /* User options section styling */
 .user-options {
     display: flex;
@@ -77,4 +85,44 @@
     object-fit: cover;
     border: 3px solid white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Masonry layout for image results */
+.image-grid {
+    column-count: 3; /* Number of columns in the masonry layout */
+    column-gap: 20px; /* Gap between columns */
+    margin: 20px auto; /* Center horizontally and add top/bottom margin */
+    width: 50%; /* Set maximum width to 70% */
+}
+
+/* Ensure images fit within their container */
+.image-cell {
+    display: inline-block; /* Allow images to align properly in columns */
+    margin-bottom: 20px; /* Space below each image */
+    width: 100%; /* Make sure the cell takes full width in the column */
+}
+
+.results {
+    width: 100%; /* Ensure images fit within their container */
+    display: block; /* Remove inline spacing */
+    margin: 0 auto; /* Center images horizontally within the cell */
+}
+
+/* Responsive design */
+@media (max-width: 1400px) {
+    .image-grid {
+        width: 70%; /* Width for medium-sized screens */
+    }
+}
+
+@media (max-width: 1000px) {
+    .image-grid {
+        width: 80%; /* Width for small screens */
+    }
+}
+
+@media (max-width: 800px) {
+    .image-grid {
+        width: 90%; /* Width for extra small screens */
+    }
 }
