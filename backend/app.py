@@ -10,8 +10,6 @@ from flask_cors import CORS, cross_origin
 
 from search_engine_access import generate_image_caption, search_pinterest, response_pull_images
 from transformers import BlipProcessor, BlipForConditionalGeneration
-from PIL import Image
-from io import BytesIO
 
 from controlnet.sd_backbone import StableDiffusionBackBone
 
@@ -40,7 +38,7 @@ blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning
 blip = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir='blip_weights')
 
 # Initialising sdbackbone
-webui_url = 'http://127.0.0.1:7860' # TODO: Change the url to 
+webui_url = 'https://civil-tahr-stirring.ngrok-free.app'
 bb = StableDiffusionBackBone(webui_url)
 
 # Creating Database
@@ -717,118 +715,90 @@ def search():
 def upload():
     if request.method != 'POST':
         return {}, 405
+    
+    bb.reset()
 
-    try:
-        print("Form Data:", request.form)
-        print("Files:", request.files)
+    # Handle image files and associated options
+    idx = 0
+    while True:
+        image_key = f'image{idx}'
+        option_key = f'option{idx}'
+        intensity_key = f'intensity{idx}'
 
-        bb.reset()
+        image_file = request.files.get(image_key)
+        option_value = request.form.get(option_key)
+        intensity_value = request.form.get(intensity_key, 1.0)  # Default intensity if not provided
 
-        # Initialize counters
-        image_count = 0
-        valid_images = []
-
-        # Loop through the image files and options
-        for idx in range(3):
-            image_key = f'image{idx}'
-            option_key = f'option{idx}'
-
-            image_file = request.files.get(image_key)
-            option_value = request.form.get(option_key)
-
-            if image_file and option_value:
-                image_pil = Image.open(image_file)
-                print(f"Image {idx}: {image_pil} (type: {type(image_pil)})")  # Debugging print
-                image_bytes = BytesIO()
-                image_pil.save(image_bytes, format='PNG')
-                image_bytes.seek(0)
-
-                # Pass to your function
-                bb.add_control_unit(
-                    unit_num=image_count,
-                    image_path=image_bytes,
-                    module=option_value
-                )
-                valid_images.append(option_value)
-                image_count += 1  # Increment valid image count
-            else:
-                if image_file or option_value:
-                    print(f"Missing option or image for index {idx}")
-
-        # Check if at least one valid image and option were provided
-        if image_count == 0:
-            return jsonify({'error': 'At least one image and corresponding AI option are required.'}), 400
-
-        # Handle canvas and mask images if provided
-        canvas_image = request.files.get('canvasImage')
-        mask_image = request.files.get('maskImage')
-
-        if canvas_image:
-            print(f"Processing canvas image: {canvas_image.filename}")
-            canvas_pil_image = Image.open(canvas_image)
-            canvas_bytes = BytesIO()
-            canvas_pil_image.save(canvas_bytes, format='PNG')
-            canvas_bytes.seek(0)
-            bb.add_inpaint_image(canvas_bytes)
-
-        if mask_image:
-            print(f"Processing mask image: {mask_image.filename}")
-            mask_pil_image = Image.open(mask_image)
-            mask_bytes = BytesIO()
-            mask_pil_image.save(mask_bytes, format='PNG')
-            mask_bytes.seek(0)
-            bb.add_inpaint_mask(mask_bytes)
-
-        # Handle the text prompt
-        prompt = request.form.get('text')
-        print(f"Prompt: {prompt}")
-
-        # Decide which process to run
-        output = None
-        if canvas_image and mask_image:
-            print("Running img2img_inpaint process...")
-            output = bb.img2img_inpaint(
-                prompt=prompt if prompt else None,  
-                keep_aspect_ratio=True
+        if image_file and option_value:
+            bb.add_control_unit(
+                unit_num=idx,
+                image_path=image_file,
+                module=option_value,
+                intensity=intensity_value
             )
-        elif prompt:
-            print("Running txt2img process...")
-            output = bb.txt2img(prompt=prompt)
         else:
-            print("Running img2img_inpaint process (no prompt)...")
-            output = bb.img2img_inpaint()
+            break
 
-        # Check if output is valid
-        if output is None:
-            return jsonify({'error': 'No images were generated.'}), 500
+        idx += 1
 
-        # Save the output images and prepare a response
-        response = {}
-        for idx, img in enumerate(output):
-            if img is None:
-                continue  # Skip any None images
-            file_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_output_{idx}.png"
-            file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
-            img.save(file_path, format='PNG')
-            response[idx] = file_name
+    prompt = request.form.get('text')
+    inpaint_image = request.files.get('canvasImage')
+    inpaint_mask = request.files.get('maskImage')
+    keep_aspect_ratio = request.form.get('keep_aspect_ratio', 'true') == 'true'
 
-        # Clean up the generated images after sending the response
-        @after_this_request
-        def delete_generated_images(response):
-            for file in response.values():
-                file_path = os.path.join(app.config['GENERATION_FOLDER'], file)
-                try:
-                    os.remove(file_path)
-                except Exception as e:
-                    print(f"Error deleting file {file}: {e}")
-            return response
+    # Initialize output to prevent UnboundLocalError
+    output = None
 
-        return jsonify(response), 200
+    # Process inpaint or text-to-image
+    if inpaint_image and inpaint_mask:
+        bb.add_inpaint_image(inpaint_image)
+        bb.add_inpaint_mask(inpaint_mask)
+        output = bb.img2img_inpaint(
+            prompt=prompt,
+            keep_aspect_ratio=keep_aspect_ratio
+        )
+    else:
+        prompt = "A simple test"  # Placeholder prompt for testing
+        try:
+            output = bb.txt2img(prompt=prompt)
+            print(f"Direct test output: {output}")
 
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({'error': 'An internal server error occurred'}), 500
+            # Check if output is None or not a list of images
+            if not output:
+                print("txt2img returned an empty result.")
+                return jsonify({'error': 'Image generation returned no results.'}), 500
+            if not isinstance(output, list):
+                output = [output]  # Ensure it's treated as a list of images
 
+            print(f"Output from txt2img: {output}")
+        except KeyError as ke:
+            print(f"Error during direct txt2img test: {ke}")
+            return jsonify({'error': 'Failed to generate image, key error occurred.'}), 500
+        except Exception as e:
+            print(f"Error during txt2img generation: {e}")
+            return jsonify({'error': 'Failed to generate image.'}), 500
+
+    # Save and respond with output images
+    response = {}
+    for idx, img in enumerate(output):
+        file_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{prompt}_{idx}.png"
+        file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
+        img.save(file_path, format='PNG')
+        
+        response[idx] = file_name
+
+    @after_this_request
+    def delete_generations(r):
+        '''Delete generated images after they got sent back'''
+        for file in response.values():
+            file_path = os.path.join(app.config['GENERATION_FOLDER'], file)
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                print(f"Error deleting file {file}: {e}")
+        return r
+
+    return jsonify(response), 200
 
 
 

@@ -20,6 +20,7 @@ export default function Upload() {
     const drawingCanvasRef = useRef(null);  // Reference to the drawing canvas element
     const undoStack = useRef([]);  // Stack to keep track of actions for undo functionality
     const [cachedImage, setCachedImage] = useState(null);  // Cached version of the selected image
+    const [generatedImages, setGeneratedImages] = useState({}); // State to store AI-generated image filenames
 
     const baseUrl = 'http://127.0.0.1:5000';
 
@@ -256,6 +257,7 @@ export default function Upload() {
             if (response.ok) {
                 const result = await response.json();
                 console.log('AI generated image:', result);
+                setGeneratedImages(result); // Update state with the generated images
             } else {
                 console.error('Upload failed');
             }
@@ -426,6 +428,7 @@ export default function Upload() {
                             )}
                         </div>
                     </div>
+
                     <br />
                     <br />
 
@@ -440,9 +443,28 @@ export default function Upload() {
                             style={{ width: '65%' }}
                         ></textarea>
                     )}
-                    <br />
-                    <br />
                     
+                    <br />
+                    <br />
+
+                    {/* Render the AI-generated images */}
+                    {Object.keys(generatedImages).length > 0 && (
+                        <div className="generated-images" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <h2 style={{ color: 'white' }}>Generated Images:</h2>
+                            {Object.values(generatedImages).map((imageName, index) => (
+                                <img
+                                    key={index}
+                                    src={`${baseUrl}/path/to/generated/images/${imageName}`} // Update the path accordingly
+                                    alt={`Generated ${index}`}
+                                    style={{ width: '300px', margin: '10px' }} // Adjust styles as needed
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    <br />
+                    <br />
+
                     {loading && (
                         <div className="loading-overlay">
                             <div className="loading-container">
