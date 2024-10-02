@@ -22,7 +22,6 @@ export default function About() {
             </div>
         </div>
 
-
         {/* What We Do */}
         <div id="what-we-do" className="what-we-do-block">
             <div className="container">
