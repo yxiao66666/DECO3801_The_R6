@@ -48,7 +48,7 @@ select {
     top: 10px;
     left: 10px;
     z-index: 1;
-    width:12%;
+    width:40%;
     border-Radius: 5px;
     border: 1px solid #ccc;
     background-color:darkgray;
@@ -97,9 +97,6 @@ label:hover, button:hover {
 }
 
 
-
-
-
 /* responsive */
 @media (max-width: 768px) {
     .avatar-preview {
@@ -124,7 +121,7 @@ label:hover, button:hover {
     }
   
     select {
-      width: 30%;
+      width: 50%;
     }
   
     canvas {
