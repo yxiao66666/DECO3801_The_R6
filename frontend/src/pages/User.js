@@ -8,8 +8,14 @@ export default function Userhome() {
     const [savedImages, setSavedImages] = useState(new Set()); // For saved images
     const navigate = useNavigate();
     const baseUrl = 'http://127.0.0.1:5000';
-    const [visibleImages, setVisibleImages] = useState(999); // To control how many images are visible initially
+    const [visibleImages] = useState(999); // To control how many images are visible initially
 
+    useEffect(() => {
+        const id = localStorage.getItem('userId');
+        console.log("Retrieved user ID:", id); // Log to verify
+        setUserId(id);
+    }, [userId]); // Runs when userId changes
+    
     useEffect(() => {
         const fetchSavedImages = async (id) => {
             try {
