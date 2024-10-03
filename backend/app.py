@@ -3,9 +3,10 @@ This file contains the API of the application. All methods handle requests and J
  return response and a JSON file.
 """
 import os
+import glob
 from datetime import datetime
 
-from flask import Flask, request, jsonify, after_this_request
+from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
 from search_engine_access import generate_image_caption, search_pinterest, response_pull_images
@@ -21,14 +22,19 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import LONGTEXT
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable your_random_secret_key
+
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant'
 # Folder to temporarily save generation results
-GENERATION_FOLDER = './generations'
+GENERATION_FOLDER = os.path.join('static', 'generations')
 app.config['GENERATION_FOLDER'] = GENERATION_FOLDER
-os.makedirs(GENERATION_FOLDER, exist_ok=True)
+
+# Make sure the folder exists
+if not os.path.exists(app.config['GENERATION_FOLDER']):
+    os.makedirs(GENERATION_FOLDER, exist_ok=True)
 
 UPLOAD_FOLDER = './uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -710,6 +716,9 @@ def search():
     return {}, 405
 
 
+# Store filenames for cleanup
+image_files = []
+
 @app.route('/backend/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -758,7 +767,6 @@ def upload():
             keep_aspect_ratio=keep_aspect_ratio
         )
     else:
-        prompt = "A simple test"  # Placeholder prompt for testing
         try:
             output = bb.txt2img(prompt=prompt)
             print(f"Direct test output: {output}")
@@ -781,24 +789,35 @@ def upload():
     # Save and respond with output images
     response = {}
     for idx, img in enumerate(output):
-        file_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{prompt}_{idx}.png"
+        file_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{prompt.replace(' ', '_')}_{idx}.png"
         file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
         img.save(file_path, format='PNG')
         
+        #print(f"Image saved at: {file_path}")
         response[idx] = file_name
 
-    @after_this_request
-    def delete_generations(r):
-        '''Delete generated images after they got sent back'''
-        for file in response.values():
-            file_path = os.path.join(app.config['GENERATION_FOLDER'], file)
+    return jsonify(response), 200
+
+@app.route('/backend/cleanup', methods=['DELETE'])
+def cleanup_images():
+    # Define the path to the generations folder
+    generation_folder = app.config['GENERATION_FOLDER']
+
+    # Use glob to find all image files in the folder
+    image_files = glob.glob(os.path.join(generation_folder, '*'))
+
+    for file_path in image_files:
+        if os.path.isfile(file_path):  # Check if it's a file
             try:
                 os.remove(file_path)
+                print(f"Deleted file: {file_path}")
             except Exception as e:
-                print(f"Error deleting file {file}: {e}")
-        return r
+                print(f"Error deleting file {file_path}: {e}")
 
-    return jsonify(response), 200
+    return jsonify({'message': 'Cleanup successful'}), 200
+
+
+
 
 
 

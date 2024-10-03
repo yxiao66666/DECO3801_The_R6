@@ -21,8 +21,28 @@ export default function Upload() {
     const undoStack = useRef([]);  // Stack to keep track of actions for undo functionality
     const [cachedImage, setCachedImage] = useState(null);  // Cached version of the selected image
     const [generatedImages, setGeneratedImages] = useState({}); // State to store AI-generated image filenames
-
     const baseUrl = 'http://127.0.0.1:5000';
+
+    // Function to call the cleanup generated images
+    const cleanupImages = () => {
+        fetch(`${baseUrl}/backend/cleanup`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Images cleaned up successfully.');
+                } else {
+                    console.error('Failed to clean up images.');
+                }
+            })
+            .catch(error => console.error('Error during cleanup:', error));
+    };
+    
+    // useEffect to handle the cleanup on page unload or navigation
+    useEffect(() => {
+        // Call cleanupImages when the component unmounts
+        return () => {
+            cleanupImages();
+        };
+    }, []); // Empty dependency array to run once on mount
 
     // useEffect hook to generate image previews when files are selected
     useEffect(() => {
@@ -452,12 +472,12 @@ export default function Upload() {
                         <div className="generated-images" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <h2 style={{ color: 'white' }}>Generated Images:</h2>
                             {Object.values(generatedImages).map((imageName, index) => (
-                                <img
-                                    key={index}
-                                    src={`${baseUrl}/path/to/generated/images/${imageName}`} // Update the path accordingly
-                                    alt={`Generated ${index}`}
-                                    style={{ width: '300px', margin: '10px' }} // Adjust styles as needed
-                                />
+                            <img
+                                key={index}
+                                src={`${baseUrl}/static/generations/${imageName}`} // No replacement needed if backend handles spaces
+                                alt={`Generated ${index}`}
+                                style={{ width: '300px', margin: '10px' }} // Adjust styles as needed
+                            />
                             ))}
                         </div>
                     )}
@@ -477,3 +497,7 @@ export default function Upload() {
         </div>
     );
 }
+
+
+
+
