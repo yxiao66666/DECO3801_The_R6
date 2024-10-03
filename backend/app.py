@@ -6,6 +6,8 @@ import os
 import glob
 from datetime import datetime
 
+from dotenv import load_dotenv
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
@@ -25,9 +27,13 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable your_random_secret_key
 
+load_dotenv()
+
+DB_LINK = os.getenv('DB_LINK')
+
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ryuto:ryuto@localhost/ArtAssistant'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_LINK
 # Folder to temporarily save generation results
 GENERATION_FOLDER = os.path.join('static', 'generations')
 app.config['GENERATION_FOLDER'] = GENERATION_FOLDER

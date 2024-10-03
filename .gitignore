@@ -9,4 +9,6 @@ backend/Pipfile
 backend/Pipfile.lock
 uploads
 
+*.env
+
 *.DS_Store
