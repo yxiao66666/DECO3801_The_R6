@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
+    // State variables
     const [userId, setUserId] = useState(null);
     const [images, setImages] = useState([]);
     const [visibleImages, setVisibleImages] = useState(9);
@@ -22,6 +23,7 @@ export default function Search() {
         }
     }, [userId]); // Runs when userId changes
 
+    // Fetch saved images for the user from the backend
     const fetchSavedImages = async (id) => {
         try {
             const response = await fetch(`${baseUrl}/backend/saved_image/get/user`, {
@@ -43,25 +45,28 @@ export default function Search() {
         }
     };
 
+    // Function to load more images
     const loadMore = () => {
         setVisibleImages(prevVisible => prevVisible + 9);
     };
 
+    // Updates the search query state when the user types in the input field
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
+    // Handles the search submission (with text and image upload) when the form is submitted
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true);
+        setLoading(true); // Set loading to true to show the loading indicator
     
         try {
             const formData = new FormData();
-            formData.append('query', searchQuery);
+            formData.append('query', searchQuery);// Append the search query to the form data
     
             const fileInput = document.getElementById('file-upload');
             if (fileInput && fileInput.files.length > 0) {
-                formData.append('image', fileInput.files[0]);
+                formData.append('image', fileInput.files[0]);// Append image file if selected
             }
     
             const response = await fetch(`${baseUrl}/backend/search`, {
@@ -73,29 +78,31 @@ export default function Search() {
                 const result = await response.json();
                 console.log('Search results:', result);
                 const resultArray = Object.values(result);
-                setImages(resultArray);
-                setSelectedImage(null);
+                setImages(resultArray); // Update the state with the search results
+                setSelectedImage(null); // Clear the selected image
             } else {
                 console.error('Search failed');
             }
         } catch (error) {
             console.error('Error:', error);
         } finally {
-            setLoading(false);
+            setLoading(false); // Set loading to false after search completes
         }
     };
 
+    // Handles the image file input change (validates and shows a preview)
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
             const imageUrl = URL.createObjectURL(file);
-            setSelectedImage(imageUrl);
+            setSelectedImage(imageUrl); // Set the selected image for preview
             console.log("Uploaded file:", file);
         } else {
             alert('Please select a valid .png or .jpg file.');
         }
     };
 
+    // Toggles the saving or unsaving of an image
     const toggleSaveImage = async (imageUrl) => {
         const newSavedImages = new Set(savedImages);
         if (newSavedImages.has(imageUrl)) {
@@ -133,9 +140,10 @@ export default function Search() {
                 console.error('Error saving image:', error);
             }
         }
-        setSavedImages(newSavedImages);
+        setSavedImages(newSavedImages); // Update the state with the new saved images set
     };
 
+    // Deletes a saved image from the server
     const deleteSavedImage = async (imageUrl) => {
         if (!userId) {
             console.error("User ID is not available. Cannot delete image.");
@@ -161,13 +169,18 @@ export default function Search() {
             console.error('Error deleting image:', error);
         }
     };
-
+    // Return the JSX to render the search form and image results
     return (
+        // The container for the entire search form and image results
         <div className="background-container" >
+            
+            {/* Form submission triggers the search */}
             <form id="form" onSubmit={handleSubmit}>
                 <center>
                     <img src="../images/ARTY.png" alt="ARTY" className="arty-image" />
+                    {/* Container for the search bar and file upload components */}
                     <div className="searchbar-container">
+                        {/* Input field for text-based search */}
                         <input 
                             className="searchbar" 
                             type="search" 
@@ -175,6 +188,7 @@ export default function Search() {
                             onChange={handleInputChange}
                             value={searchQuery}
                         />
+                        {/* Hidden file input for image upload */}
                         <input
                             type="file"
                             accept=".png,.jpg"
@@ -182,12 +196,14 @@ export default function Search() {
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
+                        {/* Image icon that triggers file input on click */}
                         <img 
                             src="../images/upload.png" 
                             alt="Upload Icon" 
                             className="upload-icon"
                             onClick={() => document.getElementById('file-upload').click()}
                         />
+                        {/* Search button to submit the form */}
                         <button 
                             className="search-btn" 
                             type="submit" 
@@ -197,6 +213,8 @@ export default function Search() {
                     </div>
                 </center>
             </form>
+
+            {/* Loading indicator that shows while waiting for search results */}
             {loading && (
                 <div className="loading-overlay">
                     <div className="loading-container">
@@ -204,16 +222,20 @@ export default function Search() {
                     </div>
                 </div>
             )}
+            {/* If an image is selected (from file upload), show a preview */}
             {selectedImage && (
                 <div className="image-preview-container">
                     <img src={selectedImage} alt="Selected Preview" className="image-preview" />
                 </div>
             )}
             <br />
+            {/* Display grid of search results */}
             <div className="image-grid">
+                {/* Iterate through the list of images and display each one */}
                 {images.slice(0, visibleImages).map((url, index) => (
                     <div key={index} className="image-cell" style={{ position: 'relative' }}>
                         <img className="results" src={url} alt={`Searched result ${index}`} />
+                        {/* Show a save or saved icon based on whether the image is saved */}
                         <img 
                             src={savedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
                             alt={savedImages.has(url) ? "Saved Icon" : "Save Icon"} 
@@ -224,6 +246,7 @@ export default function Search() {
                     </div>
                 ))}
             </div>
+            {/* If there are more images to load, display the "More results" button */}
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">More results...</label>
             )}
