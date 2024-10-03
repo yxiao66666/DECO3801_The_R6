@@ -27,7 +27,7 @@ export default function Home() {
                 <div className="container">
                     <div className="row align-items-center mb-5">
                         <div className="col-lg-6 col-md-12 mb-4">
-                            <img src="images/hum-1.jpeg" alt="Landing" className="img-fluid rounded shadow w-100"></img>
+                            <img src="images/Group 1.png" alt="Landing" className="img-fluid rounded shadow w-100"></img>
                         </div>
                         <div className="col-lg-6 col-md-12 text-lg-center">
                             <h4>Integrated API Search Engine</h4>
@@ -37,7 +37,7 @@ export default function Home() {
                     
                     <div className="row align-items-center mb-5"> 
                         <div className="col-lg-6 col-md-12 order-lg-2 mb-4">
-                            <img src="images/scen-1.jpeg" alt="Landing" className="img-fluid rounded shadow w-100"></img>
+                            <img src="images/Group 2.png" alt="Landing" className="img-fluid rounded shadow w-100"></img>
                         </div>
                         <div className="col-lg-6 col-md-12 order-lg-1 text-lg-center">
                             <h4 className="card-title">AI Art Generator</h4>
@@ -47,7 +47,7 @@ export default function Home() {
                     
                     <div className="row align-items-center mb-5"> 
                         <div className="col-lg-6 col-md-12 mb-4">
-                            <img src="images/scen-2.jpeg" alt="Landing" className="img-fluid rounded shadow w-100"></img>
+                            <img src="images/Group 3.png" alt="Landing" className="img-fluid rounded shadow w-100"></img>
                         </div>
                         <div className="col-lg-6 col-md-12 text-lg-center">
                             <h4 className="card-title">Easy-to-Use Interface</h4>
@@ -58,6 +58,8 @@ export default function Home() {
                     <div className="text-center">
                         <a href="Upload" className="btn btn-light mb-5 mt-5">Get Started</a>
                     </div>
+
+
                 </div>
             </section>
         </div> 
