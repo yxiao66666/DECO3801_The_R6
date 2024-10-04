@@ -102,6 +102,12 @@ export default function Search() {
         }
     };
 
+    // Clears the selected image (removes the preview)
+    const clearSelectedImage = () => {
+        setSelectedImage(null); // Clear the image preview
+        document.getElementById('file-upload').value = ''; // Clear the file input field
+    };
+
     // Toggles the saving or unsaving of an image
     const toggleSaveImage = async (imageUrl) => {
         const newSavedImages = new Set(savedImages);
@@ -226,7 +232,13 @@ export default function Search() {
             {selectedImage && (
                 <div className="image-preview-container">
                     <img src={selectedImage} alt="Selected Preview" className="image-preview" />
+                    {/* Add a close button (X) to cancel the uploaded image */}
+                    <button className="discard-button" onClick={clearSelectedImage}>
+                        Discard
+                    </button>
                 </div>
+
+                
             )}
             <br />
             {/* Display grid of search results */}

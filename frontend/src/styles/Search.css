@@ -76,18 +76,40 @@
     z-index: 1000; 
 }
 
-
 .image-preview-container {
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    flex-direction: column; /* Stack image and button vertically */
+    align-items: center;     /* Center horizontally */
+    justify-content: center;  /* Center content vertically */
+    text-align: center;      /* Center-align the button and image */
 }
-  
+
 .image-preview {
-    max-width: 500px;
-    max-height: 400px;
+    max-width: 100%;  /* Adjust image size to fit within the container */
+    max-height: 250px;  /* Adjust height to limit the preview size */
+    display: block;
+    margin-bottom: 20px; /* Add some space between the image and the button */
+    margin-top: 30px;
+    border-radius: 8px;
 }
-  
+
+.discard-button {
+    background-color: transparent;  /* Set background to transparent */
+    color: black;                     /* Set text color to red */
+    border: 2px solid black;          /* Set a solid red border */
+    padding: 7px 15px;             /* Add padding for better appearance */
+    border-radius: 10px;            /* Round the button edges */
+    cursor: pointer;                 /* Change cursor to pointer on hover */
+    font-size: 15px;                /* Set font size */
+    
+}
+
+.discard-button:hover {
+    background-color: black; /* Add a light red background on hover */
+    color: white;
+}
+
+
 .load-more {
     margin: auto;
     cursor: pointer;
@@ -98,7 +120,6 @@
     justify-content: center;
     width: 50%;
     display: flex
-    
 }
 
 
