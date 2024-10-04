@@ -108,7 +108,7 @@ export default function Upload() {
     };
 
     // Toggle the visibility of the text input and clear the text if it was visible
-    const handleClick = () => {
+    const handleWithTextClick = () => {
         if (textvisible) {
             setText('');
         }
@@ -389,7 +389,7 @@ export default function Upload() {
                                     <button
                                         className="function-btn"
                                         type="button"
-                                        onClick={handleClick}
+                                        onClick={handleWithTextClick}
                                     >
                                         {textvisible ? "No text" : "With text"}
                                     </button>
@@ -399,6 +399,7 @@ export default function Upload() {
                                     </button>
                                 </div>
                             </div>
+
                             <br />
                             <br />
 
@@ -466,21 +467,26 @@ export default function Upload() {
                     
                     <br />
                     <br />
-
+                    <h2 style={{ color: 'white' }}>Generated Images:</h2>
                     {/* Render the AI-generated images */}
-                    {Object.keys(generatedImages).length > 0 && (
-                        <div className="generated-images" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <h2 style={{ color: 'white' }}>Generated Images:</h2>
-                            {Object.values(generatedImages).map((imageName, index) => (
-                            <img
-                                key={index}
-                                src={`${baseUrl}/static/generations/${imageName}`} // No replacement needed if backend handles spaces
-                                alt={`Generated ${index}`}
-                                style={{ width: '300px', margin: '10px' }} // Adjust styles as needed
-                            />
-                            ))}
+                    {Object.values(generatedImages).map((imageName, index) => (
+                        <div className="image-grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div key={index} className="image-cell" style={{ position: 'relative' }}>
+                                <img
+                                    className="results"
+                                    key={index}
+                                    src={`${baseUrl}/static/generations/${imageName}`}
+                                    alt={`Generated ${index}`}
+                                    style={{ width: '100%', margin: '10px' }}
+                                />
+                                <img 
+                                    src="../images/save.png"
+                                    className="upload-icon" 
+                                    style={{ position: 'absolute', top: '20px', right: '5px' }}
+                                />
+                            </div>
                         </div>
-                    )}
+                    ))}
 
                     <br />
                     <br />
@@ -497,7 +503,3 @@ export default function Upload() {
         </div>
     );
 }
-
-
-
-
