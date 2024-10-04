@@ -738,17 +738,18 @@ def upload():
     while True:
         image_key = f'image{idx}'
         option_key = f'option{idx}'
-        intensity_key = f'intensity{idx}'
 
         image_file = request.files.get(image_key)
         option_value = request.form.get(option_key)
-        intensity_value = request.form.get(intensity_key, 1.0)  # Default intensity if not provided
-
+        
+        print('DEEZNUTS', option_value)
         if image_file and option_value:
+            module_value, intensity_value = option_value.split('|')
+
             bb.add_control_unit(
                 unit_num=idx,
                 image_path=image_file,
-                module=option_value,
+                module=module_value,
                 intensity=intensity_value
             )
         else:
