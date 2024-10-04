@@ -42,7 +42,17 @@
     cursor: pointer;
     margin-top: 25px;
 }
-  
+
+.save-icon {
+    transform: translateY(-50%);
+    width: 24px;
+    cursor: pointer;
+    margin-top: 25px;
+    position: absolute;
+    top: -9px;
+    right: 1px;
+}
+
 .search-btn {
     position: relative;
     right: 0;
@@ -154,9 +164,10 @@
     display: inline-block; /* Allow images to align properly in columns */
     margin-bottom: 20px; /* Space below each image */
     width: 100%; /* Make sure the cell takes full width in the column */
+    position: relative;
 }
 
-.results {
+.image-grid .image-cell .results {
     width: 100%; /* Ensure images fit within their container */
     display: block; /* Remove inline spacing */
     margin: 0 auto; /* Center images horizontally within the cell */

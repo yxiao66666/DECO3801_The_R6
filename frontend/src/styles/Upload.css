@@ -1,4 +1,3 @@
-
 .painting-tool {
     background-color: black;
     border: none;
@@ -42,7 +41,7 @@
 
 }
 
-.results {
+.image-display .results {
   width: 100%; /* Ensure images fit within their container */
   display: block; /* Remove inline spacing */
   margin: 0 auto; /* Center images horizontally within the cell */
@@ -58,19 +57,21 @@
   margin-top: 25px;
 }
 
-/* Masonry layout for image results */
-.image-grid {
-  column-count: 3; /* Number of columns in the masonry layout */
-  column-gap: 20px; /* Gap between columns */
-  margin: 20px auto; /* Center horizontally and add top/bottom margin */
-  width: 50%; /* Set maximum width to 50% */
+.image-display .save-icon {
+  transform: translateY(-50%);
+  width: 24px;
+  cursor: pointer;
+  margin-top: 25px;
+  position: absolute;
+  top: -9px;
+  right: 1px;
 }
 
 /* Ensure images fit within their container */
-.image-cell {
-  display: inline-block; /* Allow images to align properly in columns */
+.image-display {
   margin-bottom: 20px; /* Space below each image */
-  width: 50%; /* Make sure the cell takes full width in the column */
+  width: 25%;
+  position: relative;
 }
 
 select {
@@ -167,10 +168,22 @@ label:hover, button:hover {
       width: 50vw;
       height: 35vw;
     }
+
+    .image-cell .results {
+      width: 70%; /* Ensure images fit within their container */
+      display: block; /* Remove inline spacing */
+      margin: 0 auto; /* Center images horizontally within the cell */
+    }
   }
   
   @media (max-width: 480px) {
     #defaultPreview {
       height: 25em;
+    }
+
+    .image-cell .results {
+      width: 80%; /* Ensure images fit within their container */
+      display: block; /* Remove inline spacing */
+      margin: 0 auto; /* Center images horizontally within the cell */
     }
 }  

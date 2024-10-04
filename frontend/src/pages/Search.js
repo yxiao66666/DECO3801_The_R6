@@ -175,6 +175,7 @@ export default function Search() {
             console.error('Error deleting image:', error);
         }
     };
+    
     // Return the JSX to render the search form and image results
     return (
         // The container for the entire search form and image results
@@ -237,23 +238,22 @@ export default function Search() {
                         Discard
                     </button>
                 </div>
-
-                
             )}
+
             <br />
+
             {/* Display grid of search results */}
             <div className="image-grid">
                 {/* Iterate through the list of images and display each one */}
                 {images.slice(0, visibleImages).map((url, index) => (
-                    <div key={index} className="image-cell" style={{ position: 'relative' }}>
+                    <div key={index} className="image-cell">
                         <img className="results" src={url} alt={`Searched result ${index}`} />
                         {/* Show a save or saved icon based on whether the image is saved */}
                         <img 
                             src={savedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
                             alt={savedImages.has(url) ? "Saved Icon" : "Save Icon"} 
-                            className="upload-icon" 
+                            className="save-icon" 
                             onClick={() => toggleSaveImage(url)} 
-                            style={{ position: 'absolute', top: '-9px', right: '1px' }}
                         />
                     </div>
                 ))}
@@ -262,7 +262,9 @@ export default function Search() {
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">More results...</label>
             )}
+
             <br />
+
         </div>
     );
 }

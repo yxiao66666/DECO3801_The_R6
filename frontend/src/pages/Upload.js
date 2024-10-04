@@ -4,7 +4,7 @@ import "../styles/Upload.css";
 export default function Upload() {
     const [files, setFiles] = useState([]);  // Array of selected files
     const [showClear, setShowClear] = useState(false);  // Flag to toggle the visibility of the clear button
-
+    const [userId, setUserId] = useState(null);
     const [text, setText] = useState('');  // Text input state
     const [textvisible, setTextVisible] = useState(false);  // Toggle visibility of text input
     const [previews, setPreviews] = useState([]);  // Previews of the selected images
@@ -23,7 +23,98 @@ export default function Upload() {
     const undoStack = useRef([]);  // Stack to keep track of actions for undo functionality
     const [cachedImage, setCachedImage] = useState(null);  // Cached version of the selected image
     const [generatedImages, setGeneratedImages] = useState({}); // State to store AI-generated image filenames
+    const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
     const baseUrl = 'http://127.0.0.1:5000';
+
+    useEffect(() => {
+        const id = localStorage.getItem('userId');
+        console.log("Retrieved user ID:", id); // Log to verify
+        setUserId(id);
+    }, [userId]); // Runs when userId changes
+
+
+
+
+
+// --------------------------- DON'T DELETE ----------------------
+// NOT WORKING BUT DON'T DELETE !!!!!!
+/* 
+    // Function to call the cleanup generated images
+    const cleanupImages = async () => {
+        try {
+            // Fetch the generated images to be cleaned up
+            const response = await fetch(`${baseUrl}/backend/generate_image/get/user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userId }), // Ensure user ID is included
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch generated images for cleanup');
+            }
+    
+            const generatedImages = await response.json();
+            const generatedImagePaths = generatedImages.map(image => image.g_image_path);
+    
+            // Create a set of saved generated images to compare against
+            const savedGeneratedImagePaths = new Set(savedGeneratedImages);
+    
+            // Filter out images that are not saved
+            const imagesToCleanup = generatedImagePaths.filter(url => !savedGeneratedImagePaths.has(url));
+    
+            // Perform the cleanup only for images that are not saved
+            for (const imageUrl of imagesToCleanup) {
+                const cleanupResponse = await fetch(`${baseUrl}/backend/generate_image/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        g_image_path: imageUrl,
+                    }),
+                });
+    
+                if (cleanupResponse.ok) {
+                    console.log(`Deleted generated image: ${imageUrl}`);
+                } else {
+                    console.error(`Failed to delete generated image: ${imageUrl}`);
+                }
+            }
+    
+            console.log('Cleanup completed successfully.');
+        } catch (error) {
+            console.error('Error during cleanup:', error);
+        }
+    };
+    
+    // useEffect to handle the cleanup on page unload or navigation
+    useEffect(() => {
+        // Call cleanupImages when the component unmounts
+        return () => {
+            cleanupImages();
+        };
+    }, []); // Empty dependency array to run once on mount
+
+    // useEffect hook to generate image previews when files are selected
+    useEffect(() => {
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setPreviews(newPreviews);
+        setAiOptions(new Array(files.length).fill('AI Options'));
+        return () => newPreviews.forEach(preview => URL.revokeObjectURL(preview));
+    }, [files]);
+*/
+// --------------------------- DON'T DELETE ----------------------
+
+
+
+
+
+
+// --------------------------- DON'T DELETE ----------------------
+// This cleanupImages function _IS_ WORKING DON'T DELETE !!!!!!!!! TESTING IN PROGRESS !!!!!!!
 
     // Function to call the cleanup generated images
     const cleanupImages = () => {
@@ -46,13 +137,79 @@ export default function Upload() {
         };
     }, []); // Empty dependency array to run once on mount
 
-    // useEffect hook to generate image previews when files are selected
-    useEffect(() => {
-        const newPreviews = files.map(file => URL.createObjectURL(file));
-        setPreviews(newPreviews);
-        setAiOptions(new Array(files.length).fill('AI Options'));
-        return () => newPreviews.forEach(preview => URL.revokeObjectURL(preview));
-    }, [files]);
+// --------------------------- DON'T DELETE ----------------------
+
+
+
+
+
+    // Toggles the saving or unsaving of an AI-generated image
+    const toggleSaveGeneratedImage = async (imageUrl) => {
+        const newSavedGeneratedImages = new Set(savedGeneratedImages);
+        if (newSavedGeneratedImages.has(imageUrl)) {
+            await deleteGeneratedImage(imageUrl); // Call the delete function
+            newSavedGeneratedImages.delete(imageUrl); // Remove if already saved
+        } else {
+            newSavedGeneratedImages.add(imageUrl); // Add if not saved
+            console.log('Saving generated image with:', {
+                user_id: userId, // Use the state variable here
+                g_image_path: imageUrl,
+            });
+
+            if (!userId) {
+                console.error("User ID is not available. Cannot save image.");
+                return; // Exit the function if userId is null
+            }
+
+            // Make the API call to save the image
+            try {
+                const response = await fetch(`${baseUrl}/backend/generate_image/insert`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        g_image_path: imageUrl,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save generated image');
+                }
+            } catch (error) {
+                console.error('Error saving generated image:', error);
+            }
+        }
+        setSavedGeneratedImages(newSavedGeneratedImages); // Update the state with the new saved images set
+    };
+
+    // Deletes a saved generated image from the server
+    const deleteGeneratedImage = async (imageUrl) => {
+        if (!userId) {
+            console.error("User ID is not available. Cannot delete image.");
+            return; // Exit if userId is null
+        }
+
+        try {
+            const response = await fetch(`${baseUrl}/backend/generate_image/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    g_image_path: imageUrl,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete generated image');
+            }
+        } catch (error) {
+            console.error('Error deleting generated image:', error);
+        }
+    };
 
     // Function to draw the image and any drawn rectangles on the canvas
     const drawImageOnCanvas = useCallback((ctx) => {
@@ -105,15 +262,11 @@ export default function Upload() {
                 alert("Please choose no more than 3 images");
                 return;
             }
-
-            
             // Convert the FileList to an array and create object URLs for each image
             const imagePreviews = Array.from(selectedFiles).map(file => URL.createObjectURL(file));
-            
             setPreviews(imagePreviews); // Update the previews state with the new image URLs
             setFiles(Array.from(selectedFiles)); // Store the selected files in the state
             setShowClear(true);
-
         }
     };
 
@@ -126,7 +279,7 @@ export default function Upload() {
     };
 
     // Toggle the visibility of the text input and clear the text if it was visible
-    const handleClick = () => {
+    const handleWithTextClick = () => {
         if (textvisible) {
             setText('');
         }
@@ -419,7 +572,7 @@ export default function Upload() {
                                     <button
                                         className="function-btn"
                                         type="button"
-                                        onClick={handleClick}
+                                        onClick={handleWithTextClick}
                                     >
                                         {textvisible ? "No text" : "With text"}
                                     </button>
@@ -497,32 +650,35 @@ export default function Upload() {
                     <br />
                     <br />
 
-                    {/* Render the AI-generated images */}
-                    {Object.keys(generatedImages).length > 0 && (
-                        <div className="generated-images" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <h2 style={{ color: 'white' }}>Generated Images:</h2>
-                            {Object.values(generatedImages).map((imageName, index) => (
-                            <img
-                                key={index}
-                                src={`${baseUrl}/static/generations/${imageName}`} // No replacement needed if backend handles spaces
-                                alt={`Generated ${index}`}
-                                style={{ width: '300px', margin: '10px' }} // Adjust styles as needed
-                            />
-                            ))}
-                        </div>
-                    )}
-
-                    <br />
-                    <br />
-
-                    {loading && (
-                        <div className="loading-overlay">
-                            <div className="loading-container">
-                                <img src="../images/loading-icon.gif" alt="Loading..." className="loading-icon" />
-                            </div>
-                        </div>
-                    )}
                 </form>
+                <h2 style={{ color: 'white' }}>Generated Images:</h2>
+                {/* Render the AI-generated images */}
+                {Object.values(generatedImages).map((imageName, index) => (
+                    <div key={index} className="image-display">
+                        <img
+                            className="results"
+                            src={`${baseUrl}/static/generations/${imageName}`}
+                            alt={`Generated ${index}`}
+                        />
+                        {/* Show a save or saved icon based on whether the image is saved */}
+                        <img 
+                            src={savedGeneratedImages.has(imageName) ? "../images/saved.png" : "../images/save.png"} 
+                            alt={savedGeneratedImages.has(imageName) ? "Saved Icon" : "Save Icon"} 
+                            className="save-icon" 
+                            onClick={() => toggleSaveGeneratedImage(imageName)} 
+                        />
+                    </div>
+                ))}
+                <br />
+                <br />
+
+                {loading && (
+                    <div className="loading-overlay">
+                        <div className="loading-container">
+                            <img src="../images/loading-icon.gif" alt="Loading..." className="loading-icon" />
+                        </div>
+                    </div>
+                )}
             </center>
         </div>
     );

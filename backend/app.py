@@ -376,7 +376,7 @@ class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
     g_image_id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
-    g_image_file_path = db.Column(LONGTEXT)
+    g_image_path = db.Column(LONGTEXT)
     created_at = db.Column(db.DateTime, default = datetime.now)
 
 @app.route('/backend/generate_image/get', methods = ['POST'])
@@ -410,14 +410,43 @@ def get_generate_imgs():
         {
             "g_image_id": generate_img.g_image_id,
             "user_id": generate_img.user_id,
-            "g_image_file_path": generate_img.g_image_file_path,
-            "created_at": generate_img.created_at  # Convert datetime to string
+            "g_image_path": generate_img.g_image_path,
+            "created_at": generate_img.created_at
         }
         for generate_img in generate_imgs
         ]
         return jsonify(generate_imgs_list), 200
     return {}, 405
-    
+
+@app.route('/backend/generate_image/get/user', methods=['POST'])
+@cross_origin()
+def get_generated_imgs_for_user():
+    '''
+    Gets all generated images for a specific user
+
+    Returns:
+        JSON with all generated images for the specified user
+    '''
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+
+        generated_imgs = GenerateImage.query.filter_by(user_id=user_id).all()
+        generated_imgs_list = [
+            {
+                "sd_image_id": generated_imgs.g_image_id,
+                "user_id": generated_imgs.user_id,
+                "sd_image_path": generated_imgs.g_image_id,
+                "created_at": generated_imgs.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for generated_imgs in generated_imgs
+        ]
+        return jsonify(generated_imgs_list), 200
+    return {}, 405
+
 @app.route('/backend/generate_image/insert', methods=['POST'])
 @cross_origin()
 def insert_generate_image():
@@ -434,16 +463,45 @@ def insert_generate_image():
         try:
             data = request.get_json()
             new_generate_image = GenerateImage(user_id = data['user_id'],
-                                   g_image_file_path = data['g_image_file_path'])
+                                   g_image_path = data['g_image_path'])
             db.session.add(new_generate_image)
             db.session.commit()
             return jsonify({'g_image_id': new_generate_image.g_image_id,
                             'user_id': new_generate_image.user_id,
-                            'g_image_file_path': new_generate_image.g_image_file_path,
+                            'g_image_path': new_generate_image.g_image_path,
                             'created_at': new_generate_image.created_at}), 201
         except Exception as e:
             db.session.rollback()
             return {'Exception Raised: ' : e}, 500
+    return {}, 405
+
+@app.route('/backend/generate_image/delete', methods=['DELETE'])
+@cross_origin()
+def delete_generate_image():
+    '''
+    Deletes the generated image from the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id and g_image_path.
+    '''
+    if request.method == 'DELETE':
+        try:
+            data = request.get_json()
+            user_id = data['user_id']
+            g_image_path = data['g_image_path']
+
+            # Query to find the saved image
+            generated_image = GenerateImage.query.filter_by(user_id=user_id, g_image_path=g_image_path).first()
+            if generated_image:
+                db.session.delete(generated_image)
+                db.session.commit()
+                return jsonify({'message': 'Image deleted successfully'}), 200
+            else:
+                return jsonify({'message': 'Image not found'}), 404
+
+        except Exception as e:
+            db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
 class GenerateText(db.Model):
@@ -604,7 +662,6 @@ def delete_saved_image():
             db.session.rollback()
             return {'Exception Raised: ': str(e)}, 500
     return {}, 405
-
 
 @app.route('/backend/saved_image/get/user', methods=['POST'])
 @cross_origin()

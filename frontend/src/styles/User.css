@@ -87,6 +87,24 @@ h4 {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
+.save-icon {
+    transform: translateY(-50%);
+    width: 24px;
+    cursor: pointer;
+    margin-top: 25px;
+    position: absolute;
+    top: -9px;
+    right: 1px;
+}
+
+/* Ensure images fit within their container */
+.image-cell {
+    display: inline-block; /* Allow images to align properly in columns */
+    margin-bottom: 20px; /* Space below each image */
+    width: 100%; /* Make sure the cell takes full width in the column */
+    position: relative;
+}
+
 /* Masonry layout for image results */
 .image-grid {
     column-count: 3; /* Number of columns in the masonry layout */
@@ -94,6 +112,7 @@ h4 {
     margin: 20px auto; /* Center horizontally and add top/bottom margin */
     width: 50%; /* Set maximum width to 70% */
 }
+  
 
 /* Ensure images fit within their container */
 .image-cell {
@@ -102,7 +121,7 @@ h4 {
     width: 100%; /* Make sure the cell takes full width in the column */
 }
 
-.results {
+.image-grid .image-cell .results {
     width: 100%; /* Ensure images fit within their container */
     display: block; /* Remove inline spacing */
     margin: 0 auto; /* Center images horizontally within the cell */
