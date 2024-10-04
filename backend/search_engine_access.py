@@ -68,7 +68,7 @@ def search_pinterest(
     elif query != options.get('"query"'):
         raise QueryMissmatchException()
     request = (
-        r"https://www.pinterest.com.au/resource/BaseSearchResource/get/?source_url=/search/pins/?q="
+        r"https://au.pinterest.com/resource/BaseSearchResource/get/?source_url=/search/pins/?q="
         + options['"query"'][1:-1]
         + r"&rs="
         + options['"rs"']
@@ -97,3 +97,23 @@ def response_pull_images(response:requests.Response, img_size:str ="236x") -> li
         out.append(im_dat["images"][img_size]["url"])
 
     return out
+
+def pull_more_pinterest(response:requests.Response, image_list:list[str]|None=None, img_size:str ="236x") -> list[str]:
+    """Takes a response from pinterest to create a new response and pull more images.
+
+    Args:
+        response (requests.Response): The response from search_pinterest
+        image_list (list[str] | None, optional): The list of images to add to. Defaults to None.
+        img_size (str, optional): The image size to pull. Defaults to "236x".
+
+    Returns:
+        list[str]: Link to given list or new list if list not supplied
+    """
+    if not image_list:
+        image_list = []
+    newresponse = requests.get(url="https://au.pinterest.com/resource/BaseSearchResource/get/",cookies=response.cookies)
+    parsed = json.loads(newresponse.content)
+    for im_dat in parsed["resource_response"]["data"]["results"]:
+        image_list.append(im_dat["images"][img_size]["url"])
+    
+    return image_list
