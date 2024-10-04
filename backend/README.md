@@ -31,7 +31,7 @@
 Run the command below to install the dependencies. 
 
 ```bash
-pip install flask flask_cors flask_sqlalchemy pillow pymysql python-dotenv ntorch requests sqlalchemy transformers
+pip install flask flask_cors flask_sqlalchemy pillow pymysql python-dotenv torch requests sqlalchemy transformers
 ```
 
 > For the dependencies of the Stable Diffusion model, refer to [the README in controlnet folder](controlnet\README.md)
