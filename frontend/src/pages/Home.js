@@ -63,7 +63,7 @@ export default function Home() {
 
                     {/* Call-to-action button */}
                     <div className="text-center">
-                        <a href="Upload" >Get Started</a>
+                        <a href="Upload" className="btn btn-light mb-5 mt-5">Get Started</a>
                     </div>
                 </div>
             </section>
