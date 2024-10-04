@@ -3,6 +3,8 @@ import "../styles/Upload.css";
 
 export default function Upload() {
     const [files, setFiles] = useState([]);  // Array of selected files
+    const [showClear, setShowClear] = useState(false);  // Flag to toggle the visibility of the clear button
+
     const [text, setText] = useState('');  // Text input state
     const [textvisible, setTextVisible] = useState(false);  // Toggle visibility of text input
     const [previews, setPreviews] = useState([]);  // Previews of the selected images
@@ -103,8 +105,24 @@ export default function Upload() {
                 alert("Please choose no more than 3 images");
                 return;
             }
-            setFiles(Array.from(selectedFiles));
+
+            
+            // Convert the FileList to an array and create object URLs for each image
+            const imagePreviews = Array.from(selectedFiles).map(file => URL.createObjectURL(file));
+            
+            setPreviews(imagePreviews); // Update the previews state with the new image URLs
+            setFiles(Array.from(selectedFiles)); // Store the selected files in the state
+            setShowClear(true);
+
         }
+    };
+
+    // Function to clear uploaded images
+    const handleClear = () => {
+        setPreviews([]); // Clear the image previews
+        setFiles([]); // Clear the selected files
+        setShowClear(false); // Hide the clear button
+        document.getElementById('imageUpload').value = null; // Clear the file input
     };
 
     // Toggle the visibility of the text input and clear the text if it was visible
@@ -380,8 +398,20 @@ export default function Upload() {
                                         onChange={handleChange}
                                         style={{ display: 'none' }}
                                     />
-                                    <button className="function-btn" type="button" onClick={() => document.getElementById('imageUpload').click()}>
-                                        Browse
+
+                                    {/* Button that toggles between Browse and Clear */}
+                                    <button 
+                                        className="function-btn" 
+                                        type="button" 
+                                        onClick={() => {
+                                            if (showClear) {
+                                                handleClear(); // Call handleClear when Clear is shown
+                                            } else {
+                                                document.getElementById('imageUpload').click(); // Trigger file input click when Browse is shown
+                                            }
+                                        }}
+                                    >
+                                        {showClear ? "Clear" : "Browse"} {/* Toggle button text */}
                                     </button>
                                     <button className="function-btn" type="button" onClick={() => setShowCanvas(!showCanvas)}>
                                         {showCanvas ? "No inpainting" : "With Inpainting"}

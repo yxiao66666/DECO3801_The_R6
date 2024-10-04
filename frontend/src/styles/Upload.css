@@ -24,7 +24,6 @@
     position: relative;
 }
 
-
 #imagePreview {
     background-size: cover;
     background-position: center;
@@ -41,6 +40,37 @@
     justify-content: center;
     gap:1em;
 
+}
+
+.results {
+  width: 100%; /* Ensure images fit within their container */
+  display: block; /* Remove inline spacing */
+  margin: 0 auto; /* Center images horizontally within the cell */
+}
+
+.upload-icon {
+  position: relative;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  cursor: pointer;
+  margin-top: 25px;
+}
+
+/* Masonry layout for image results */
+.image-grid {
+  column-count: 3; /* Number of columns in the masonry layout */
+  column-gap: 20px; /* Gap between columns */
+  margin: 20px auto; /* Center horizontally and add top/bottom margin */
+  width: 50%; /* Set maximum width to 50% */
+}
+
+/* Ensure images fit within their container */
+.image-cell {
+  display: inline-block; /* Allow images to align properly in columns */
+  margin-bottom: 20px; /* Space below each image */
+  width: 50%; /* Make sure the cell takes full width in the column */
 }
 
 select {
