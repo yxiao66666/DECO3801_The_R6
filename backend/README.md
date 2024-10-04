@@ -1,5 +1,13 @@
 # Backend
 
+## Updates:
+
+>**IMPORTANT**: Utterly insecure accessing method to the database has been fixed. Follow the procedure below:
+1. Firstly, run `pip install python-dotenv` on your terminal/powershell,etc.
+2. Create `.env` file in the `\backend` folder
+3. Insert the code `DB_LINK = ` to the `.env` file you created
+4. For developers, **copy the link shared privately and paste it after the line you have inserted!**
+
 ## Process
 
 1. Install all dependencies referring to [Dependencies](#dependencies)
@@ -14,6 +22,7 @@
 - flask_sqlalchemy
 - pillow
 - pymysql
+- python-dotenv
 - pytorch
 - requests
 - sqlalchemy
@@ -22,7 +31,7 @@
 Run the command below to install the dependencies. 
 
 ```bash
-pip install flask flask_cors flask_sqlalchemy pillow pymysql torch requests sqlalchemy transformers
+pip install flask flask_cors flask_sqlalchemy pillow pymysql python-dotenv torch requests sqlalchemy transformers
 ```
 
 > For the dependencies of the Stable Diffusion model, refer to [the README in controlnet folder](controlnet\README.md)
@@ -31,8 +40,8 @@ pip install flask flask_cors flask_sqlalchemy pillow pymysql torch requests sqla
 
 Our database is based on PHPMyAdmin and the application interacts with it using SQL Alchemy. The implementation provides a protection from malicious access requests such as SQL injection. The overview of the relational database is summarised in the below image:
 
+<img src = '..\images\db.png' alt = 'database structure'>
+
 ## Image Search
 
 Arty utilises Pinterest API to search images based on the keyword provided by the user. The keyword is handed to the flask application `app.py`, then the keyword or an image is handed over the the module `search_engine_access.py`. If the handed request contains a reference image, a caption is generated using BlipProcessor, then is handed over to the Pinterest API. The returned image from the backend is assigned with a unique id for each image.
-
-<img src = '..\images\db.png' alt = 'database structure'>
