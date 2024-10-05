@@ -82,14 +82,13 @@ def get_user():
     '''
     if request.method == 'POST':
         data = request.get_json()
-        user = Users.query.get(data['user_id'])
-        #work = SavedImage.query.get(data['user_id'])
+        user_id = data.get('user_id')
+        user = db.session.get(Users, user_id)
 
         if user:
             return jsonify({
                 'email': user.user_email, 
-                'id': user.user_id,
-                #'works': work.sd_image_path,
+                'id': user.user_id
             }), 200
         
         return jsonify({'error': 'User not found'}), 404
@@ -105,7 +104,7 @@ def get_users():
         JSON with all users
     '''
     if request.method == 'GET':
-        users = Users.query.all()
+        users = db.session.query(Users).all()
         users_list = [
         {
             "user_id": user.user_id,
@@ -129,8 +128,10 @@ def display_user():
     '''
     if request.method == 'POST':
         data = request.get_json()
-        user = Users.query.filter_by(user_email=data['email']).first()
-        
+        user_email = data.get('email')
+
+        user = db.session.query(Users).filter_by(user_email = user_email).first()
+
         if user:
             return jsonify({'user_id': user.user_id}), 200
         
@@ -152,16 +153,17 @@ def insert_user():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            user_email = data['user_email']
+            user_email = data.get('user_email')
+            user_password = data.get('user_password')
 
             # Check if the user already exists
-            existing_user = Users.query.filter_by(user_email=user_email).first()
+            existing_user = db.session.query(Users).filter_by(user_email = user_email).first()
             if existing_user:
                 return jsonify({'message': 'Email already exists'}), 400
 
             # Create new user
             new_user = Users(user_email=user_email,
-                             user_password=data['user_password'])
+                             user_password=user_password)
             db.session.add(new_user)
             db.session.commit()
             return jsonify({'user_id': new_user.user_id,
@@ -184,11 +186,11 @@ def authenticate_user():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            user_email = data['user_email']
-            user_password = data['user_password']
+            user_email = data.get('user_email')
+            user_password = data.get('user_password')
 
             # Find the user by email
-            user = Users.query.filter_by(user_email=user_email).first()
+            user = db.session.query(Users).filter_by(user_email = user_email).first()
             if user and user.user_password == user_password:
                 return jsonify({
                     'user_id': user.user_id,
@@ -215,7 +217,7 @@ def delete_user():
         try:
             data = request.get_json()
             user_id = data.get('user_id')
-            user = Users.query.get(user_id)
+            user = db.session.get(Users, user_id)
             db.session.delete(user)
             db.session.commit()
             return jsonify({'DELETED' : user_id}), 201
@@ -243,7 +245,8 @@ def get_search_img():
     '''
     if request.method == 'POST':
         data = request.get_json()
-        search_image = SearchImage.query.get(data['s_image_id'])
+        s_img_id = data.get('s_image_id')
+        search_image = db.session.get(SearchImage, s_img_id)
         return jsonify({'SearchImage': search_image}), 200
     return {}, 405
 
@@ -257,15 +260,15 @@ def get_search_imgs():
         JSON with all searched images
     '''
     if request.method == 'GET':
-        search_imgs = SearchImage.query.all()
+        search_imgs = db.session.query(SearchImage).all()
         search_imgs_list = [
         {
-            "s_image_id": search_img.s_image_id,
-            "user_id": search_img.user_id,
-            "s_image_file_path": search_img.s_image_file_path,
-            "created_at": search_img.created_at  # Convert datetime to string
+            "s_image_id": s.s_image_id,
+            "user_id": s.user_id,
+            "s_image_file_path": s.s_image_file_path,
+            "created_at": s.created_at  # Convert datetime to string
         }
-        for search_img in search_imgs
+        for s in search_imgs
         ]
         return jsonify(search_imgs_list), 200
     return {}, 405
@@ -285,8 +288,10 @@ def insert_search_image():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_search_image = SearchImage(user_id = data['user_id'],
-                                   s_image_file_path = data['s_image_file_path'])
+            user_id = data.get('user_id')
+            s_image_file_path = data.get('s_image_file_path')
+            new_search_image = SearchImage(user_id = user_id,
+                                   s_image_file_path = s_image_file_path)
             db.session.add(new_search_image)
             db.session.commit()
             return jsonify({'s_image_id': new_search_image.s_image_id,
@@ -317,7 +322,8 @@ def get_search_text():
     '''
     if request.method == 'POST':
         data = request.get_json()
-        search_text = SearchText.query.get(data['s_text_id'])
+        s_text_id = data.get('s_text_id')
+        search_text = db.session.get(SearchText, s_text_id)
         return jsonify({'SearchText': search_text}), 201
     return {}, 405
 
@@ -331,15 +337,15 @@ def get_search_texts():
         JSON with all texts used for search
     '''
     if request.method == 'GET':
-        search_texts = SearchText.query.all()
+        search_texts = db.session.query(SearchText).all()
         search_texts_list = [
         {
-            "s_text_id": search_text.s_text_id,
-            "user_id": search_text.user_id,
-            "s_text_query": search_text.s_text_query,
-            "created_at": search_text.created_at  # Convert datetime to string
+            "s_text_id": s.s_text_id,
+            "user_id": s.user_id,
+            "s_text_query": s.s_text_query,
+            "created_at": s.created_at  # Convert datetime to string
         }
-        for search_text in search_texts
+        for s in search_texts
         ]
         return jsonify(search_texts_list), 200
     return {}, 405
@@ -356,11 +362,14 @@ def insert_search_text():
     Returns:
         The corresponding response to the outcome of query
     '''
+
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_search_text = SearchText(user_id = data['user_id'],
-                                        s_text_query = data['s_text_query'])
+            user_id = data.get('user_id')
+            s_text_query = data.get('s_text_query')
+            new_search_text = SearchText(user_id = user_id,
+                                        s_text_query = s_text_query)
             db.session.add(new_search_text)
             db.session.commit()
             return jsonify({'s_text_id': new_search_text.s_text_id,
@@ -390,9 +399,13 @@ def get_generate_img():
         None if the handed id does not exist
     '''
     if request.method == 'POST':
-        data = request.get_json()
-        generate_image = GenerateImage.query.get(data['g_image_id'])
-        return jsonify({'GenerateImage': generate_image}), 200
+        try:
+            data = request.get_json()
+            g_image_id = data.get('g_image_id')
+            generate_image = db.session.get(GenerateImage, g_image_id)
+            return jsonify({'GenerateImage': generate_image}), 200
+        except Exception as e:
+            return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
 @app.route('/backend/generate_image/get/all', methods = ['GET'])
@@ -405,15 +418,15 @@ def get_generate_imgs():
         JSON with all generated images
     '''
     if request.method == 'GET':
-        generate_imgs = GenerateImage.query.all()
+        generate_imgs = db.session.query(GenerateImage).all()
         generate_imgs_list = [
         {
-            "g_image_id": generate_img.g_image_id,
-            "user_id": generate_img.user_id,
-            "g_image_path": generate_img.g_image_path,
-            "created_at": generate_img.created_at
+            "g_image_id": g.g_image_id,
+            "user_id": g.user_id,
+            "g_image_path": g.g_image_path,
+            "created_at": g.created_at
         }
-        for generate_img in generate_imgs
+        for g in generate_imgs
         ]
         return jsonify(generate_imgs_list), 200
     return {}, 405
@@ -428,23 +441,27 @@ def get_generated_imgs_for_user():
         JSON with all generated images for the specified user
     '''
     if request.method == 'POST':
-        data = request.get_json()
-        user_id = data.get('user_id')
-        
-        if user_id is None:
-            return {'error': 'user_id is required'}, 400
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            if user_id is None:
+                return {'error': 'user_id is required'}, 400
+            
+            generated_imgs = db.session.query(GenerateImage).filter_by(user_id = user_id).all()
 
-        generated_imgs = GenerateImage.query.filter_by(user_id=user_id).all()
-        generated_imgs_list = [
-            {
-                "sd_image_id": generated_imgs.g_image_id,
-                "user_id": generated_imgs.user_id,
-                "sd_image_path": generated_imgs.g_image_id,
-                "created_at": generated_imgs.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
-            }
-            for generated_imgs in generated_imgs
-        ]
-        return jsonify(generated_imgs_list), 200
+            generated_imgs_list = [
+                {
+                    "sd_image_id": g.g_image_id,
+                    "user_id": g.user_id,
+                    "sd_image_path": g.g_image_id,
+                    "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+                }
+                for g in generated_imgs
+            ]
+            return jsonify(generated_imgs_list), 200
+        except Exception as e:
+            print('Exception Raised: ', e)
+            return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
 @app.route('/backend/generate_image/insert', methods=['POST'])
@@ -462,8 +479,10 @@ def insert_generate_image():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_generate_image = GenerateImage(user_id = data['user_id'],
-                                   g_image_path = data['g_image_path'])
+            user_id = data.get('user_id')
+            g_image_path = data.get('g_iamge_path')
+            new_generate_image = GenerateImage(user_id = user_id,
+                                   g_image_path = g_image_path)
             db.session.add(new_generate_image)
             db.session.commit()
             return jsonify({'g_image_id': new_generate_image.g_image_id,
@@ -487,11 +506,11 @@ def delete_generate_image():
     if request.method == 'DELETE':
         try:
             data = request.get_json()
-            user_id = data['user_id']
-            g_image_path = data['g_image_path']
+            user_id = data.get('user_id')
+            g_image_path = data.get('g_image_path')
 
             # Query to find the saved image
-            generated_image = GenerateImage.query.filter_by(user_id=user_id, g_image_path=g_image_path).first()
+            generated_image = db.session.query(GenerateImage).filter(GenerateImage.user_id == user_id, GenerateImage.g_image_path == g_image_path).first()
             if generated_image:
                 db.session.delete(generated_image)
                 db.session.commit()
@@ -523,7 +542,8 @@ def get_generate_text():
     '''
     if request.method == 'POST':
         data = request.get_json()
-        generate_text = GenerateText.query.get(data['g_text_id'])
+        g_text_id = data.get('g_text_id')
+        generate_text = db.session.get(GenerateText, g_text_id)
         return jsonify({'GenerateText': generate_text}), 200
     return {}, 405
 
@@ -538,15 +558,15 @@ def get_generate_texts():
 
     '''
     if request.method == 'GET':
-        generate_texts = GenerateText.query.all()
+        generate_texts = db.session.query(GenerateText).all()
         generate_texts_list = [
         {
-            "g_text_id": generate_text.g_text_id,
-            "user_id": generate_text.user_id,
-            "g_text_query": generate_text.g_text_query,
-            "created_at": generate_text.created_at  # Convert datetime to string
+            "g_text_id": g.g_text_id,
+            "user_id": g.user_id,
+            "g_text_query": g.g_text_query,
+            "created_at": g.created_at  # Convert datetime to string
         }
-        for generate_text in generate_texts
+        for g in generate_texts
         ]
         return jsonify(generate_texts_list), 200
     return {}, 405
@@ -566,8 +586,10 @@ def insert_generate_text():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_generate_text = GenerateText(user_id = data['user_id'],
-                                   g_text_query = data['g_text_query'])
+            user_id = data.get('user_id')
+            g_text_query = data.get('g_text_query')
+            new_generate_text = GenerateText(user_id = user_id,
+                                   g_text_query = g_text_query)
             db.session.add(new_generate_text)
             db.session.commit()
             return jsonify({'g_text_id': new_generate_text.g_text_id,
@@ -596,15 +618,15 @@ def get_saved_imgs():
         JSON with all saved images
     '''
     if request.method == 'GET':
-        saved_imgs = SavedImage.query.all()
+        saved_imgs = db.session.query(SavedImage).all()
         saved_imgs_list = [
         {
-            "sd_image_id": saved_img.sd_image_id,
-            "user_id": saved_img.user_id,
-            "sd_image_path": saved_img.sd_image_path,
-            "created_at": saved_img.created_at  # Convert datetime to string
+            "sd_image_id": s.sd_image_id,
+            "user_id": s.user_id,
+            "sd_image_path": s.sd_image_path,
+            "created_at": s.created_at  # Convert datetime to string
         }
-        for saved_img in saved_imgs
+        for s in saved_imgs
         ]
         return jsonify(saved_imgs_list), 200
     return {}, 405
@@ -621,8 +643,10 @@ def insert_saved_image():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_saved_image = SavedImage(user_id = data['user_id'],
-                                   sd_image_path = data['sd_image_path'])
+            user_id = data.get('user_id')
+            sd_image_path = data.get('sd_image_path')
+            new_saved_image = SavedImage(user_id = user_id,
+                                   sd_image_path = sd_image_path)
             db.session.add(new_saved_image)
             db.session.commit()
             return jsonify({'sd_image_id': new_saved_image.sd_image_id,
@@ -646,11 +670,11 @@ def delete_saved_image():
     if request.method == 'DELETE':
         try:
             data = request.get_json()
-            user_id = data['user_id']
-            sd_image_path = data['sd_image_path']
+            user_id = data.get('user_id')
+            sd_image_path = data.get('sd_image_path')
 
             # Query to find the saved image
-            saved_image = SavedImage.query.filter_by(user_id=user_id, sd_image_path=sd_image_path).first()
+            saved_image = db.session.query(SavedImage).filter(SavedImage.user_id == user_id, SavedImage.sd_image_path == sd_image_path).first()
             if saved_image:
                 db.session.delete(saved_image)
                 db.session.commit()
@@ -679,16 +703,20 @@ def get_saved_imgs_for_user():
         if user_id is None:
             return {'error': 'user_id is required'}, 400
 
-        saved_imgs = SavedImage.query.filter_by(user_id=user_id).all()
+        saved_imgs = db.session.query(SavedImage).filter_by(user_id = user_id).all()
+
         saved_imgs_list = [
             {
-                "sd_image_id": saved_img.sd_image_id,
-                "user_id": saved_img.user_id,
-                "sd_image_path": saved_img.sd_image_path,
-                "created_at": saved_img.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+                "sd_image_id": s.sd_image_id,
+                "user_id": s.user_id,
+                "sd_image_path": s.sd_image_path,
+                "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
             }
-            for saved_img in saved_imgs
+            for s in saved_imgs
         ]
+
+        print(saved_imgs_list)
+
         return jsonify(saved_imgs_list), 200
     return {}, 405
 
@@ -704,7 +732,8 @@ def get_saved_img():
     '''
     if request.method == 'POST':
         data = request.get_json()
-        saved_image = SavedImage.query.get(data['sd_image_id'])
+        sd_image_id = data.get('sd_image_id')
+        saved_image = db.session.get(SavedImage, sd_image_id)
         if saved_image:
             return jsonify({'SavedImage': saved_image}), 200
         return {'error': 'Image not found'}, 404
