@@ -318,7 +318,7 @@ def get_search_text():
     if request.method == 'POST':
         data = request.get_json()
         search_text = SearchText.query.get(data['s_text_id'])
-        return jsonify({'SearchImage': search_text}), 201
+        return jsonify({'SearchText': search_text}), 201
     return {}, 405
 
 @app.route('/backend/search_text/get/all', methods = ['GET'])
@@ -331,7 +331,7 @@ def get_search_texts():
         JSON with all texts used for search
     '''
     if request.method == 'GET':
-        search_texts = SearchImage.query.all()
+        search_texts = SearchText.query.all()
         search_texts_list = [
         {
             "s_text_id": search_text.s_text_id,
@@ -392,7 +392,7 @@ def get_generate_img():
     if request.method == 'POST':
         data = request.get_json()
         generate_image = GenerateImage.query.get(data['g_image_id'])
-        return jsonify({'SearchImage': generate_image}), 200
+        return jsonify({'GenerateImage': generate_image}), 200
     return {}, 405
 
 @app.route('/backend/generate_image/get/all', methods = ['GET'])
@@ -405,7 +405,7 @@ def get_generate_imgs():
         JSON with all generated images
     '''
     if request.method == 'GET':
-        generate_imgs = SearchImage.query.all()
+        generate_imgs = GenerateImage.query.all()
         generate_imgs_list = [
         {
             "g_image_id": generate_img.g_image_id,
@@ -524,7 +524,7 @@ def get_generate_text():
     if request.method == 'POST':
         data = request.get_json()
         generate_text = GenerateText.query.get(data['g_text_id'])
-        return jsonify({'SearchImage': generate_text}), 200
+        return jsonify({'GenerateText': generate_text}), 200
     return {}, 405
 
 @app.route('/backend/generate_text/get/all', methods = ['GET'])
@@ -538,7 +538,7 @@ def get_generate_texts():
 
     '''
     if request.method == 'GET':
-        generate_texts = SearchImage.query.all()
+        generate_texts = GenerateText.query.all()
         generate_texts_list = [
         {
             "g_text_id": generate_text.g_text_id,
@@ -596,7 +596,7 @@ def get_saved_imgs():
         JSON with all saved images
     '''
     if request.method == 'GET':
-        saved_imgs = SearchImage.query.all()
+        saved_imgs = SavedImage.query.all()
         saved_imgs_list = [
         {
             "sd_image_id": saved_img.sd_image_id,
@@ -706,7 +706,7 @@ def get_saved_img():
         data = request.get_json()
         saved_image = SavedImage.query.get(data['sd_image_id'])
         if saved_image:
-            return jsonify({'SearchImage': saved_image}), 200
+            return jsonify({'SavedImage': saved_image}), 200
         return {'error': 'Image not found'}, 404
     return {}, 405
 
@@ -882,5 +882,5 @@ def cleanup_images():
 if __name__ == '__main__':
 
     with app.app_context():
-        db.create_all()
+        # db.create_all()
         app.run(host='localhost', debug=True)
