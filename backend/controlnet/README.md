@@ -1,5 +1,10 @@
 # Controlnet
 
+The backbone for stable diffusion with controlnet.
+
+-   `sd_backbone.py` contains all methods related to the stable diffusion backbone.
+-   `test_backbone.ipynb` contains some tests and example usages.
+
 ## Get Started
 
 ### 1. Install stable-diffusion-webui
@@ -12,31 +17,28 @@ If you run into any issue, please refer to the original document [here](https://
 ### 2. Install Controlnet Extension
 
 1. Start stable-diffusion-webui by running `webui.bat` or `./webui.sh`.
-2. Navige to the "Extensions" page
+2. Navige to the "Extensions" page.
 3. Select the Install from URL tab, and put in the following URL:
 
-   `https://github.com/Mikubill/sd-webui-controlnet`
+    `https://github.com/Mikubill/sd-webui-controlnet`
 
-   And click the install button.
+    And click the install button.
 
 4. Wait for the confirmation message and then restart the webui.
 
 ### 3. Download Model Weights
 
-- [v1-5-pruned.ckpt](https://huggingface.co/runwayml/stable-diffusion-v1-5/tree/main)
-- [sd1.5 controlnet models](https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main)
+-   ~~[v1-5-pruned.ckpt](https://huggingface.co/runwayml/stable-diffusion-v1-5/tree/main)~~ (Original repo was deprecated.)
+-   [v1-5-pruned.ckpt](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
+-   [sd1.5 controlnet models](https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main)
 
 ## References
 
-This project utilizes components and code from the following repositories:
+The backbone utilises components and code from the following repositories:
 
-- [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) by AUTOMATIC1111
-- [sd-webui-controlnet](https://github.com/Mikubill/sd-webui-controlnet) by Mikubill
-
-### stable-diffusion-webui
-
-We use this repository as the backend for our project. This repository provides the essential backend functionalities and optimisations to interact with Controlnet.
-
-### Mikubill/sd-webui-controlnet
-
-The Controlnet extension for stable-diffusion-webui.
+1. **ControlNet Extension for Stable Diffusion Web UI**:
+    - [Mikubill ControlNet GitHub Repository](https://github.com/Mikubill/sd-webui-controlnet)
+2. **Stable Diffusion v1.5**:
+    - [Hugging Face: Stable Diffusion v1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
+3. **Stable Diffusion Web UI**:
+    - [AUTOMATIC1111 GitHub Repository](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
