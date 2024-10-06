@@ -12,25 +12,27 @@ The backend server, built with Flask, handles various core functionalities of th
 3. Insert the code `DB_LINK = ` to the `.env` file you created
 4. For developers, **copy the link shared privately and paste it after the line you have inserted!**
 
-## Process
-
-1. Install all dependencies referring to [Dependencies](#dependencies)
-2. Make a ssh tunnel to the uqcloud by entering the command `ssh -L 3306:localhost:3306 -J your_student_account@remote.labs.eait.uq.edu.au your_student_account@arty.zones.eait.uq.edu.au`. Make sure to keep this termianl open. (NOTE: If this does not work you may have to set your ssh key to the EAIT Remote Desktop first!)
-3. Run `backend/app.py` from a different terminal, and ensure that this is kept open.
-4. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
-
 ## Installation & Configuration
 > Anaconda (miniconda) is used for virtual environment configuration, please refer to [anaconda's website](https://www.anaconda.com/download/success) for installation details.
 >
 > For installation of the Stable Diffusion backbone, refer to [the README in controlnet folder](controlnet\README.md)
 
-The list of dependencies used can be found in [requirements.txt](backend/requirements.txt)
+The list of dependencies used can be found in [requirements.txt](backend/requirements.txt).
 
 Run the command below to setup a conda virtual environment and install the dependencies:
 
 ```bash
 conda create --name arty_backend --file requirements.txt
 ```
+
+## Running the Server
+
+1. Make a ssh tunnel to the uqcloud by entering the command
+   `ssh -L 3306:localhost:3306 -J your_student_account@remote.labs.eait.uq.edu.au your_student_account@arty.zones.eait.uq.edu.au`.
+   Make sure to keep this termianl open. (NOTE: If this does not work you may have to set your ssh key to the EAIT Remote Desktop first!)
+3. Create a new terminal at the root directory, activate the conda virtual environment by running `conda activate arty_backend`.
+4. From the same terminal, run `python backend/app.py` and keep this terminal open.
+5. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
 
 ## Database
 
