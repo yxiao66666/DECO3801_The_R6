@@ -65,3 +65,18 @@ Arty implements Stable Diffuion 1.5 with ControlNet extensions to provide image 
 Below is the pipeline of the Stable Diffuion backbone:
 
 <img src = '..\images\sd_pipeline.png' alt = 'stable diffusion backbone pipeline'>
+
+## References
+
+Below are some important resources and documentation related to the tools and models used in the backend:
+
+1. **ControlNet Extension for Stable Diffusion Web UI**:
+    - [Mikubill ControlNet GitHub Repository](https://github.com/Mikubill/sd-webui-controlnet)
+2. **Flask Documentation**:
+    - [Flask Official Documentation](https://flask.palletsprojects.com/en/3.0.x/)
+3. **Flask-SQLAlchemy Documentation**:
+    - [Flask-SQLAlchemy Official Documentation](https://flask-sqlalchemy.readthedocs.io/en/3.1.x/)
+4. **Stable Diffusion v1.5**:
+    - [Hugging Face: Stable Diffusion v1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
+5. **Stable Diffusion Web UI**:
+    - [AUTOMATIC1111 GitHub Repository](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
