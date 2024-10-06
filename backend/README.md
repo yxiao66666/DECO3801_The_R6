@@ -19,26 +19,17 @@ The backend server, built with Flask, handles various core functionalities of th
 3. Run `backend/app.py` from a different terminal, and ensure that this is kept open.
 4. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
 
-## Dependencies
+## Installation & Configuration
+> Anaconda (miniconda) is used for virtual environment configuration, please refer to [anaconda's website](https://www.anaconda.com/download/success) for installation details.
+> For installation of the Stable Diffusion backbone, refer to [the README in controlnet folder](controlnet\README.md)
 
-- flask
-- flask_cors
-- flask_sqlalchemy
-- pillow
-- pymysql
-- python-dotenv
-- pytorch
-- requests
-- sqlalchemy
-- transformers
+The list of dependencies used can be found in [requirements.txt](backend/requirements.txt)
 
-Run the command below to install the dependencies. 
+Run the command below to setup a conda virtual environment and install the dependencies:
 
 ```bash
-pip install flask flask_cors flask_sqlalchemy pillow pymysql python-dotenv torch requests sqlalchemy transformers
+conda create --name arty_backend --file requirements.txt
 ```
-
-> For the dependencies of the Stable Diffusion model, refer to [the README in controlnet folder](controlnet\README.md)
 
 ## Database
 
