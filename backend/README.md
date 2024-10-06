@@ -1,4 +1,8 @@
 # Backend
+The backend server, built with Flask, handles various core functionalities of the application. 
+ - `app.py` is the main server entry point and manages APIs for database access, search engine access, and Stable Diffusion backbone access.
+ - `search_engine_access.py` contains all methods related to the search engine.
+ - `controlnet/` folder contains the Stable Diffusion backbone code and ControlNet extensions.
 
 ## Updates:
 
