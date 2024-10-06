@@ -15,15 +15,16 @@ The backend server, built with Flask, handles various core functionalities of th
 ## Installation & Configuration
 > Anaconda (miniconda) is used for virtual environment configuration, please refer to [anaconda's website](https://www.anaconda.com/download/success) for installation details.
 >
-> For installation of the Stable Diffusion backbone, refer to [the README in controlnet folder](controlnet\README.md)
+> For installation of the Stable Diffusion backbone, refer to [the README in controlnet folder](controlnet\README.md).
 
 The list of dependencies used can be found in [requirements.txt](backend/requirements.txt).
 
-Run the command below to setup a conda virtual environment and install the dependencies:
-
+### Installation
+1. Run the command below to setup a conda virtual environment and install the dependencies:
 ```bash
 conda create --name arty_backend --file requirements.txt
 ```
+2. Follow the instruction [here](#updates) to setup `.env` for storing perosnal credentials needed to access UQ Zone.
 
 ## Running the Server
 
