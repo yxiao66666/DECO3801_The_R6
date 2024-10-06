@@ -34,12 +34,17 @@ conda create --name arty_backend --file requirements.txt
 4. From the same terminal, run `python backend/app.py` and keep this terminal open.
 5. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
 
-## Database
+## Key Services
+### Database
 
 Our database is based on PHPMyAdmin and the application interacts with it using SQL Alchemy. The implementation provides a protection from malicious access requests such as SQL injection. The overview of the relational database is summarised in the below image:
 
 <img src = '..\images\db.png' alt = 'database structure'>
 
-## Image Search
+### Search Engine
 
 Arty utilises Pinterest API to search images based on the keyword provided by the user. The keyword is handed to the flask application `app.py`, then the keyword or an image is handed over the the module `search_engine_access.py`. If the handed request contains a reference image, a caption is generated using BlipProcessor, then is handed over to the Pinterest API. The returned image from the backend is assigned with a unique id for each image.
+
+### Stable Diffuion Backbone
+
+Arty implements Stable Diffuion 1.5 with ControlNet extensions to provide image generation feature for fast idea visualisation and exploration. Plese find more details in [the README in controlnet folder](controlnet\README.md). 
