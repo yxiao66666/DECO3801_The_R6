@@ -21,6 +21,7 @@ The backend server, built with Flask, handles various core functionalities of th
 
 ## Installation & Configuration
 > Anaconda (miniconda) is used for virtual environment configuration, please refer to [anaconda's website](https://www.anaconda.com/download/success) for installation details.
+>
 > For installation of the Stable Diffusion backbone, refer to [the README in controlnet folder](controlnet\README.md)
 
 The list of dependencies used can be found in [requirements.txt](backend/requirements.txt)
