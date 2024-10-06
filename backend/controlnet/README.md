@@ -7,7 +7,7 @@ The backbone for Stable Diffuion 1.5 with ControlNet.
 
 Here is a graph of the Stable Diffuion backbone pipeline:
 
-<img src = '..\images\sd_pipeline.png' alt = 'stable diffusion backbone pipeline'>
+<img src = '..\..\images\sd_pipeline.png' alt = 'stable diffusion backbone pipeline'>
 
 ## Get Started
 
