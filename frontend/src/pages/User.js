@@ -115,6 +115,7 @@ export default function Userhome() {
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('userId');
         navigate("/"); 
     };
 
