@@ -9,7 +9,7 @@ export default function Userhome() {
     const [generatedImages, setGeneratedImages] = useState([]);
     const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
     const navigate = useNavigate();
-    const baseUrl = 'http://localhost:5000';
+    const baseUrl = 'http://127.0.0.1:5000';
     const [visibleImages] = useState(999); // To control how many images are visible initially
 
     useEffect(() => {
