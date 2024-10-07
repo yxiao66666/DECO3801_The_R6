@@ -30,7 +30,7 @@ export default function Userhome() {
                 });
                 if (response.ok) {
                     const savedImageArray = await response.json();
-                    const savedImageSet = new Set(savedImageArray.map(image => image.sd_image_path));
+                    const savedImageSet = await new Set(savedImageArray.map(image => image.sd_image_path));
                     setSavedImages(savedImageSet); // Store saved images in state
                 } else {
                     console.error('Failed to fetch saved images');
@@ -283,7 +283,7 @@ export default function Userhome() {
                 <section className="user-works" id="user-works">
                     <h4>Saved Images</h4>
                     <div className="image-grid">
-                        {generatedImages.length > 0 ? (
+                        {savedImages.size > 0 ? (
                             Array.from(savedImages).slice(0, visibleImages).map((url, index) => (
                                 <div key={index} className="image-cell">
                                     <img className="results" src={`${url}`} alt={`Saved Image ${index + 1}`} />
