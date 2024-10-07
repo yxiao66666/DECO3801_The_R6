@@ -24,7 +24,7 @@ export default function Upload() {
     const [cachedImage, setCachedImage] = useState(null);  // Cached version of the selected image
     const [generatedImages, setGeneratedImages] = useState({}); // State to store AI-generated image filenames
     const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
-    const baseUrl = 'http://127.0.0.1:5000';
+    const baseUrl = 'http://localhost:5000';
 
     useEffect(() => {
         const id = localStorage.getItem('userId');
@@ -462,176 +462,167 @@ export default function Upload() {
     return (
         <div style={{ backgroundColor: 'black', minHeight: '100vh' }}>
             <center>
-                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                    <div className="container" style={{ margin: 'auto', fontFamily: 'Arial, sans-serif' }}>
-                        <br />
-                        <div className="avatar-upload" style={{ width: '100%' }}>
-                            <div className="avatar-preview" style={{ width: '100%', display: 'flex', flexDirection: 'row', gap: '10px' }}>
-                                {previews.length === 0 && (
-                                    <div id="defaultPreview" style={{ backgroundImage: 'url(/images/hum-2.gif)' }}>
-                                        <h2>-Upload your work-</h2>
-                                    </div>
-                                )}
-                            
-                                {previews.map((preview, index) => (
-                                    <div key={index} style={{ width: '100%', position: 'relative' }}>
-                                        <div id="imagePreview" style={{ backgroundImage: `url(${preview})` }}></div>
-
-                                        <select
-                                            value={aiOptions[index]}
-                                            onChange={(e) => handleOptionChange(index, e.target.value)}
-                                        >
-                                            <option value="AI Options">AI options</option>
-                                            <optgroup label="Edge Detection">
-                                                <option value="canny|low">Canny (Low Intensity)</option>
-                                                <option value="canny|balanced">Canny (Balance Intensity)</option>
-                                                <option value="canny|high">Canny (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Architechure">
-                                                <option value="mlsd|low">mlsd (Low Intensity)</option>
-                                                <option value="mlsd|balanced">mlsd (Balance Intensity)</option>
-                                                <option value="mlsd|high">mlsd (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Face">
-                                                <option value="openpose_faceonly|low">openpose_faceonly (Low Intensity)</option>
-                                                <option value="openpose_faceonly|balanced">openpose_faceonly (Balance Intensity)</option>
-                                                <option value="openpose_faceonly|high">openpose_faceonly (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Hand">
-                                                <option value="openpose_hand|low"> openpose_hand (Low Intensity)</option>
-                                                <option value="openpose_hand|balanced">openpose_hand (Balance Intensity)</option>
-                                                <option value="openpose_hand|high">openpose_hand (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Full Pose">
-                                                <option value="dw_openpose_full|low">dw_openpose_full (Low Intensity)</option>
-                                                <option value="dw_openpose_full|balanced">dw_openpose_full (Balance Intensity)</option>
-                                                <option value="dw_openpose_full|high">dw_openpose_full (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Animal Pose">
-                                                <option value="animal_openpose|low">animal_openpose (Low Intensity)</option>
-                                                <option value="animal_openpose|balanced">animal_openpose (Balance Intensity)</option>
-                                                <option value="animal_openpose|high">animal_openpose (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Depth">
-                                                <option value="depth_anything_v2|low">depth_anything_v2 (Low Intensity)</option>
-                                                <option value="depth_anything_v2|balanced">depth_anything_v2 (Balance Intensity)</option>
-                                                <option value="depth_anything_v2|high">depth_anything_v2 (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Segmentation">
-                                                <option value="seg_ofade20k|low">seg_ofade20k (Low Intensity)</option>
-                                                <option value="seg_ofade20k|balanced">seg_ofade20k (Balance Intensity)</option>
-                                                <option value="seg_ofade20k|high">seg_ofade20k (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Segmentation Anime">
-                                                <option value="seg_anime_face|low">seg_anime_face (Low Intensity)</option>
-                                                <option value="seg_anime_face|balanced">seg_anime_face (Balance Intensity)</option>
-                                                <option value="seg_anime_face|high">seg_anime_face (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Color Palatte">
-                                                <option value="shuffle|low">shuffle (Low Intensity)</option>
-                                                <option value="shuffle|balanced">shuffle (Balance Intensity)</option>
-                                                <option value="shuffle|high">shuffle (High Intensity)</option>
-                                            </optgroup>
-                                            <optgroup label="Color Composition">
-                                                <option value="t2ia_color_grid|low">t2ia_color_grid (Low Intensity)</option>
-                                                <option value="t2ia_color_grid|balanced">t2ia_color_grid (Balance Intensity)</option>
-                                                <option value="t2ia_color_grid|high">t2ia_color_grid (High Intensity)</option>
-                                            </optgroup>
-                                        </select>
-                                    </div>
-                                ))}
-                                <br />
-                                <br />
-                                <div className="avatar-edit">
-                                    <input
-                                        multiple
-                                        type="file"
-                                        id="imageUpload"
-                                        accept=".png, .jpg, .jpeg"
-                                        onChange={handleChange}
-                                        style={{ display: 'none' }}
-                                    />
-
-                                    {/* Button that toggles between Browse and Clear */}
-                                    <button 
-                                        className="function-btn" 
-                                        type="button" 
-                                        onClick={() => {
-                                            if (showClear) {
-                                                handleClear(); // Call handleClear when Clear is shown
-                                            } else {
-                                                document.getElementById('imageUpload').click(); // Trigger file input click when Browse is shown
-                                            }
-                                        }}
-                                    >
-                                        {showClear ? "Clear" : "Browse"} {/* Toggle button text */}
-                                    </button>
-                                    <button className="function-btn" type="button" onClick={() => setShowCanvas(!showCanvas)}>
-                                        {showCanvas ? "No inpainting" : "With Inpainting"}
-                                    </button>
-                                    <button
-                                        className="function-btn"
-                                        type="button"
-                                        onClick={handleWithTextClick}
-                                    >
-                                        {textvisible ? "No text" : "With text"}
-                                    </button>
-                                    <input className="function-btn" type="submit" id="submit" style={{ display: 'none' }} />
-                                    <button className="function-btn" type="submit">
-                                        Generate
-                                    </button>
-                                </div>
+                <form onSubmit={handleSubmit}>
+                    <br/>
+                    <div className="avatar-preview">
+                        {previews.length === 0 && (
+                            <div id="defaultPreview" style={{ backgroundImage: 'url(/images/hum-2.gif)' }}>
+                                <h2>-Upload your work-</h2>
                             </div>
-                            <br />
-                            <br />
+                        )}
+                    
+                        {previews.map((preview, index) => (
+                            <div key={index} id="imagePreview" style={{ backgroundImage: `url(${preview})` }}>
+                                <select
+                                    value={aiOptions[index]}
+                                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                                >
+                                    <option value="AI Options">AI options</option>
+                                    <optgroup label="Edge Detection">
+                                        <option value="canny|low">Canny (Low Intensity)</option>
+                                        <option value="canny|balanced">Canny (Balance Intensity)</option>
+                                        <option value="canny|high">Canny (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Architechure">
+                                        <option value="mlsd|low">mlsd (Low Intensity)</option>
+                                        <option value="mlsd|balanced">mlsd (Balance Intensity)</option>
+                                        <option value="mlsd|high">mlsd (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Face">
+                                        <option value="openpose_faceonly|low">openpose_faceonly (Low Intensity)</option>
+                                        <option value="openpose_faceonly|balanced">openpose_faceonly (Balance Intensity)</option>
+                                        <option value="openpose_faceonly|high">openpose_faceonly (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Hand">
+                                        <option value="openpose_hand|low"> openpose_hand (Low Intensity)</option>
+                                        <option value="openpose_hand|balanced">openpose_hand (Balance Intensity)</option>
+                                        <option value="openpose_hand|high">openpose_hand (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Full Pose">
+                                        <option value="dw_openpose_full|low">dw_openpose_full (Low Intensity)</option>
+                                        <option value="dw_openpose_full|balanced">dw_openpose_full (Balance Intensity)</option>
+                                        <option value="dw_openpose_full|high">dw_openpose_full (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Animal Pose">
+                                        <option value="animal_openpose|low">animal_openpose (Low Intensity)</option>
+                                        <option value="animal_openpose|balanced">animal_openpose (Balance Intensity)</option>
+                                        <option value="animal_openpose|high">animal_openpose (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Depth">
+                                        <option value="depth_anything_v2|low">depth_anything_v2 (Low Intensity)</option>
+                                        <option value="depth_anything_v2|balanced">depth_anything_v2 (Balance Intensity)</option>
+                                        <option value="depth_anything_v2|high">depth_anything_v2 (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Segmentation">
+                                        <option value="seg_ofade20k|low">seg_ofade20k (Low Intensity)</option>
+                                        <option value="seg_ofade20k|balanced">seg_ofade20k (Balance Intensity)</option>
+                                        <option value="seg_ofade20k|high">seg_ofade20k (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Segmentation Anime">
+                                        <option value="seg_anime_face|low">seg_anime_face (Low Intensity)</option>
+                                        <option value="seg_anime_face|balanced">seg_anime_face (Balance Intensity)</option>
+                                        <option value="seg_anime_face|high">seg_anime_face (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Color Palatte">
+                                        <option value="shuffle|low">shuffle (Low Intensity)</option>
+                                        <option value="shuffle|balanced">shuffle (Balance Intensity)</option>
+                                        <option value="shuffle|high">shuffle (High Intensity)</option>
+                                    </optgroup>
+                                    <optgroup label="Color Composition">
+                                        <option value="t2ia_color_grid|low">t2ia_color_grid (Low Intensity)</option>
+                                        <option value="t2ia_color_grid|balanced">t2ia_color_grid (Balance Intensity)</option>
+                                        <option value="t2ia_color_grid|high">t2ia_color_grid (High Intensity)</option>
+                                    </optgroup>
+                                </select>
+                            </div>   
+                        ))}
 
-                            {showCanvas && (
-                                <>
-                                    <h1 style={{ color: 'white' }}>Polish your work with inpainting</h1>
-                                    <canvas
-                                        ref={canvasRef}
-                                        onMouseDown={startDrawing}
-                                        onMouseUp={stopDrawing}
-                                        onMouseMove={draw}
-                                        onTouchMove={draw}
-                                        onTouchEnd={stopDrawing}
-                                        onTouchStart={startDrawing}
-                                        width="800"
-                                        height="600"
-                                        style={{ backgroundColor: 'white', display: 'start', border: '3px solid #ccc', marginTop: '10px' }}
-                                    />
-                                    <canvas
-                                        ref={drawingCanvasRef}
-                                        width="500"
-                                        height="500"
-                                        style={{ display: 'none' }}
-                                    />
-                                    <br />
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <button type="button" onClick={undoLastAction} className="painting-tool">
-                                            <img src="../images/undo.png" className="painting-icon" alt="undo" />
-                                        </button>
-                                        <input
-                                            type="file"
-                                            id="canvasUpload"
-                                            accept=".png, .jpg, .jpeg"
-                                            onChange={handleCanvasChange}
-                                            style={{ display: 'none' }}
-                                        />
-                                        <div style={{ alignItems: 'center' }}>
-                                            <button className="function-btn" type="button" onClick={() => document.getElementById('canvasUpload').click()}>
-                                                Choose an image
-                                            </button>
-                                            <button className="function-btn" type="button" onClick={clearCanvas}>
-                                                Clear canvas
-                                            </button>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
+                        <div className="avatar-edit">
+                            <input
+                                multiple
+                                type="file"
+                                id="imageUpload"
+                                accept=".png, .jpg, .jpeg"
+                                onChange={handleChange}
+                                style={{ display: 'none' }}
+                            />
+
+                            {/* Button that toggles between Browse and Clear */}
+                            <button 
+                                className="function-btn" 
+                                type="button" 
+                                onClick={() => {
+                                    if (showClear) {
+                                        handleClear(); // Call handleClear when Clear is shown
+                                    } else {
+                                        document.getElementById('imageUpload').click(); // Trigger file input click when Browse is shown
+                                    }
+                                }}
+                            >
+                                {showClear ? "Clear" : "Browse"} {/* Toggle button text */}
+                            </button>
+                            <button className="function-btn" type="button" onClick={() => setShowCanvas(!showCanvas)}>
+                                {showCanvas ? "No inpainting" : "With Inpainting"}
+                            </button>
+                            <button
+                                className="function-btn"
+                                type="button"
+                                onClick={handleWithTextClick}
+                            >
+                                {textvisible ? "No text" : "With text"}
+                            </button>
+                            <button className="function-btn" type="submit">
+                                Generate
+                            </button>
                         </div>
                     </div>
+                    
+                    <br />
 
+                    {showCanvas && (
+                        <>
+                            <h1 style={{ color: 'white' }}>Polish your work with inpainting</h1>
+                            <canvas
+                                ref={canvasRef}
+                                onMouseDown={startDrawing}
+                                onMouseUp={stopDrawing}
+                                onMouseMove={draw}
+                                onTouchMove={draw}
+                                onTouchEnd={stopDrawing}
+                                onTouchStart={startDrawing}
+                                width="800"
+                                height="600"
+                                style={{ backgroundColor: 'white', display: 'start', border: '3px solid #ccc', marginTop: '10px' }}
+                            />
+                            <canvas
+                                ref={drawingCanvasRef}
+                                width="500"
+                                height="500"
+                                style={{ display: 'none' }}
+                            />
+                            <br />
+                            <div style={{ display: 'flex',justifyContent: 'center' }}>
+                                <button type="button" onClick={undoLastAction} className="painting-tool">
+                                    <img src="../images/undo.png" className="painting-icon" alt="undo" />
+                                </button>
+                                <input
+                                    type="file"
+                                    id="canvasUpload"
+                                    accept=".png, .jpg, .jpeg"
+                                    onChange={handleCanvasChange}
+                                    style={{ display: 'none' }}
+                                />
+                                <button className="function-btn" type="button" onClick={() => document.getElementById('canvasUpload').click()}>
+                                    Choose an image
+                                </button>
+                                <button className="function-btn" type="button" onClick={clearCanvas}>
+                                    Clear canvas
+                                </button>
+                                
+                            </div>
+                        </>
+                    )}
+                    
                     <br />
                     <br />
 
@@ -651,10 +642,12 @@ export default function Upload() {
                     <br />
 
                 </form>
-                <h2 style={{ color: 'white' }}>Generated Images:</h2>
+
+                
                 {/* Render the AI-generated images */}
                 {Object.values(generatedImages).map((imageName, index) => (
                     <div key={index} className="image-display">
+                        <h2 style={{ color: 'white' }}>Generated Images:</h2>
                         <img
                             className="results"
                             src={`${baseUrl}/static/generations/${imageName}`}
