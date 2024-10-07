@@ -1,0 +1,242 @@
+/* Main section block with white background */
+.about-us-block {
+  background-color: white; /* White background color */
+}
+
+.about-us-block {
+  background-size: cover; /* Ensure the background covers the entire area */
+  background-position: center; /* Center the background image */
+  padding: 230px 0; /* Vertical padding */
+  text-align: center; /* Center-align text */
+}
+
+/* Heading for the "Nice to Meet" section */
+.heading-nice-to-meet {
+  color: white; /* White text color */
+  font-size: 4em; /* Large font size */
+  font-family: cursive; /* Cursive font style */
+  font-weight: bold; /* Bold text */
+}
+
+/* Paragraph introduction section */
+.paragraph-introduction {
+  color: white; /* White text */
+  font-size: 1.5em; /* Medium-large font size */
+  margin-top: 20px; /* Space above the paragraph */
+}
+
+/* "What We Do" block section */
+.what-we-do-block {
+  background-color: white; /* White background */
+  padding: 50px 0; /* Vertical padding */
+  margin-top: 50px; /* Top margin to separate from the previous block */
+}
+
+/* Illustration styling */
+.illustration {
+  margin-top: 60px; /* Space above the illustration */
+  max-width: 70%; /* Maximum width of the image set to 70% of its container */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* General text paragraph styling */
+.text-paragraph {
+  font-size: 1.5em; /* Medium-large font size */
+  color: black; /* Black text color */
+  margin-top: 30px; /* Space above the paragraph */
+}
+
+/* "What You Can Do" block styling */
+.what-you-can-do-block {
+  background-color: white; /* White background */
+  padding: 50px 0; /* Vertical padding */
+  margin-top: 50px; /* Space above the block */
+}
+
+/* Section heading animation */
+.section_heading {
+  visibility: visible; /* Ensure the heading is visible */
+  animation-delay: 0.2s; /* Delay the animation */
+  animation-name: fadeInUp; /* Animation name */
+}
+
+/* Section heading text styling */
+.section_heading h2 {
+  font-family: cursive; /* Cursive font style */
+  font-size: 4em; /* Large font size */
+  color: black; /* Black text */
+  font-weight: bold; /* Bold text */
+}
+
+/* "Learn More" button styling */
+.btn-learn-more {
+  border: 2px solid white; /* White border */
+  color: white; /* White text */
+  background-color: transparent; /* Transparent background */
+  padding: 10px 20px; /* Padding inside the button */
+  font-size: 1.2em; /* Font size for the button text */
+  font-family: 'Arial', sans-serif; /* Arial font with sans-serif fallback */
+  font-weight: bold; /* Bold text */
+  text-transform: uppercase; /* Uppercase text */
+  text-decoration: none; /* Remove underline */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Smooth transition on hover */
+  margin-top: 100px; /* Space above the button */
+}
+
+/* "Learn More" button hover effect */
+.btn-learn-more:hover {
+  background-color: rgb(55, 0, 255); /* Blue background on hover */
+  color: white; /* White text on hover */
+  border: 2px solid rgb(55, 0, 255); /* Blue border on hover */
+}
+
+/* "Who We Are" text styling */
+.who-we-are {
+  font-size: 1.3em; /* Font size */
+  color: black; /* Black text color */
+  margin-top: 50px; /* Space above the section */
+}
+
+/* Advisor profile block with fade-in animation */
+.single_advisor_profile.wow.fadeInUp {
+  visibility: visible; /* Ensure the element is visible */
+  animation-delay: 0.2s; /* Delay the animation */
+  animation-name: fadeInUp; /* Animation for fading in from below */
+}
+
+/* Advisor profile block styling */
+.single_advisor_profile {
+  position: relative; /* Relative positioning */
+  margin-bottom: 50px; /* Space below the profile */
+  transition-duration: 500ms; /* Smooth transitions */
+  z-index: 1; /* Stacking context */
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 0.25rem 1rem 0 rgba(47, 91, 234, 0.125); /* Box shadow for a subtle 3D effect */
+  width: 80%; /* Width of the profile block */
+  height: 60%; /* Height of the profile block */
+}
+
+/* Advisor profile thumbnail image container */
+.single_advisor_profile .advisor_thumb {
+  position: relative; /* Relative positioning */
+  z-index: 1; /* Ensure it's above other elements */
+  border-radius: 15px 15px 0 0; /* Rounded top corners */
+  margin: 0 auto; /* Center the thumbnail */
+  padding: 0; /* No padding */
+  background-color: #000000; /* Black background */
+  overflow: hidden; /* Hide overflow content */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+}
+
+/* Advisor profile thumbnail image styling */
+.single_advisor_profile .advisor_thumb img {
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  object-fit: cover; /* Cover the thumbnail area while maintaining aspect ratio */
+}
+
+/* Decorative element below the thumbnail image */
+.single_advisor_profile .advisor_thumb::after {
+  transition-duration: 500ms; /* Smooth transition */
+  position: absolute; /* Absolute positioning */
+  width: 180%; /* Width of the decorative element */
+  height: 80px; /* Height of the decorative element */
+  bottom: -45px; /* Positioned below the image */
+  left: -25%; /* Shifted to the left */
+  content: ""; /* Empty content for the decorative element */
+  background-color: #a2eaee; /* Light blue color */
+  transform: rotate(-15deg); /* Slight rotation */
+}
+
+/* Responsive design for smaller screens */
+@media only screen and (max-width: 575px) {
+  .single_advisor_profile .advisor_thumb::after {
+    height: 160px; /* Increase height of the decorative element */
+    bottom: -90px; /* Adjust position */
+  }
+}
+
+/* Social media icons inside the advisor profile */
+.single_advisor_profile .advisor_thumb .social-info {
+  position: absolute; /* Absolute positioning */
+  z-index: 1; /* Ensure it's on top */
+  width: 100%; /* Full width */
+  bottom: 0; /* Position at the bottom */
+  right: 30px; /* Positioned slightly to the right */
+  text-align: right; /* Right-align the icons */
+}
+
+/* Social media icon links */
+.single_advisor_profile .advisor_thumb .social-info a {
+  font-size: 14px; /* Font size for the icons */
+  color: #020710; /* Dark blue text color */
+  padding: 0 5px; /* Small padding between icons */
+}
+
+/* Social media icon hover effect */
+.single_advisor_profile .advisor_thumb .social-info a:hover,
+.single_advisor_profile .advisor_thumb .social-info a:focus {
+  color: #3f43fd; /* Blue color on hover or focus */
+}
+
+/* Advisor profile details section styling */
+.single_advisor_profile .single_advisor_details_info {
+  position: relative; /* Relative positioning */
+  z-index: 1; /* Ensure it's on top */
+  padding: 30px; /* Padding inside the section */
+  text-align: right; /* Right-align the text */
+  transition-duration: 500ms; /* Smooth transition */
+  border-radius: 0 0 15px 15px; /* Rounded bottom corners */
+  background-color: #a2eaee; /* Light blue background */
+}
+
+/* Decorative element inside the advisor details section */
+.single_advisor_profile .single_advisor_details_info::after {
+  transition-duration: 500ms; /* Smooth transition */
+  position: absolute; /* Absolute positioning */
+  z-index: 1; /* Ensure it's on top */
+  width: 50px; /* Width of the element */
+  height: 3px; /* Height of the element */
+  background-color: #070a57; /* Dark blue color */
+  content: ""; /* Empty content for the element */
+  top: 12px; /* Positioned near the top */
+  right: 30px; /* Positioned slightly to the right */
+}
+
+/* Hover effects for the advisor profile */
+.single_advisor_profile:hover .advisor_thumb::after,
+.single_advisor_profile:focus .advisor_thumb::after {
+  background-color: #070a57; /* Change color of decorative element on hover */
+}
+
+/* Hover effects for social media icons */
+.single_advisor_profile:hover .advisor_thumb .social-info a,
+.single_advisor_profile:focus .advisor_thumb .social-info a {
+  color: #ffffff; /* White color on hover */
+}
+
+/* Hover effects for advisor details section */
+.single_advisor_profile:hover .single_advisor_details_info,
+.single_advisor_profile:focus .single_advisor_details_info {
+  background-color: #070a57; /* Change background color on hover */
+}
+
+/* Change color of the decorative element on hover */
+.single_advisor_profile:hover .single_advisor_details_info::after,
+.single_advisor_profile:focus .single_advisor_details_info::after {
+  background-color: #ffffff;
+}
+
+/* Change color of the h6 on hover */
+.single_advisor_profile:hover .single_advisor_details_info h6,
+.single_advisor_profile:focus .single_advisor_details_info h6 {
+  color: #ffffff;
+}
+
+/* Change color of the p on hover */
+.single_advisor_profile:hover .single_advisor_details_info p,
+.single_advisor_profile:focus .single_advisor_details_info p {
+  color: #ffffff;
+}

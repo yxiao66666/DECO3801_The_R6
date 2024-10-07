@@ -1,0 +1,211 @@
+/* Custom styling for the navigation bar */
+/* Custom styling for the navigation bar */
+.custom-navbar {
+    background-color: black; /* Black background for the navbar */
+    background-color: black; /* Black background for the navbar */
+}
+
+/* Navbar brand (logo or title) styling */
+/* Navbar brand (logo or title) styling */
+.navbar .navbar-brand {
+    color: white; /* White text color */
+    font-size: 22px; /* Font size for the brand name */
+    font-family: fantasy; /* Fantasy font style */
+    color: white; /* White text color */
+    font-size: 22px; /* Font size for the brand name */
+    font-family: fantasy; /* Fantasy font style */
+}
+
+/* Hover effect for the brand name (no change in color) */
+/* Hover effect for the brand name (no change in color) */
+.navbar .navbar-brand:hover {
+    color: white; /* Ensure text remains white on hover */
+    color: white; /* Ensure text remains white on hover */
+}
+
+/* Active state for the brand name (ensure white color) */
+/* Active state for the brand name (ensure white color) */
+.navbar .navbar-brand.active {
+    color: white; /* White text color for active state */
+    color: white; /* White text color for active state */
+}
+
+/* Styling for the expanded navbar */
+/* Styling for the expanded navbar */
+.navbar.navbar-expand-lg {
+    background-color: black; /* Black background for expanded navbar */
+    background-color: black; /* Black background for expanded navbar */
+}
+
+/* Styling for navigation links */
+/* Styling for navigation links */
+.navbar-nav .nav-item .nav-link.option {
+    color: white; /* White text color for navigation links */
+    padding-left: 30px; /* Padding on the left */
+    padding-right: 30px; /* Padding on the right */
+    transition: transform 0.3s; /* Smooth transition for the transform effect */
+    color: white; /* White text color for navigation links */
+    padding-left: 30px; /* Padding on the left */
+    padding-right: 30px; /* Padding on the right */
+    transition: transform 0.3s; /* Smooth transition for the transform effect */
+}
+
+/* Hover effect for navigation links (enlarge on hover) */
+/* Hover effect for navigation links (enlarge on hover) */
+.navbar-nav .nav-item .nav-link.option:hover {
+    transform: scale(1.05); /* Enlarge the link slightly on hover */
+    transform: scale(1.05); /* Enlarge the link slightly on hover */
+}
+
+/* Bold styling for active navigation links */
+/* Bold styling for active navigation links */
+.nav-link.option.active-link {
+    font-weight: bold; /* Bold text for active links */
+    font-weight: bold; /* Bold text for active links */
+}
+
+/* Styling for the brand name in a different class */
+/* Styling for the brand name in a different class */
+.brand-name {
+    color: white; /* White text color */
+    font-size: 22px; /* Font size */
+    font-family: fantasy; /* Fantasy font style */
+    color: white; /* White text color */
+    font-size: 22px; /* Font size */
+    font-family: fantasy; /* Fantasy font style */
+}
+
+/* Toggler icon styling for responsive navigation */
+/* Toggler icon styling for responsive navigation */
+.navbar-toggler-icon {
+    filter: invert(1); /* Invert colors for visibility on dark backgrounds */
+}
+
+/* Styling for the heading of popup */
+h4 {
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+/* Styling for the popup overlay */
+/* Styling for the popup overlay */
+.popup-overlay {
+    position: fixed; /* Fixed positioning */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    z-index: 1000; /* High z-index to overlay on top of other content */
+    position: fixed; /* Fixed positioning */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    z-index: 1000; /* High z-index to overlay on top of other content */
+}
+
+/* Styling for the popup container */
+/* Styling for the popup container */
+.popup-container {
+    background-color: white; /* White background for the container */
+    padding: 40px; /* Padding inside the container */
+    border-radius: 8px; /* Rounded corners */
+    width: 90%; /* Full width with a maximum limit */
+    max-width: 450px; /* Maximum width */
+    position: relative; /* Relative positioning for child elements */
+}
+
+/* Styling for the form container */
+/* Styling for the form container */
+.form-container {
+    width: 100%; /* Full width */
+    /* max-width: 400px; Maximum width */
+    margin: 40px auto; /* Center the container with top and bottom margins */
+}
+
+/* Input field styling */
+/* Input field styling */
+.input-field {
+    width: 100%; /* Full width */
+    border: none; /* No border */
+    border-bottom: 1px solid gray; /* Bottom border for the input */
+    padding: 8px 0; /* Padding inside the input field */
+    outline: none; /* Remove default outline */
+    font-size: 1em; /* Font size */
+}
+
+/* Input field styling */
+label {
+    display: block;       
+    font-size: 16px;     
+    font-weight: bold;   
+    margin-bottom: 10px; 
+    color: #333; 
+    width: 100%;         
+}
+
+/* Styling for the 'Remember Me' checkbox section */
+/* Styling for the 'Remember Me' checkbox section */
+.remember-me {
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+    font-size: 0.7em; /* Smaller font size */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+    font-size: 0.7em; /* Smaller font size */
+}
+
+/* Primary button styling */
+/* Primary button styling */
+.btn-primary {
+    padding: 5px 10px; /* Padding inside the button */
+    width: 100%; /* Full width */
+    border: 1px solid rgb(0, 0, 0); 
+    border-radius: 5px; /* Rounded corners */
+    background-color: rgb(0, 0, 0); 
+    color: white; /* White text color */
+    font-weight: bold; /* Bold text */
+    transition: box-shadow 0.3s ease;
+}
+
+/* Hover effect for the primary button */
+.btn-primary:hover {
+
+    box-shadow: 0 0 8px rgb(0, 0, 0); 
+}
+
+/* Footer section of the form */
+/* Footer section of the form */
+.form-footer {
+    font-size: 0.7em; /* Smaller font size */
+    display: block; /* Display as block */
+    text-align: center; /* Center-align text */
+    font-size: 0.7em; /* Smaller font size */
+    display: block; /* Display as block */
+    text-align: center; /* Center-align text */
+}
+
+/* Toggle button styling for switching forms */
+/* Toggle button styling for switching forms */
+.form-toggle {
+    background: none; /* No background */
+    color: blue; /* Blue text color */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
+}
+
+    background: none; /* No background */
+    color: blue; /* Blue text color */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
+}

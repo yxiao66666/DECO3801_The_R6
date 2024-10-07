@@ -1,0 +1,12 @@
+__pycache__/
+controlnet/__pycache__/util.cpython-311.pyc
+controlnet/test.ipynb
+blip_weights
+generations
+
+frontend/node_modules/
+backend/Pipfile
+backend/Pipfile.lock
+uploads
+
+*.DS_Store
