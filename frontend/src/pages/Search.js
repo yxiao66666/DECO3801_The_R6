@@ -50,30 +50,6 @@ export default function Search() {
         }
     };
 
-    // Save the current search query to the database
-    const saveSearchQuery = async (query) => {
-        try {
-            const response = await fetch(`${baseUrl}/backend/search_text/insert`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    s_text_query: query,
-                }),
-            });
-
-            if (response.ok) {
-                console.log('Search query saved:', query);
-            } else {
-                console.error('Failed to save search query');
-            }
-        } catch (error) {
-            console.error('Error saving search query:', error);
-        }
-    };
-
     // Handles when a previous search is clicked
     const handlePreviousSearchClick = (text) => {
         setSearchQuery(text); // Move the clicked text into the search bar
@@ -111,42 +87,77 @@ export default function Search() {
         setSearchQuery(event.target.value);
     };
 
-    // Handles the search submission (with text and image upload) when the form is submitted
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setLoading(true); // Set loading to true to show the loading indicator
-        saveSearchQuery(searchQuery); // Save the search query to the database
-        
+// Handles the search submission (with text and image upload) when the form is submitted
+const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true); // Set loading to true to show the loading indicator
 
-        try {
-            const formData = new FormData();
-            formData.append('query', searchQuery);// Append the search query to the form data
-    
-            const fileInput = document.getElementById('file-upload');
-            if (fileInput && fileInput.files.length > 0) {
-                formData.append('image', fileInput.files[0]);// Append image file if selected
-            }
-    
-            const response = await fetch(`${baseUrl}/backend/search`, {
-                method: 'POST',
-                body: formData,
-            });
-    
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Search results:', result);
-                const resultArray = Object.values(result);
-                setImages(resultArray); // Update the state with the search results
-                setSelectedImage(null); // Clear the selected image
-            } else {
-                console.error('Search failed');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        } finally {
-            setLoading(false); // Set loading to false after search completes
+    // Check if the search query is empty
+    if (!searchQuery.trim()) {
+        console.log("Search query is empty. No search");
+        setLoading(false); // Stop loading if search query is empty
+        return; // Exit the function without saving or searching
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append('query', searchQuery); // Append the search query to the form data
+
+        const fileInput = document.getElementById('file-upload');
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('image', fileInput.files[0]); // Append image file if selected
         }
-    };
+
+        const response = await fetch(`${baseUrl}/backend/search`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Search results:', result);
+            const resultArray = Object.values(result);
+            setImages(resultArray); // Update the state with the search results
+            setSelectedImage(null); // Clear the selected image
+
+            // Now save the search query to the database if it's not empty
+            await saveSearchQuery();
+        } else {
+            console.error('Search failed');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        setLoading(false); // Set loading to false after search completes
+    }
+};
+
+// Save the search query to the database
+const saveSearchQuery = async () => {
+    if (!userId || !searchQuery.trim()) return;
+
+    try {
+        const response = await fetch(`${baseUrl}/backend/search_text/insert`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                s_text_query: searchQuery,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save search query');
+        }
+
+        console.log('Search query saved successfully');
+    } catch (error) {
+        console.error('Error saving search query:', error);
+    }
+};
+
 
     // Handles the image file input change (validates and shows a preview)
     const handleFileChange = (event) => {
