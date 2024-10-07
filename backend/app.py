@@ -381,6 +381,29 @@ def insert_search_text():
             return {'Exception Raised: ' : e}, 500
     return {}, 405
 
+@app.route('/backend/search_text/get/user', methods=['POST'])
+@cross_origin()
+def get_search_text_for_user():    
+    if request.method == 'POST': 
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+
+        search_text = SearchText.query.filter_by(user_id=user_id).all()
+        search_text_list = [
+            {
+                "s_text_id": search_text.s_text_id, 
+                "user_id": search_text.user_id,
+                "s_text_query": search_text.s_text_query,
+                "created_at": search_text.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for search_text in search_text
+        ]
+        return jsonify(search_text_list), 200
+    return {}, 405
+
 class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
     g_image_id = db.Column(db.Integer, primary_key = True)

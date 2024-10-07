@@ -2,26 +2,82 @@ import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
-    // State variables
     const [userId, setUserId] = useState(null);
     const [images, setImages] = useState([]);
     const [visibleImages, setVisibleImages] = useState(9);
     const [searchQuery, setSearchQuery] = useState('');
+    const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Store previous search queries
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [savedImages, setSavedImages] = useState(new Set());
     const baseUrl = 'http://127.0.0.1:5000';
 
+
     useEffect(() => {
         const id = localStorage.getItem('userId');
-        console.log("Retrieved user ID:", id); // Log to verify
         setUserId(id);
-
-        // Fetch saved images for the user
+    
         if (id) {
             fetchSavedImages(id);
+            fetchPreviousSearchQueries(id); // Fetch previous search queries on load
+        } else {
+            // Clear previous search queries when user logs out
+            setPreviousSearchQueries([]);
+            setUserId('');
         }
-    }, [userId]); // Runs when userId changes
+    }, [userId]);
+    
+
+    // Fetch previous search queries for the user
+    const fetchPreviousSearchQueries = async (id) => {
+        try {
+            const response = await fetch(`${baseUrl}/backend/search_text/get/user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: id }),
+            });
+
+            if (response.ok) {
+                const queries = await response.json();
+                setPreviousSearchQueries(queries.map(q => q.s_text_query)); // Map the queries to display
+            } else {
+                console.error('Failed to fetch search queries');
+            }
+        } catch (error) {
+            console.error('Error fetching search queries:', error);
+        }
+    };
+
+    // Save the current search query to the database
+    const saveSearchQuery = async (query) => {
+        try {
+            const response = await fetch(`${baseUrl}/backend/search_text/insert`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    s_text_query: query,
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Search query saved:', query);
+            } else {
+                console.error('Failed to save search query');
+            }
+        } catch (error) {
+            console.error('Error saving search query:', error);
+        }
+    };
+
+    // Handles when a previous search is clicked
+    const handlePreviousSearchClick = (text) => {
+        setSearchQuery(text); // Move the clicked text into the search bar
+    };
 
     // Fetch saved images for the user from the backend
     const fetchSavedImages = async (id) => {
@@ -59,7 +115,9 @@ export default function Search() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true); // Set loading to true to show the loading indicator
-    
+        saveSearchQuery(searchQuery); // Save the search query to the database
+        
+
         try {
             const formData = new FormData();
             formData.append('query', searchQuery);// Append the search query to the form data
@@ -188,12 +246,12 @@ export default function Search() {
                     {/* Container for the search bar and file upload components */}
                     <div className="searchbar-container">
                         {/* Input field for text-based search */}
-                        <input 
-                            className="searchbar" 
-                            type="search" 
-                            placeholder="Upload and Search..." 
+                            <input
+                            className="searchbar"
+                            type="search"
+                            placeholder="Upload and Search..."
                             onChange={handleInputChange}
-                            value={searchQuery}
+                            value={searchQuery || ''}  // Ensure searchQuery is always a string, even if undefined
                         />
                         {/* Hidden file input for image upload */}
                         <input
@@ -239,7 +297,26 @@ export default function Search() {
                     </button>
                 </div>
             )}
+            
+            {/* Previous search list */}
+            <div className="previous-search-container">
+                {previousSearchQueries.length > 0 && (
+                    <ul>
+                        <h4>Previous Searches:</h4>
+                        {previousSearchQueries.map((query, index) => (
+                            <li
+                                key={index}
+                                className="previous-search-item"
+                                onClick={() => handlePreviousSearchClick(query.s_text_query || '')} // Safely handle the query
+                            >
+                                {query}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
+            
             <br />
 
             {/* Display grid of search results */}
