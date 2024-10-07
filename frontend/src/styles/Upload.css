@@ -1,189 +1,180 @@
 .painting-tool {
-    background-color: black;
-    border: none;
-    cursor: pointer;
-    border-radius: 30px; 
-    justify-content: center;
-    align-items: center;
+  background-color: black;
+  border: none;
+  cursor: pointer;
+  border-radius: 30px; 
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+max-width: 80%;
+height: auto !important;
+}
+
+textarea {
+max-width: 80% !important;
 }
 
 #defaultPreview {
-    width: 70%;
-    height: 38em;
-    margin: 0 auto;
-    background-Size: cover;
-    background-Position: center;
-    border: 2px solid white;
-    border-Radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-    position: relative;
+  width: 65%;
+  height: 35em;
+  background-Size: cover;
+  border: 2px solid white;
+  border-Radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
 }
 
 #imagePreview {
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #ccc;
-    border-Radius: 5px;
-    background-color: aliceblue;
-    width: 20vw;
-    height: 20vw;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #ccc;
+  border-Radius: 5px;
+  background-color: aliceblue;
+  width: 30vw;
+  height: 30vw;
 }
 
-.avatar-edit {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap:1em;
+.avatar-preview{
+margin:15px;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+gap:2.5em;
+}
 
+
+.avatar-edit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap:2em;
+  margin-top:10px;
+  overflow: hidden;
 }
 
 .image-display .results {
-  width: 100%; /* Ensure images fit within their container */
-  display: block; /* Remove inline spacing */
-  margin: 0 auto; /* Center images horizontally within the cell */
+width: 100%; /* Ensure images fit within their container */
+display: block; /* Remove inline spacing */
+margin: 0 auto; /* Center images horizontally within the cell */
 }
 
 .upload-icon {
-  position: relative;
-  right: 50px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  cursor: pointer;
-  margin-top: 25px;
+position: relative;
+right: 50px;
+top: 50%;
+transform: translateY(-50%);
+width: 24px;
+cursor: pointer;
+margin-top: 25px;
 }
 
 .image-display .save-icon {
-  transform: translateY(-50%);
-  width: 24px;
-  cursor: pointer;
-  margin-top: 25px;
-  position: absolute;
-  top: -9px;
-  right: 1px;
+transform: translateY(-50%);
+width: 24px;
+cursor: pointer;
+margin-top: 25px;
+position: absolute;
+top: -9px;
+right: 1px;
 }
 
 /* Ensure images fit within their container */
 .image-display {
-  margin-bottom: 20px; /* Space below each image */
-  width: 25%;
-  position: relative;
+margin-bottom: 20px; /* Space below each image */
+width: 25%;
+position: relative;
 }
 
 select {
-    position:absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1;
-    width:25%;
-    border-Radius: 5px;
-    border: 1px solid #ccc;
-    background-color:darkgray;
-    color:white;
+  position:relative;
+  z-index: 1;
+  width:90%;
+  border-Radius: 5px;
+  border: 1px solid #ccc;
+  background-color:darkgray;
+  color:white;
 }
 
 .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
 }
 
 .loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-  
+
 .loading-icon {
-    width: 35vw;
-    height: 25vw;
-  
+  width: 35vw;
+  height: 25vw;
+
 }
 
 .function-btn{
-    color:white;
-    background-color:black;
-    cursor: pointer;
-    border-radius: 10px;
-    width:15em;
-    padding: 10px;
-    border: 1px solid #ccc;
-
+  color:white;
+  background-color:black;
+  cursor: pointer;
+  border-radius: 10px;
+  width:15vw;
+  padding: 10px;
+  border: 1px solid #ccc;
 }
 
-label:hover, button:hover {
-    transform:letter-spacing 0.5s ease;
-    letter-spacing: 0.05rem; 
+
+.function-btn:hover {
+  background-color: white;
+  color:black;
 }
 
 
 /* responsive */
-@media (max-width: 768px) {
-    .avatar-preview {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    #defaultPreview {
-      width: 90%;
-      height: 30em;
-    }
-  
-    #imagePreview {
-      width: 60vw;
-      height: 60vw;
-    }
-  
-    .function-btn {
-      width: 12em;
-      padding: 8px;
-      font-size: 14px;
-    }
-  
-    select {
-      width: 50%;
-    }
-  
-    canvas {
-      max-width: 100%;
-      height: auto !important;
-    }
-  
-    textarea {
-      width: 90% !important;
-    }
-  
-    .loading-icon {
-      width: 50vw;
-      height: 35vw;
-    }
+@media (max-width: 500px) {  
+  .loading-icon {
+    width: 50vw;
+    height: 35vw;
+  }
 
-    .image-cell .results {
-      width: 70%; /* Ensure images fit within their container */
-      display: block; /* Remove inline spacing */
-      margin: 0 auto; /* Center images horizontally within the cell */
-    }
+  .image-cell .results {
+    width: 70%; /* Ensure images fit within their container */
+    display: block; /* Remove inline spacing */
+    margin: 0 auto; /* Center images horizontally within the cell */
   }
   
-  @media (max-width: 480px) {
-    #defaultPreview {
-      height: 25em;
-    }
+  .avatar-preview{
+    flex-direction: column;
+    gap: 2px;
+  }
 
-    .image-cell .results {
-      width: 80%; /* Ensure images fit within their container */
-      display: block; /* Remove inline spacing */
-      margin: 0 auto; /* Center images horizontally within the cell */
-    }
+  .avatar-edit {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .function-btn{
+    width:24vw;
+  }
+
+  .image-cell .results {
+    width: 80%; /* Ensure images fit within their container */
+    display: block; /* Remove inline spacing */
+    margin: 0 auto; /* Center images horizontally within the cell */
+  }
 }  
