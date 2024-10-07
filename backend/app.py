@@ -20,10 +20,6 @@ from controlnet.sd_backbone import StableDiffusionBackBone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import LONGTEXT
 
-# Database
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.mysql import LONGTEXT
-
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable your_random_secret_key
 
@@ -109,7 +105,7 @@ def get_users():
         {
             "user_id": user.user_id,
             "user_email": user.user_email,
-            "user_password": user.password,
+            "user_password": user.user_password,
             "created_at": user.created_at  # Convert datetime to string
         }
         for user in users
@@ -381,6 +377,29 @@ def insert_search_text():
             return {'Exception Raised: ' : e}, 500
     return {}, 405
 
+@app.route('/backend/search_text/get/user', methods=['POST'])
+@cross_origin()
+def get_search_text_for_user():    
+    if request.method == 'POST': 
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+
+        search_text = db.session.query(SearchText).filter_by(user_id = user_id).all()
+        search_text_list = [
+            {
+                "s_text_id": s.s_text_id, 
+                "user_id": s.user_id,
+                "s_text_query": s.s_text_query,
+                "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for s in search_text
+        ]
+        return jsonify(search_text_list), 200
+    return {}, 405
+
 class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
     g_image_id = db.Column(db.Integer, primary_key = True)
@@ -444,6 +463,7 @@ def get_generated_imgs_for_user():
         try:
             data = request.get_json()
             user_id = data.get('user_id')
+
             if user_id is None:
                 return {'error': 'user_id is required'}, 400
             
@@ -510,7 +530,8 @@ def delete_generate_image():
             g_image_path = data.get('g_image_path')
 
             # Query to find the saved image
-            generated_image = db.session.query(GenerateImage).filter(GenerateImage.user_id == user_id, GenerateImage.g_image_path == g_image_path).first()
+            generated_image = db.session.query(GenerateImage).filter(GenerateImage.user_id == user_id,
+                                                                      GenerateImage.g_image_path == g_image_path).first()
             if generated_image:
                 db.session.delete(generated_image)
                 db.session.commit()
@@ -674,7 +695,8 @@ def delete_saved_image():
             sd_image_path = data.get('sd_image_path')
 
             # Query to find the saved image
-            saved_image = db.session.query(SavedImage).filter(SavedImage.user_id == user_id, SavedImage.sd_image_path == sd_image_path).first()
+            saved_image = db.session.query(SavedImage).filter(SavedImage.user_id == user_id,
+                                                               SavedImage.sd_image_path == sd_image_path).first()
             if saved_image:
                 db.session.delete(saved_image)
                 db.session.commit()
