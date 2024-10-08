@@ -471,9 +471,9 @@ def get_generated_imgs_for_user():
 
             generated_imgs_list = [
                 {
-                    "sd_image_id": g.g_image_id,
+                    "g_image_id": g.g_image_id,
                     "user_id": g.user_id,
-                    "sd_image_path": g.g_image_id,
+                    "g_image_path": g.g_image_path,
                     "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
                 }
                 for g in generated_imgs
@@ -499,10 +499,8 @@ def insert_generate_image():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            user_id = data.get('user_id')
-            g_image_path = data.get('g_iamge_path')
-            new_generate_image = GenerateImage(user_id = user_id,
-                                   g_image_path = g_image_path)
+            new_generate_image = GenerateImage(user_id = data['user_id'],
+                                   g_image_path = data['g_image_path'])
             db.session.add(new_generate_image)
             db.session.commit()
             return jsonify({'g_image_id': new_generate_image.g_image_id,

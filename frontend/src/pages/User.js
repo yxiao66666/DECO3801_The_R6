@@ -56,17 +56,20 @@ export default function Userhome() {
                 }
         
                 const fetchedImages = await response.json();
-        
+                console.log('fetchedImages',fetchedImages);
+                
                 // Map to create an array of image URLs
-                const generatedImagePaths = fetchedImages.map(image => `${baseUrl}/static/generations/${image}`);
-        
+                const generatedImagePaths = fetchedImages.map(image => `${baseUrl}/static/generations/${image.g_image_path}`); // Access the correct property
+
                 // Set the fetched images in state
                 setGeneratedImages(generatedImagePaths); // Ensure this is an array
+                //console.log(generatedImagePaths); // Verify URLs
         
             } catch (error) {
                 console.error('Error fetching generated images:', error);
             }
         };
+        
                                 
         const fetchUserData = async () => {
             const email = localStorage.getItem('userEmail');
@@ -281,7 +284,7 @@ export default function Userhome() {
             if (!response.ok) {
                 throw new Error('Failed to delete generated image');
             }
-        } catch (error) {
+        } catch (error) {  
             console.error('Error deleting generated image:', error);
         }
     };
@@ -330,21 +333,24 @@ export default function Userhome() {
                     <h4>My Works</h4>
                     <div className="image-grid">
                         {generatedImages.length > 0 ? (
-                            generatedImages.map((imageUrl, index) => (
-                                <div key={index} className="image-cell">
-                                    <img
-                                        className="results"
-                                        src={imageUrl}
-                                        alt={`Generated Img ${index}`}
-                                    />
-                                    <img 
-                                        src={savedGeneratedImages.has(imageUrl) ? "../images/saved.png" : "../images/save.png"} 
-                                        alt={savedGeneratedImages.has(imageUrl) ? "Saved Icon" : "Save Icon"} 
-                                        className="save-icon" 
-                                        onClick={() => toggleSaveGeneratedImage(imageUrl)} 
-                                    />
-                                </div>
-                            ))
+                            generatedImages.map((imageData, index) => {
+                                // imageData should now be a Base64 encoded string
+                                return (
+                                    <div key={index} className="image-cell">
+                                        <img
+                                            className="results"
+                                            src={imageData}
+                                            alt={`Generated Img ${index}`}
+                                        />
+                                        <img 
+                                            src={savedGeneratedImages.has(imageData) ? "../images/saved.png" : "../images/save.png"} 
+                                            alt={savedGeneratedImages.has(imageData) ? "Saved Icon" : "Save Icon"} 
+                                            className="save-icon" 
+                                            onClick={() => toggleSaveGeneratedImage(imageData)} 
+                                        />
+                                    </div>
+                                );
+                            })
                         ) : (
                             <p>No generated images found.</p>
                         )}
