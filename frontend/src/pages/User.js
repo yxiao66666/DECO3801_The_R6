@@ -39,7 +39,7 @@ export default function User() {
                 console.error(error);
             }
         };
-        
+
         const fetchGeneratedImages = async (id) => {
             try {
                 const response = await fetch(`${baseUrl}/backend/generate_image/get/user`, {
