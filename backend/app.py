@@ -460,28 +460,24 @@ def get_generated_imgs_for_user():
         JSON with all generated images for the specified user
     '''
     if request.method == 'POST':
-        try:
-            data = request.get_json()
-            user_id = data.get('user_id')
+        data = request.get_json()
+        user_id = data.get('user_id')
 
-            if user_id is None:
-                return {'error': 'user_id is required'}, 400
-            
-            generated_imgs = db.session.query(GenerateImage).filter_by(user_id = user_id).all()
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+        
+        generated_imgs = db.session.query(GenerateImage).filter_by(user_id = user_id).all()
 
-            generated_imgs_list = [
-                {
-                    "g_image_id": g.g_image_id,
-                    "user_id": g.user_id,
-                    "g_image_path": g.g_image_path,
-                    "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
-                }
-                for g in generated_imgs
-            ]
-            return jsonify(generated_imgs_list), 200
-        except Exception as e:
-            print('Exception Raised: ', e)
-            return {'Exception Raised: ': str(e)}, 500
+        generated_imgs_list = [
+            {
+                "g_image_id": g.g_image_id,
+                "user_id": g.user_id,
+                "g_image_path": g.g_image_path,
+                "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for g in generated_imgs
+        ]
+        return jsonify(generated_imgs_list), 200
     return {}, 405
 
 @app.route('/backend/generate_image/insert', methods=['POST'])
@@ -539,6 +535,40 @@ def delete_generate_image():
 
         except Exception as e:
             db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
+    return {}, 405
+
+@app.route('/backend/generate_image/get/saved', methods=['POST'])
+@cross_origin()
+def get_saved_generated_imgs_for_user():
+    '''
+    Gets all saved generated images for a specific user
+
+    Returns:
+        JSON with all saved generated images for the specified user
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+
+            if user_id is None:
+                return {'error': 'user_id is required'}, 400
+            
+            saved_generated_imgs = db.session.query(GenerateImage).filter_by(user_id=user_id).all()  # Assuming you have a model for saved images
+
+            saved_generated_imgs_list = [
+                {
+                    "g_image_id": s.g_image_id,
+                    "user_id": s.user_id,
+                    "g_image_path": s.g_image_path,
+                    "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+                }
+                for s in saved_generated_imgs
+            ]
+            return jsonify(saved_generated_imgs_list), 200
+        except Exception as e:
+            print('Exception Raised: ', e)
             return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 

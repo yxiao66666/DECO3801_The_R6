@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/User.css"; // Make sure this contains the masonry grid CSS
 
-export default function Userhome() {
+export default function User() {
     const [userId, setUserId] = useState(null);
     const [userEmail, setUserEmail] = useState("");
     const [savedImages, setSavedImages] = useState(new Set()); // For saved images
-    const [generatedImages, setGeneratedImages] = useState([]);
-    const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
+    const [GeneratedImages, setGeneratedImages] = useState(new Set()); // For generated images
     const navigate = useNavigate();
     const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Store previous search queries
     const baseUrl = 'http://127.0.0.1:5000';
@@ -37,10 +36,10 @@ export default function Userhome() {
                     console.error('Failed to fetch saved images');
                 }
             } catch (error) {
-                console.error('Error fetching saved images:', error);
+                console.error(error);
             }
         };
-
+        
         const fetchGeneratedImages = async (id) => {
             try {
                 const response = await fetch(`${baseUrl}/backend/generate_image/get/user`, {
@@ -50,27 +49,18 @@ export default function Userhome() {
                     },
                     body: JSON.stringify({ user_id: id }),
                 });
-        
-                if (!response.ok) {
-                    throw new Error('Failed to fetch generated images');
+                if (response.ok) {
+                    const generatedImageArray = await response.json();
+                    const generatedImageSet = await new Set(generatedImageArray.map(image => image.g_image_path));
+                    setGeneratedImages(generatedImageSet); // Store saved images in state
+                } else {
+                    console.error('Failed to fetch generated images');
                 }
-        
-                const fetchedImages = await response.json();
-                console.log('fetchedImages',fetchedImages);
-                
-                // Map to create an array of image URLs
-                const generatedImagePaths = fetchedImages.map(image => image.g_image_path); // Access the correct property
-
-                // Set the fetched images in state
-                setGeneratedImages(generatedImagePaths); // Ensure this is an array
-                //console.log(generatedImagePaths); // Verify URLs
-        
             } catch (error) {
-                console.error('Error fetching generated images:', error);
+                console.error(error);
             }
         };
         
-                                
         const fetchUserData = async () => {
             const email = localStorage.getItem('userEmail');
             if (!email) {
@@ -91,7 +81,7 @@ export default function Userhome() {
                 const userId = idData.user_id;
 
                 // Fetch saved and generated images once user ID is obtained
-                fetchSavedImages(userId);
+                fetchSavedImages(userId); // Fetch saved images
                 fetchGeneratedImages(userId); // Fetch generated images
 
                 const userResponse = await fetch(`${baseUrl}/backend/users/get`, {
@@ -138,7 +128,6 @@ export default function Userhome() {
         }
     };
 
-
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userEmail');
@@ -155,6 +144,7 @@ export default function Userhome() {
         return atIndex !== -1 ? email.substring(0, atIndex) : email;
     };
 
+    // Toggles the saving or unsaving of an search image
     const toggleSaveImage = async (imageUrl) => {
         const newSavedImages = new Set(savedImages);
         if (newSavedImages.has(imageUrl)) {
@@ -195,6 +185,7 @@ export default function Userhome() {
         setSavedImages(newSavedImages);
     };
 
+    // Deletes a saved generated image from the server
     const deleteSavedImage = async (imageUrl) => {
         if (!userId) {
             console.error("User ID is not available. Cannot delete image.");
@@ -217,13 +208,13 @@ export default function Userhome() {
                 throw new Error('Failed to delete saved image');
             }
         } catch (error) {
-            console.error('Error deleting image:', error);
+            console.error('Error deleting saved image:', error);
         }
     };
 
     // Toggles the saving or unsaving of an AI-generated image
     const toggleSaveGeneratedImage = async (imageUrl) => {
-        const newSavedGeneratedImages = new Set(savedGeneratedImages);
+        const newSavedGeneratedImages = new Set(GeneratedImages);
         if (newSavedGeneratedImages.has(imageUrl)) {
             await deleteGeneratedImage(imageUrl); // Call the delete function
             newSavedGeneratedImages.delete(imageUrl); // Remove if already saved
@@ -259,10 +250,10 @@ export default function Userhome() {
                 console.error('Error saving generated image:', error);
             }
         }
-        setSavedGeneratedImages(newSavedGeneratedImages); // Update the state with the new saved images set
+        setGeneratedImages(newSavedGeneratedImages);
     };
 
-    // Deletes a saved generated image from the server
+    // Deletes a generated image from the server
     const deleteGeneratedImage = async (imageUrl) => {
         if (!userId) {
             console.error("User ID is not available. Cannot delete image.");
@@ -332,24 +323,18 @@ export default function Userhome() {
                     {/* List of previous works */}
                     <h4>My Works</h4>
                     <div className="image-grid">
-                        {generatedImages.length > 0 ? (
-                            generatedImages.map((imageData, index) => {
-                                return (
-                                    <div key={index} className="image-cell">
-                                        <img
-                                            className="results"
-                                            src={imageData}
-                                            alt={`Generated Img ${index}`}
-                                        />
-                                        <img 
-                                            src={savedGeneratedImages.has(imageData) ? "../images/saved.png" : "../images/save.png"} 
-                                            alt={savedGeneratedImages.has(imageData) ? "Saved Icon" : "Save Icon"} 
-                                            className="save-icon" 
-                                            onClick={() => toggleSaveGeneratedImage(imageData)} 
-                                        />
-                                    </div>
-                                );
-                            })
+                        {GeneratedImages.size > 0 ? (
+                            Array.from(GeneratedImages).slice(0, visibleImages).map((url, index) => (
+                                <div key={index} className="image-cell">
+                                    <img className="results" src={`${url}`} alt={`Generated Img ${index + 1}`} />
+                                    <img 
+                                        src={GeneratedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
+                                        alt={GeneratedImages.has(url) ? "Saved Icon" : "Save Icon"} 
+                                        className="save-icon" 
+                                        onClick={() => toggleSaveGeneratedImage(url)} 
+                                    />
+                                </div>
+                            ))
                         ) : (
                             <p>No generated images found.</p>
                         )}
