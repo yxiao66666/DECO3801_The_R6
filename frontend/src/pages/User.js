@@ -9,14 +9,15 @@ export default function Userhome() {
     const [generatedImages, setGeneratedImages] = useState([]);
     const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
     const navigate = useNavigate();
+    const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Store previous search queries
     const baseUrl = 'http://127.0.0.1:5000';
     const [visibleImages] = useState(999); // To control how many images are visible initially
 
     useEffect(() => {
         const id = localStorage.getItem('userId');
-        console.log("Retrieved user ID:", id); // Log to verify
-        setUserId(id);
-    }, []); // Only runs once when the component mounts
+        setUserId(id); // Fetch id
+        fetchPreviousSearchQueries(id); // Fetch previous search queries on load
+    }, []); 
 
     useEffect(() => {
         const fetchSavedImages = async (id) => {
@@ -111,6 +112,29 @@ export default function Userhome() {
 
         fetchUserData();
     }, [userId]); // Runs when userId changes
+
+    // Fetch previous search queries for the user
+    const fetchPreviousSearchQueries = async (id) => {
+        try {
+            const response = await fetch(`${baseUrl}/backend/search_text/get/user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: id }),
+            });
+
+            if (response.ok) {
+                const queries = await response.json();
+                setPreviousSearchQueries(queries.map(q => q.s_text_query)); // Map the queries to display
+            } else {
+                console.error('Failed to fetch search queries');
+            }
+        } catch (error) {
+            console.error('Error fetching search queries:', error);
+        }
+    };
+
 
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
@@ -282,12 +306,13 @@ export default function Userhome() {
             </header>
             <main className="user-home-content">
                 <section className="user-works" id="user-works">
+                    {/* List of saved images */}
                     <h4>Saved Images</h4>
                     <div className="image-grid">
                         {savedImages.size > 0 ? (
                             Array.from(savedImages).slice(0, visibleImages).map((url, index) => (
                                 <div key={index} className="image-cell">
-                                    <img className="results" src={`${url}`} alt={`Saved Image ${index + 1}`} />
+                                    <img className="results" src={`${url}`} alt={`Saved Img ${index + 1}`} />
                                     <img 
                                         src={savedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
                                         alt={savedImages.has(url) ? "Saved Icon" : "Save Icon"} 
@@ -301,16 +326,16 @@ export default function Userhome() {
                         )}
                     </div>
 
+                    {/* List of previous works */}
                     <h4>My Works</h4>
                     <div className="image-grid">
-                        {/* Render the AI-generated images */}
                         {generatedImages.length > 0 ? (
                             generatedImages.map((imageUrl, index) => (
                                 <div key={index} className="image-cell">
                                     <img
                                         className="results"
                                         src={imageUrl}
-                                        alt={`Generated ${index}`}
+                                        alt={`Generated Img ${index}`}
                                     />
                                     <img 
                                         src={savedGeneratedImages.has(imageUrl) ? "../images/saved.png" : "../images/save.png"} 
@@ -322,6 +347,25 @@ export default function Userhome() {
                             ))
                         ) : (
                             <p>No generated images found.</p>
+                        )}
+                    </div>
+
+                    {/* Previous search list */}
+                    <h4>My Search History</h4>
+                    <div className="previous-search-container">
+                        {previousSearchQueries.length > 0 ? (
+                            <ul>
+                                {previousSearchQueries.map((query, index) => (
+                                    <li
+                                        key={index}
+                                        className="previous-search-item"
+                                    >
+                                        {query}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No search history found.</p> 
                         )}
                     </div>
                 </section>
