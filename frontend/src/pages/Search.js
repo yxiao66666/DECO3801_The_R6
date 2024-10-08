@@ -6,7 +6,7 @@ export default function Search() {
     const [images, setImages] = useState([]);
     const [visibleImages, setVisibleImages] = useState(9);
     const [searchQuery, setSearchQuery] = useState('');
-    const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Store previous search queries
+    const [previousSearchQueries, setPreviousSearchQueries] = useState([]); 
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [savedImages, setSavedImages] = useState(new Set());
@@ -92,22 +92,24 @@ const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true); // Set loading to true to show the loading indicator
 
-    // Check if the search query is empty
-    if (!searchQuery.trim()) {
-        console.log("Search query is empty. No search");
-        setLoading(false); // Stop loading if search query is empty
+    const formData = new FormData();
+    formData.append('query', searchQuery); // Append the search query to the form data
+
+    const fileInput = document.getElementById('file-upload');
+    const hasImage = fileInput && fileInput.files.length > 0;  // Check if has image
+
+    // Check if the search query is empty and no image is uploaded
+    if (!searchQuery.trim() && !hasImage) {
+        console.log("Search query is empty and no image uploaded. No search");
+        setLoading(false); // Stop loading if both search query and image are empty
         return; // Exit the function without saving or searching
     }
 
+    if (hasImage) {
+        formData.append('image', fileInput.files[0]); 
+    }
+
     try {
-        const formData = new FormData();
-        formData.append('query', searchQuery); // Append the search query to the form data
-
-        const fileInput = document.getElementById('file-upload');
-        if (fileInput && fileInput.files.length > 0) {
-            formData.append('image', fileInput.files[0]); // Append image file if selected
-        }
-
         const response = await fetch(`${baseUrl}/backend/search`, {
             method: 'POST',
             body: formData,
@@ -120,8 +122,10 @@ const handleSubmit = async (event) => {
             setImages(resultArray); // Update the state with the search results
             setSelectedImage(null); // Clear the selected image
 
-            // Now save the search query to the database if it's not empty
-            await saveSearchQuery();
+            // Save the search query only if it's not empty
+            if (searchQuery.trim()) {
+                await saveSearchQuery(searchQuery);
+            }
         } else {
             console.error('Search failed');
         }
@@ -262,7 +266,7 @@ const saveSearchQuery = async () => {
                             type="search"
                             placeholder="Upload and Search..."
                             onChange={handleInputChange}
-                            value={searchQuery || ''}  // Ensure searchQuery is always a string, even if undefined
+                            value={searchQuery || ''}  // Ensure searchQuery is a string
                         />
                         {/* Hidden file input for image upload */}
                         <input
@@ -298,6 +302,7 @@ const saveSearchQuery = async () => {
                     </div>
                 </div>
             )}
+
             {/* If an image is selected (from file upload), show a preview */}
             {selectedImage && (
                 <div className="image-preview-container">
@@ -318,7 +323,7 @@ const saveSearchQuery = async () => {
                             <li
                                 key={index}
                                 className="previous-search-item"
-                                onClick={() => handlePreviousSearchClick(query.s_text_query || '')} // Safely handle the query
+                                onClick={() => handlePreviousSearchClick(query)} // Put history into search bar
                             >
                                 {query}
                             </li>
@@ -326,7 +331,6 @@ const saveSearchQuery = async () => {
                     </ul>
                 )}
             </div>
-
             
             <br />
 
