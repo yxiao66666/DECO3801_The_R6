@@ -25,7 +25,7 @@ export default function Upload() {
     const [generatedImages, setGeneratedImages] = useState({}); // State to store AI-generated image filenames
     const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
     const baseUrl = 'http://127.0.0.1:5000';
-
+    
     useEffect(() => {
         const id = localStorage.getItem('userId');
         console.log("Retrieved user ID:", id); // Log to verify
@@ -168,7 +168,7 @@ export default function Upload() {
                     },
                     body: JSON.stringify({
                         user_id: userId,
-                        g_image_path: imageUrl,
+                        g_image_path: `${baseUrl}/static/generations/${imageUrl}`,
                     }),
                 });
                 if (!response.ok) {
@@ -196,7 +196,7 @@ export default function Upload() {
                 },
                 body: JSON.stringify({
                     user_id: userId,
-                    g_image_path: imageUrl,
+                    g_image_path: `${baseUrl}/static/generations/${imageUrl}`,
                 }),
             });
 
@@ -648,6 +648,7 @@ export default function Upload() {
                     <br />
 
                 </form>
+
                 <h2 style={{ color: 'white' }}>Generated Images:</h2>
                 {/* Render the AI-generated images */}
                 {Object.values(generatedImages).map((imageName, index) => (
@@ -666,6 +667,7 @@ export default function Upload() {
                         />
                     </div>
                 ))}
+                
                 <br />
                 <br />
 
