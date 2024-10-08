@@ -59,7 +59,7 @@ export default function Userhome() {
                 console.log('fetchedImages',fetchedImages);
                 
                 // Map to create an array of image URLs
-                const generatedImagePaths = fetchedImages.map(image => `${baseUrl}/static/generations/${image.g_image_path}`); // Access the correct property
+                const generatedImagePaths = fetchedImages.map(image => image.g_image_path); // Access the correct property
 
                 // Set the fetched images in state
                 setGeneratedImages(generatedImagePaths); // Ensure this is an array
@@ -334,7 +334,6 @@ export default function Userhome() {
                     <div className="image-grid">
                         {generatedImages.length > 0 ? (
                             generatedImages.map((imageData, index) => {
-                                // imageData should now be a Base64 encoded string
                                 return (
                                     <div key={index} className="image-cell">
                                         <img
