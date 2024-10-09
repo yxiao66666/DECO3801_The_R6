@@ -460,7 +460,6 @@ export default function Upload() {
         }
     };
     
-
     // Handle file submission and send the selected files and drawn rectangles to the backend
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -526,8 +525,6 @@ export default function Upload() {
 
         }
 
-        
-    
         // Debugging the formData
         for (let pair of formData.entries()) {
             console.log(`${pair[0]}: ${pair[1] instanceof Blob ? pair[1].name : pair[1]}`);
@@ -538,6 +535,7 @@ export default function Upload() {
                 method: 'POST',
                 body: formData,
             });
+            console.log(formData)
             if (response.ok) {
                 const result = await response.json();
                 console.log('AI generated image:', result);
@@ -782,6 +780,5 @@ export default function Upload() {
         </div>
     );
 }
-
 
 
