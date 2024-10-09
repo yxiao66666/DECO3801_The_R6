@@ -4,7 +4,7 @@ import "../styles/Upload.css";
 export default function Upload() {
     const [files, setFiles] = useState([]);  // Array of selected files
     const [showClear, setShowClear] = useState(false);  // Flag to toggle the visibility of the clear button
-    const [userId, setUserId] = useState(null);
+    const [userId, setUserId] = useState(null);  // Store the user's ID
     const [text, setText] = useState('');  // Text input state
     const [textvisible, setTextVisible] = useState(false);  // Toggle visibility of text input
     const [previews, setPreviews] = useState([]);  // Previews of the selected images
