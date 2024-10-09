@@ -887,10 +887,6 @@ def search():
 
     return {}, 405
 
-
-# Store filenames for cleanup
-image_files = []
-
 @app.route('/backend/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -969,6 +965,9 @@ def upload():
         response[idx] = file_name
 
     return jsonify(response), 200
+
+# Store filenames for cleanup
+image_files = []
 
 @app.route('/backend/cleanup', methods=['DELETE'])
 def cleanup_images():
