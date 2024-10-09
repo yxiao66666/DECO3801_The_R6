@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import "../styles/User.css"; // Make sure this contains the masonry grid CSS
 
 export default function User() {
-    const [userId, setUserId] = useState(null);
-    const [userEmail, setUserEmail] = useState("");
+    const [userId, setUserId] = useState(null);  // Store the user's ID
+    const [userEmail, setUserEmail] = useState("");  // Store the user's email
     const [savedImages, setSavedImages] = useState(new Set()); // For saved images
     const [GeneratedImages, setGeneratedImages] = useState(new Set()); // For generated images
-    const navigate = useNavigate();
+    const navigate = useNavigate();  // Navigating between routes
     const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Store previous search queries
-    const baseUrl = 'http://127.0.0.1:5000';
+    const baseUrl = 'http://127.0.0.1:5000'; // Define the base URL for the backend API requests
     const [visibleImages] = useState(999); // To control how many images are visible initially
 
     useEffect(() => {
