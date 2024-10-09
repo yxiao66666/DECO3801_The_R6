@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
+import "../styles/Button.css"; 
 
 export default function Search() {
     const [userId, setUserId] = useState(null); // Store the user's ID
@@ -126,7 +127,6 @@ export default function Search() {
         });
     };
 
-
     // Handles the search submission (with text and image upload) when the form is submitted
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -177,31 +177,30 @@ export default function Search() {
         }
     };
 
-// Save the search query to the database
-const saveSearchQuery = async () => {
-    if (!userId || !searchQuery.trim()) return;
+    // Save the search query to the database
+    const saveSearchQuery = async () => {
+        if (!userId || !searchQuery.trim()) return;
 
-    try {
-        const response = await fetch(`${baseUrl}/backend/search_text/insert`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_id: userId,
-                s_text_query: searchQuery,
-            }),
-        });
+        try {
+            const response = await fetch(`${baseUrl}/backend/search_text/insert`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    s_text_query: searchQuery,
+                }),
+            });
 
-        if (!response.ok) {
-            throw new Error('Failed to save search query');
+            if (!response.ok) {
+                throw new Error('Failed to save search query');
+            }
+
+        } catch (error) {
+            console.error('Error saving search query:', error);
         }
-
-        console.log('Search query saved successfully');
-    } catch (error) {
-        console.error('Error saving search query:', error);
-    }
-};
+    };
 
     // Handles the image file input change (validates and shows a preview)
     const handleFileChange = (event) => {
@@ -224,23 +223,18 @@ const saveSearchQuery = async () => {
     // Toggles the saving or unsaving of an image
     const toggleSaveImage = async (imageUrl) => {
         const newSavedImages = new Set(savedImages);
+
+        // Optimistically update the UI state
         if (newSavedImages.has(imageUrl)) {
-            await deleteSavedImage(imageUrl); // Call the delete function
             newSavedImages.delete(imageUrl); // Remove if already saved
         } else {
             newSavedImages.add(imageUrl); // Add if not saved
-            console.log('Saving image with:', {
-                user_id: userId, // Use the state variable here
-                sd_image_path: imageUrl,
-            });
+        }
+        setSavedImages(newSavedImages); // Update the state with the new saved images set
 
-            if (!userId) {
-                console.error("User ID is not available. Cannot save image.");
-                return; // Exit the function if userId is null
-            }
-
-            // Make the API call to save the image
-            try {
+        try {
+            if (newSavedImages.has(imageUrl)) {
+                // Make the API call to save the image
                 const response = await fetch(`${baseUrl}/backend/saved_image/insert`, {
                     method: 'POST',
                     headers: {
@@ -251,15 +245,17 @@ const saveSearchQuery = async () => {
                         sd_image_path: imageUrl,
                     }),
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Failed to save image');
                 }
-            } catch (error) {
-                console.error('Error saving image:', error);
+            } else {
+                // Call the delete function if it's already saved
+                await deleteSavedImage(imageUrl);
             }
+        } catch (error) {
+            console.error('Error updating image:', error);
         }
-        setSavedImages(newSavedImages); // Update the state with the new saved images set
     };
 
     // Deletes a saved image from the server
@@ -383,13 +379,28 @@ const saveSearchQuery = async () => {
                 {images.slice(0, visibleImages).map((url, index) => (
                     <div key={index} className="image-cell">
                         <img className="results" src={url} alt={`Searched result ${index}`} />
-                        {/* Show a save or saved icon based on whether the image is saved */}
-                        <img 
-                            src={savedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
-                            alt={savedImages.has(url) ? "Saved Icon" : "Save Icon"} 
-                            className="save-icon" 
-                            onClick={() => toggleSaveImage(url)} 
-                        />
+                        {/* Save button */}
+                        <button
+                            className={`like-button ${savedImages.has(url) ? 'liked' : ''}`}
+                            onClick={() => {
+                                toggleSaveImage(url);
+                            }}
+                        >
+                            <div className="like-wrapper">
+                                <div className="ripple"></div>
+                                <svg className="heart" style={{ width: '24', height: '24', viewBox: '0 0 24 24' }}>
+                                    <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"></path>
+                                </svg>
+                                <div className="particles" style={{ '--total-particles': 6 }}>
+                                    <div className="particle" style={{ '--i': 1, '--color': '#7642F0' }}></div>
+                                    <div className="particle" style={{ '--i': 2, '--color': '#AFD27F' }}></div>
+                                    <div className="particle" style={{ '--i': 3, '--color': '#DE8F4F' }}></div>
+                                    <div className="particle" style={{ '--i': 4, '--color': '#D0516B' }}></div>
+                                    <div className="particle" style={{ '--i': 5, '--color': '#5686F2' }}></div>
+                                    <div className="particle" style={{ '--i': 6, '--color': '#D53EF3' }}></div>
+                                </div>
+                            </div>
+                        </button>
                     </div>
                 ))}
             </div>

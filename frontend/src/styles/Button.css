@@ -63,7 +63,7 @@
     -webkit-animation: depress-shadow var(--duration) var(--easing) both;
             animation: depress-shadow var(--duration) var(--easing) both;
   }
-  .like-button:focus:after {
+  .like-button:liked:after {
     -webkit-animation: depress var(--duration) var(--easing) both;
             animation: depress var(--duration) var(--easing) both;
   }
@@ -138,11 +138,11 @@
     transition: fill var(--duration) var(--easing);
   }
   
-  .like-button:focus .heart > path {
+  .like-button:liked .heart > path {
     fill: var(--color-heart);
   }
   
-  .like-button:focus .heart {
+  .like-button:liked .heart {
     -webkit-animation: heart-bounce var(--duration) var(--easing);
             animation: heart-bounce var(--duration) var(--easing);
   }
@@ -205,7 +205,7 @@
     -webkit-transition: all var(--duration) var(--easing);
     transition: all var(--duration) var(--easing);
   }
-  .like-button:focus .particle {
+  .like-button:liked .particle {
     -webkit-animation: particles-out calc(var(--duration) * 1.2) var(--easing) forwards;
             animation: particles-out calc(var(--duration) * 1.2) var(--easing) forwards;
   }
@@ -262,7 +262,7 @@
     -webkit-transform: scale(0);
             transform: scale(0);
   }
-  .like-button:focus .ripple:before {
+  .like-button:liked .ripple:before {
     -webkit-animation: ripple-out var(--duration) var(--easing);
             animation: ripple-out var(--duration) var(--easing);
   }
@@ -288,7 +288,7 @@
   }
   
   /* Reset the animation when clicking again! */
-  .like-button:focus {
+  .like-button:liked {
     cursor: pointer;
   }
   
