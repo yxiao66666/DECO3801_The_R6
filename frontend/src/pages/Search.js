@@ -7,6 +7,7 @@ export default function Search() {
     const [visibleImages, setVisibleImages] = useState(9); // Controls the number of images displayed
     const [searchQuery, setSearchQuery] = useState(''); // Stores the current search input
     const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Stores past search queries
+    const [filteredSearchQueries, setFilteredSearchQueries] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null); // Stores the image selected by the user
     const [loading, setLoading] = useState(false); // Show or hide a loading indicator during searches
     const [savedImages, setSavedImages] = useState(new Set()); // Stores images that have been saved/bookmarked
@@ -52,7 +53,8 @@ export default function Search() {
 
     // Handles when a previous search is clicked
     const handlePreviousSearchClick = (text) => {
-        setSearchQuery(text); // Move the clicked text into the search bar
+        setSearchQuery(text);// Move the clicked text into the search bar
+        setShowSearchHistory(false);
     };
 
     // Fetch saved images for the user from the backend
@@ -85,6 +87,38 @@ export default function Search() {
     // Updates the search query state when the user types in the input field
     const handleInputChange = (event) => {
         setSearchQuery(event.target.value);
+
+    };
+
+    // Show the dropdown when the search input is focused** 
+    const handleSearchFocus = (event) => {
+        // Filter the previous search queries that match the current input and limit to 5
+        const filteredQueries = previousSearchQueries
+            .filter(query => query.toLowerCase().includes(event.target.value.toLowerCase()))
+            .slice(0, 5);
+        setFilteredSearchQueries(filteredQueries);
+        setShowSearchHistory(true);// Show the dropdown on focus
+        
+    };
+
+
+    // Hide the dropdown when the search input loses focus** 
+    const handleSearchBlur = () => {
+        setTimeout(() => setShowSearchHistory(false), 150); // Delay to allow click on dropdown items** 
+    };
+
+    // Handles when a previous search is clicked
+    const handleDelete = (queryToDelete) => {
+        const updatedQueries = previousSearchQueries.filter(query => query !== queryToDelete);
+        setPreviousSearchQueries(updatedQueries);
+
+        fetch(`${baseUrl}/backend/search_text/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: userId, query: queryToDelete }),
+        });
     };
 
     // Handles the search submission (with text and image upload) when the form is submitted
@@ -133,7 +167,7 @@ export default function Search() {
             console.error('Error:', error);
         } finally {
             setLoading(false); // Set loading to false after search completes
-            setShowSearchHistory(0); // Hide search history after submission
+            setShowSearchHistory(false); // Hide search history after submission
         }
     };
 
@@ -267,8 +301,26 @@ const saveSearchQuery = async () => {
                             type="search"
                             placeholder="Upload and Search..."
                             onChange={handleInputChange}
+                            onFocus={handleSearchFocus}  // Add focus handler
+                            onBlur={handleSearchBlur}
                             value={searchQuery || ''}  // Ensure searchQuery is a string
-                        />
+                            />
+                            {/* Previous search list */}
+                            {showSearchHistory && filteredSearchQueries.length > 0 && (
+                                <ul className="search-history-dropdown">
+                                    {filteredSearchQueries.map((query, index) => (
+                                        <li
+                                            key={index}
+                                            className="search-history-item"
+                                            onClick={() => handlePreviousSearchClick(query)} // Put history into search bar
+                                        >
+                                            <span>{query}</span>
+                                            <button className="search-history-delete" onClick={() => handleDelete(query)}>×</button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            
                         {/* Hidden file input for image upload */}
                         <input
                             type="file"
@@ -315,25 +367,7 @@ const saveSearchQuery = async () => {
                 </div>
             )}
             
-            {/* Previous search list */}
-            {showSearchHistory === 1 && (
-                <div className="previous-search-container">
-                    {previousSearchQueries.length > 0 && (
-                        <ul>
-                            <h4>Previous Searches:</h4>
-                            {previousSearchQueries.map((query, index) => (
-                                <li
-                                    key={index}
-                                    className="previous-search-item"
-                                    onClick={() => handlePreviousSearchClick(query)} // Put history into search bar
-                                >
-                                    {query}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-            )}
+            
             
             <br />
 
