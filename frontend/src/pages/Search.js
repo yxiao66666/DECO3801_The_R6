@@ -104,10 +104,15 @@ export default function Search() {
         setTimeout(() => setShowSearchHistory(false), 150); // Delay to allow click on dropdown items
     };
 
-    // Handles when a previous search is clicked
-    const handleDelete = (queryToDelete) => {
+    // Handles when a search delete button is clicked
+    const handleSearchDelete = (queryToDelete) => {
         const updatedQueries = previousSearchQueries.filter(query => query !== queryToDelete);
         setPreviousSearchQueries(updatedQueries);
+
+        // Clear the search bar if the deleted query is currently in it
+        if (searchQuery === queryToDelete) {
+            setSearchQuery(''); // Clear the search query if it matches the deleted one
+        }
 
         fetch(`${baseUrl}/backend/search_text/delete`, {
             method: 'DELETE',
@@ -116,9 +121,11 @@ export default function Search() {
             },
             body: JSON.stringify({ 
                 user_id: userId, 
-                s_text_query: queryToDelete}),
+                s_text_query: queryToDelete,
+            }),
         });
     };
+
 
     // Handles the search submission (with text and image upload) when the form is submitted
     const handleSubmit = async (event) => {
@@ -292,7 +299,7 @@ const saveSearchQuery = async () => {
                     {/* Container for the search bar and file upload components */}
                     <div className="searchbar-container">
                         {/* Input field for text-based search */}
-                            <input
+                        <input
                             className="searchbar"
                             type="search"
                             placeholder="Upload and Search..."
@@ -300,23 +307,29 @@ const saveSearchQuery = async () => {
                             onFocus={handleSearchFocus}  // Add focus handler
                             onBlur={handleSearchBlur}
                             value={searchQuery || ''}  // Ensure searchQuery is a string
-                            />
-                            {/* Previous search list */}
-                            {showSearchHistory && filteredSearchQueries.length > 0 && (
-                                <ul className="search-history-dropdown">
-                                    {filteredSearchQueries.map((query, index) => (
-                                        <li
-                                            key={index}
-                                            className="search-history-item"
-                                            onClick={() => handlePreviousSearchClick(query)} // Put history into search bar
-                                        >
-                                            <span>{query}</span>
-                                            <button className="search-history-delete" onClick={() => handleDelete(query)}>×</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                            
+                        />
+                        {/* Previous search list */}
+                        {showSearchHistory && filteredSearchQueries.length > 0 && (
+                            <ul className="search-history-dropdown">
+                                {filteredSearchQueries.map((query, index) => (
+                                    <li
+                                        key={index}
+                                        className="search-history-item"
+                                        onClick={() => handlePreviousSearchClick(query)} // Put history into search bar when item is clicked
+                                    >
+                                        <span>{query}</span>
+                                        <button
+                                            className="search-history-delete"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent triggering the search when delete button is clicked
+                                                handleSearchDelete(query);
+                                            }}
+                                        >×
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                         {/* Hidden file input for image upload */}
                         <input
                             type="file"
