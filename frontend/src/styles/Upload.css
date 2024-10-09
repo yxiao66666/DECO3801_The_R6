@@ -1,180 +1,210 @@
+div h1 {
+  color: white; /* Set the color of all h1 elements within divs to white */
+}
+
+div h2 {
+  color: white; /* Set the color of all h2 elements within divs to white */
+}
+
 .painting-tool {
-  background-color: black;
-  border: none;
-  cursor: pointer;
-  border-radius: 30px; 
-  justify-content: center;
-  align-items: center;
+  background-color: black; /* Set background color of painting tool button to black */
+  border: none; /* Remove border */
+  cursor: pointer; /* Show pointer cursor on hover */
+  border-radius: 30px; /* Make the button rounded */
+  justify-content: center; /* Center contents horizontally */
+  align-items: center; /* Center contents vertically */
 }
 
 canvas {
-max-width: 80%;
-height: auto !important;
+  max-width: 80%; /* Limit canvas width to 80% of its container */
+  height: auto !important; /* Ensure canvas height adjusts automatically */
+}
+
+#canvasRef {
+  background-color: white; /* Set background color of the canvas */
+  display: start; /* Set flexbox display behavior */
+  border: 3px solid #ccc; /* Add light grey border */
+  margin-top: 10px; /* Add margin above canvas */
+}
+
+#drawingCanvasRef {
+  display: none; /* Hide this canvas */
+}
+
+#canvasUpload {
+  display: none; /* Hide the canvas upload button */
+}
+
+.canvas-btn {
+  display: flex; /* Use flexbox for button layout */
+  justify-content: center; /* Center the button horizontally */
 }
 
 textarea {
-max-width: 80% !important;
+  max-width: 65% !important; /* Limit width of text areas to 65% */
 }
 
 #defaultPreview {
-  width: 65%;
-  height: 35em;
-  background-Size: cover;
-  border: 2px solid white;
-  border-Radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
+  width: 65%; /* Set preview width */
+  height: 35em; /* Set preview height */
+  background-size: cover; /* Scale background image to cover entire element */
+  border: 2px solid white; /* White border around preview */
+  border-radius: 5px; /* Round the corners */
+  display: flex; /* Use flexbox for layout */
+  justify-content: center; /* Center contents horizontally */
+  align-items: center; /* Center contents vertically */
+  color: white; /* Set text color to white */
+  text-align: center; /* Center text */
 }
 
 #imagePreview {
-  background-size: cover;
-  background-position: center;
-  border: 2px solid #ccc;
-  border-Radius: 5px;
-  background-color: aliceblue;
-  width: 30vw;
-  height: 30vw;
+  background-size: cover; /* Ensure image covers the preview area */
+  background-position: center; /* Center the background image */
+  border: 2px solid #ccc; /* Light grey border */
+  border-radius: 5px; /* Round the corners */
+  background-color: aliceblue; /* Set background color */
+  width: 30vw; /* Set preview width */
+  height: 30vw; /* Set preview height */
 }
 
-.avatar-preview{
-margin:15px;
-display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-gap:2.5em;
+.avatar-preview {
+  margin: 15px; /* Add margin around avatar preview */
+  display: flex; /* Use flexbox for layout */
+  flex-direction: row; /* Arrange avatars in a row */
+  justify-content: center; /* Center avatars horizontally */
+  align-items: center; /* Center avatars vertically */
+  gap: 2.5em; /* Add space between avatar items */
 }
 
+.upload-holder {
+  background-color: black; /* Set background color of upload holder */
+  min-height: 100vh; /* Ensure upload holder takes up full screen height */
+}
 
 .avatar-edit {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap:2em;
-  margin-top:10px;
-  overflow: hidden;
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Arrange content in a column */
+  justify-content: center; /* Center contents horizontally */
+  align-items: center; /* Center contents vertically */
+  gap: 2em; /* Add space between elements */
+  margin-top: 10px; /* Add margin at the top */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+.avatar-edit #imageUpload {
+  display: none; /* Hide image upload input */
 }
 
 .image-display .results {
-width: 100%; /* Ensure images fit within their container */
-display: block; /* Remove inline spacing */
-margin: 0 auto; /* Center images horizontally within the cell */
+  width: 100%; /* Ensure images fill their container */
+  display: block; /* Remove any inline spacing */
+  margin: 0 auto; /* Center images within the container */
 }
 
 .upload-icon {
-position: relative;
-right: 50px;
-top: 50%;
-transform: translateY(-50%);
-width: 24px;
-cursor: pointer;
-margin-top: 25px;
+  position: relative; /* Position the icon relative to its container */
+  right: 50px; /* Move icon 50px to the right */
+  top: 50%; /* Position it vertically in the middle */
+  transform: translateY(-50%); /* Adjust to center the icon */
+  width: 24px; /* Set icon size */
+  cursor: pointer; /* Show pointer cursor on hover */
+  margin-top: 25px; /* Add margin at the top */
 }
 
 .image-display .save-icon {
-transform: translateY(-50%);
-width: 24px;
-cursor: pointer;
-margin-top: 25px;
-position: absolute;
-top: -9px;
-right: 1px;
+  position: absolute; /* Position save icon relative to the image */
+  top: -6px; /* Position the icon 6px from the top */
+  right: 3px; /* Position the icon 3px from the right */
+  width: 24px; /* Set icon size */
+  cursor: pointer; /* Show pointer cursor on hover */
 }
 
-/* Ensure images fit within their container */
 .image-display {
-margin-bottom: 20px; /* Space below each image */
-width: 25%;
-position: relative;
+  margin-bottom: 20px; /* Add margin below each image */
+  width: 25%; /* Set width of image display container */
+  position: relative; /* Set relative positioning for child elements */
 }
 
 select {
-  position:relative;
-  z-index: 1;
-  width:90%;
-  border-Radius: 5px;
-  border: 1px solid #ccc;
-  background-color:darkgray;
-  color:white;
+  position: relative; /* Set relative positioning */
+  z-index: 1; /* Ensure dropdown appears on top of other elements */
+  width: 90%; /* Set dropdown width */
+  border-radius: 5px; /* Round dropdown corners */
+  border: 1px solid #ccc; /* Light grey border */
+  background-color: darkgray; /* Set dropdown background */
+  color: white; /* Set text color */
 }
 
 .loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; 
+  position: fixed; /* Fix overlay position to cover the entire viewport */
+  top: 0; /* Align overlay to the top of the viewport */
+  left: 0; /* Align overlay to the left of the viewport */
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex; /* Use flexbox for layout */
+  justify-content: center; /* Center contents horizontally */
+  align-items: center; /* Center contents vertically */
+  z-index: 1000; /* Ensure the overlay appears on top of everything */
 }
 
 .loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; /* Use flexbox for layout */
+  justify-content: center; /* Center contents horizontally */
+  align-items: center; /* Center contents vertically */
 }
 
 .loading-icon {
-  width: 35vw;
-  height: 25vw;
-
+  width: 35vw; /* Set icon width */
+  height: 25vw; /* Set icon height */
 }
 
-.function-btn{
-  color:white;
-  background-color:black;
-  cursor: pointer;
-  border-radius: 10px;
-  width:15vw;
-  padding: 10px;
-  border: 1px solid #ccc;
+.function-btn {
+  color: white; /* Set button text color */
+  background-color: black; /* Set button background color */
+  cursor: pointer; /* Show pointer cursor on hover */
+  border-radius: 10px; /* Round button corners */
+  width: 15vw; /* Set button width */
+  padding: 10px; /* Add padding inside button */
+  border: 1px solid #ccc; /* Light grey border */
 }
-
 
 .function-btn:hover {
-  background-color: white;
-  color:black;
+  background-color: white; /* Change background on hover */
+  color: black; /* Change text color on hover */
 }
 
-
-/* responsive */
+/* Responsive design for screens with max width of 500px */
 @media (max-width: 500px) {  
   .loading-icon {
-    width: 50vw;
-    height: 35vw;
+    width: 50vw; /* Increase icon width for smaller screens */
+    height: 35vw; /* Increase icon height for smaller screens */
   }
 
   .image-cell .results {
-    width: 70%; /* Ensure images fit within their container */
+    width: 70%; /* Adjust image width */
     display: block; /* Remove inline spacing */
-    margin: 0 auto; /* Center images horizontally within the cell */
+    margin: 0 auto; /* Center images within the cell */
   }
   
-  .avatar-preview{
-    flex-direction: column;
-    gap: 2px;
+  .avatar-preview {
+    flex-direction: column; /* Stack avatars vertically */
+    gap: 2px; /* Reduce space between avatars */
   }
 
   .avatar-edit {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: center; /* Center contents horizontally */
+    align-items: center; /* Center contents vertically */
   }
 
-  .function-btn{
-    width:24vw;
+  .function-btn {
+    width: 24vw; /* Increase button width on smaller screens */
   }
 
   .image-cell .results {
-    width: 80%; /* Ensure images fit within their container */
+    width: 80%; /* Increase image width for smaller screens */
     display: block; /* Remove inline spacing */
-    margin: 0 auto; /* Center images horizontally within the cell */
+    margin: 0 auto; /* Center images within the cell */
   }
 }  

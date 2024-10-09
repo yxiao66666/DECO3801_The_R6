@@ -458,7 +458,7 @@ export default function Upload() {
     };
 
     return (
-        <div style={{ backgroundColor: 'black', minHeight: '100vh' }}>
+        <div className="upload-holder">
             <center>
                 <form onSubmit={handleSubmit}>
                     <br />
@@ -541,9 +541,7 @@ export default function Upload() {
                                 id="imageUpload"
                                 accept=".png, .jpg, .jpeg"
                                 onChange={handleChange}
-                                style={{ display: 'none' }}
                             />
-
                             {/* Button that toggles between Browse and Clear */}
                             <button 
                                 className="function-btn" 
@@ -575,9 +573,10 @@ export default function Upload() {
                     </div>
                     <br />
                     {showCanvas && (
-                        <>
-                            <h1 style={{ color: 'white' }}>Polish your work with inpainting</h1>
+                        <div>
+                            <h1>Polish your work with inpainting</h1>
                             <canvas
+                                id="canvasRef"
                                 ref={canvasRef}
                                 onMouseDown={startDrawing}
                                 onMouseUp={stopDrawing}
@@ -587,16 +586,15 @@ export default function Upload() {
                                 onTouchStart={startDrawing}
                                 width="800"
                                 height="600"
-                                style={{ backgroundColor: 'white', display: 'start', border: '3px solid #ccc', marginTop: '10px' }}
                             />
                             <canvas
+                                id="drawingCanvasRef"
                                 ref={drawingCanvasRef}
                                 width="500"
                                 height="500"
-                                style={{ display: 'none' }}
                             />
                             <br />
-                            <div style={{ display: 'flex',justifyContent: 'center' }}>
+                            <div className="canvas-btn">
                                 <button type="button" onClick={undoLastAction} className="painting-tool">
                                     <img src="../images/undo.png" className="painting-icon" alt="undo" />
                                 </button>
@@ -605,7 +603,6 @@ export default function Upload() {
                                     id="canvasUpload"
                                     accept=".png, .jpg, .jpeg"
                                     onChange={handleCanvasChange}
-                                    style={{ display: 'none' }}
                                 />
                                 <button className="function-btn" type="button" onClick={() => document.getElementById('canvasUpload').click()}>
                                     Choose an image
@@ -614,7 +611,7 @@ export default function Upload() {
                                     Clear canvas
                                 </button>
                             </div>
-                        </>
+                        </div>
                     )}
 
                     <br />
@@ -628,7 +625,6 @@ export default function Upload() {
                             value={text}
                             placeholder="Enter your description here..."
                             onChange={e => setText(e.target.value)}
-                            style={{ width: '65%' }}
                         ></textarea>
                     )}
                     
@@ -637,25 +633,29 @@ export default function Upload() {
 
                 </form>
 
-                {/* Render the AI-generated images */}
-                {Object.values(generatedImages).map((imageName, index) => (
-                    <div key={index} className="image-display">
-                        <h2 style={{ color: 'white' }}>Generated Images:</h2>
-                        <img
-                            className="results"
-                            src={`${baseUrl}/static/generations/${imageName}`}
-                            alt={`Generated ${index}`}
-                        />
-                        {/* Show a save or saved icon based on whether the image is saved */}
-                        <img 
-                            src={savedGeneratedImages.has(imageName) ? "../images/saved.png" : "../images/save.png"} 
-                            alt={savedGeneratedImages.has(imageName) ? "Saved Icon" : "Save Icon"} 
-                            className="save-icon" 
-                            onClick={() => toggleSaveGeneratedImage(imageName)} 
-                        />
+                {/* Render the AI-generated images only if there are generated images */}
+                {Object.keys(generatedImages).length > 0 && (
+                    <div>
+                        <h2>Generated Images:</h2>
+                        {Object.values(generatedImages).map((imageName, index) => (
+                            <div key={index} className="image-display">
+                                <img
+                                    className="results"
+                                    src={`${baseUrl}/static/generations/${imageName}`}
+                                    alt={`Generated ${index}`}
+                                />
+                                {/* Show a save or saved icon based on whether the image is saved */}
+                                <img 
+                                    src={savedGeneratedImages.has(imageName) ? "../images/saved.png" : "../images/save.png"} 
+                                    alt={savedGeneratedImages.has(imageName) ? "Saved Icon" : "Save Icon"} 
+                                    className="save-icon" 
+                                    onClick={() => toggleSaveGeneratedImage(imageName)} 
+                                />
+                            </div>
+                        ))}
                     </div>
-                ))}
-                
+                )}
+
                 <br />
                 <br />
 
