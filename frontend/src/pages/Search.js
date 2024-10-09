@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import "../styles/Search.css";
 
 export default function Search() {
-    const [userId, setUserId] = useState(null);
-    const [images, setImages] = useState([]);
-    const [visibleImages, setVisibleImages] = useState(9);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [previousSearchQueries, setPreviousSearchQueries] = useState([]); 
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [savedImages, setSavedImages] = useState(new Set());
-    const baseUrl = 'http://127.0.0.1:5000';
-
-
+    const [userId, setUserId] = useState(null); // Store the user's ID
+    const [images, setImages] = useState([]); // Stores the search result images
+    const [visibleImages, setVisibleImages] = useState(9); // Controls the number of images displayed
+    const [searchQuery, setSearchQuery] = useState(''); // Stores the current search input
+    const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Stores past search queries
+    const [selectedImage, setSelectedImage] = useState(null); // Stores the image selected by the user
+    const [loading, setLoading] = useState(false); // Show or hide a loading indicator during searches
+    const [savedImages, setSavedImages] = useState(new Set()); // Stores images that have been saved/bookmarked
+    const [showSearchHistory, setShowSearchHistory] = useState(1); // Controls whether the search history is visible
+    const baseUrl = 'http://127.0.0.1:5000'; // Define the base URL for the backend API requests
+    
     useEffect(() => {
         const id = localStorage.getItem('userId');
         setUserId(id);
@@ -87,54 +87,55 @@ export default function Search() {
         setSearchQuery(event.target.value);
     };
 
-// Handles the search submission (with text and image upload) when the form is submitted
-const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true); // Set loading to true to show the loading indicator
+    // Handles the search submission (with text and image upload) when the form is submitted
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true); // Set loading to true to show the loading indicator
 
-    const formData = new FormData();
-    formData.append('query', searchQuery); // Append the search query to the form data
+        const formData = new FormData();
+        formData.append('query', searchQuery); // Append the search query to the form data
 
-    const fileInput = document.getElementById('file-upload');
-    const hasImage = fileInput && fileInput.files.length > 0;  // Check if has image
+        const fileInput = document.getElementById('file-upload');
+        const hasImage = fileInput && fileInput.files.length > 0;  // Check if there is an image
 
-    // Check if the search query is empty and no image is uploaded
-    if (!searchQuery.trim() && !hasImage) {
-        console.log("Search query is empty and no image uploaded. No search");
-        setLoading(false); // Stop loading if both search query and image are empty
-        return; // Exit the function without saving or searching
-    }
-
-    if (hasImage) {
-        formData.append('image', fileInput.files[0]); 
-    }
-
-    try {
-        const response = await fetch(`${baseUrl}/backend/search`, {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Search results:', result);
-            const resultArray = Object.values(result);
-            setImages(resultArray); // Update the state with the search results
-            setSelectedImage(null); // Clear the selected image
-
-            // Save the search query only if it's not empty
-            if (searchQuery.trim()) {
-                await saveSearchQuery(searchQuery);
-            }
-        } else {
-            console.error('Search failed');
+        // Check if the search query is empty and no image is uploaded
+        if (!searchQuery.trim() && !hasImage) {
+            console.log("Search query is empty and no image uploaded. No search");
+            setLoading(false); // Stop loading if both search query and image are empty
+            return; // Exit the function without saving or searching
         }
-    } catch (error) {
-        console.error('Error:', error);
-    } finally {
-        setLoading(false); // Set loading to false after search completes
-    }
-};
+
+        if (hasImage) {
+            formData.append('image', fileInput.files[0]); 
+        }
+
+        try {
+            const response = await fetch(`${baseUrl}/backend/search`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Search results:', result);
+                const resultArray = Object.values(result);
+                setImages(resultArray); // Update the state with the search results
+                setSelectedImage(null); // Clear the selected image
+
+                // Save the search query only if it's not empty
+                if (searchQuery.trim()) {
+                    await saveSearchQuery(searchQuery);
+                }
+            } else {
+                console.error('Search failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false); // Set loading to false after search completes
+            setShowSearchHistory(0); // Hide search history after submission
+        }
+    };
 
 // Save the search query to the database
 const saveSearchQuery = async () => {
@@ -315,22 +316,24 @@ const saveSearchQuery = async () => {
             )}
             
             {/* Previous search list */}
-            <div className="previous-search-container">
-                {previousSearchQueries.length > 0 && (
-                    <ul>
-                        <h4>Previous Searches:</h4>
-                        {previousSearchQueries.map((query, index) => (
-                            <li
-                                key={index}
-                                className="previous-search-item"
-                                onClick={() => handlePreviousSearchClick(query)} // Put history into search bar
-                            >
-                                {query}
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+            {showSearchHistory === 1 && (
+                <div className="previous-search-container">
+                    {previousSearchQueries.length > 0 && (
+                        <ul>
+                            <h4>Previous Searches:</h4>
+                            {previousSearchQueries.map((query, index) => (
+                                <li
+                                    key={index}
+                                    className="previous-search-item"
+                                    onClick={() => handlePreviousSearchClick(query)} // Put history into search bar
+                                >
+                                    {query}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
             
             <br />
 
