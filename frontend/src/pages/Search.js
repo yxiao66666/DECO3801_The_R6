@@ -90,21 +90,18 @@ export default function Search() {
 
     };
 
-    // Show the dropdown when the search input is focused** 
+    // Show the dropdown when the search input is focused
     const handleSearchFocus = (event) => {
-        // Filter the previous search queries that match the current input and limit to 5
+        // Filter the previous search queries that match the current input
         const filteredQueries = previousSearchQueries
             .filter(query => query.toLowerCase().includes(event.target.value.toLowerCase()))
-            .slice(0, 5);
         setFilteredSearchQueries(filteredQueries);
         setShowSearchHistory(true);// Show the dropdown on focus
-        
     };
 
-
-    // Hide the dropdown when the search input loses focus** 
+    // Hide the dropdown when the search input loses focus
     const handleSearchBlur = () => {
-        setTimeout(() => setShowSearchHistory(false), 150); // Delay to allow click on dropdown items** 
+        setTimeout(() => setShowSearchHistory(false), 150); // Delay to allow click on dropdown items
     };
 
     // Handles when a previous search is clicked
@@ -113,11 +110,13 @@ export default function Search() {
         setPreviousSearchQueries(updatedQueries);
 
         fetch(`${baseUrl}/backend/search_text/delete`, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_id: userId, query: queryToDelete }),
+            body: JSON.stringify({ 
+                user_id: userId, 
+                s_text_query: queryToDelete}),
         });
     };
 
@@ -196,7 +195,6 @@ const saveSearchQuery = async () => {
         console.error('Error saving search query:', error);
     }
 };
-
 
     // Handles the image file input change (validates and shows a preview)
     const handleFileChange = (event) => {
@@ -284,11 +282,9 @@ const saveSearchQuery = async () => {
         }
     };
     
-    // Return the JSX to render the search form and image results
     return (
         // The container for the entire search form and image results
         <div className="background-container" >
-            
             {/* Form submission triggers the search */}
             <form id="form" onSubmit={handleSubmit}>
                 <center>
@@ -326,7 +322,6 @@ const saveSearchQuery = async () => {
                             type="file"
                             accept=".png,.jpg"
                             id="file-upload"
-                            style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
                         {/* Image icon that triggers file input on click */}
@@ -367,8 +362,6 @@ const saveSearchQuery = async () => {
                 </div>
             )}
             
-            
-            
             <br />
 
             {/* Display grid of search results */}
@@ -391,9 +384,7 @@ const saveSearchQuery = async () => {
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">More results...</label>
             )}
-
-            <br />
-
+            <br/>
         </div>
     );
 }

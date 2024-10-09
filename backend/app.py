@@ -200,7 +200,7 @@ def authenticate_user():
             return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
-@app.route('/backend/users/delete', methods = ['POST'])
+@app.route('/backend/users/delete', methods = ['DELETE'])
 @cross_origin()
 def delete_user():
     '''
@@ -209,7 +209,7 @@ def delete_user():
     Returns:
         The corresponding response to the outcome of query
     '''
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         try:
             data = request.get_json()
             user_id = data.get('user_id')
@@ -398,6 +398,36 @@ def get_search_text_for_user():
             for s in search_text
         ]
         return jsonify(search_text_list), 200
+    return {}, 405
+
+@app.route('/backend/search_text/delete', methods=['DELETE'])
+@cross_origin()
+def delete_search_text():
+    '''
+    Deletes the search history from the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id and s_text_query.
+    '''
+    if request.method == 'DELETE':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            s_text_query = data.get('s_text_query')
+
+            # Query to find the search history
+            saved_history = db.session.query(SearchText).filter(SearchText.user_id == user_id,
+                                                               SearchText.s_text_query == s_text_query).first()
+            if saved_history:
+                db.session.delete(saved_history)
+                db.session.commit()
+                return jsonify({'message': 'History deleted successfully'}), 200
+            else:
+                return jsonify({'message': 'History not found'}), 404
+
+        except Exception as e:
+            db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
 class GenerateImage(db.Model):
