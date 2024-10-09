@@ -9,7 +9,11 @@ export default function Upload() {
     const [textvisible, setTextVisible] = useState(false);  // Toggle visibility of text input
     const [previews, setPreviews] = useState([]);  // Previews of the selected images
     const [aiOptions, setAiOptions] = useState([]);  // Options for AI image processing
+    
+    //for canvas using
     const [isDrawing, setIsDrawing] = useState(false);  // Flag to determine if the user is drawing on the canvas
+    const [isPenMode, setIsPenMode] = useState(false);  //  Add a flag to toggle between pen and rectangle mode 
+    const [penWidth, setPenWidth] = useState(5);  //  Add a state to control the brush thickness 
     const [originalWidth, setOriginalWidth] = useState(0);  // Width of the selected image
     const [originalHeight, setOriginalHeight] = useState(0);  // Height of the selected image
     const [selectedImage, setSelectedImage] = useState(null);  // The currently selected image for drawing
@@ -18,10 +22,14 @@ export default function Upload() {
     const [startPos, setStartPos] = useState({ x: 0, y: 0 });  // Starting position for drawing rectangles
     const [rect, setRects] = useState([]);  // Array to hold the drawn rectangles
     const [currentRect, setCurrentRect] = useState(null);  // The rectangle currently being drawn
+    const [penStrokes, setPenStrokes] = useState([]);  //  Array to store pen strokes 
+    const [currentPenStroke, setCurrentPenStroke] = useState([]);  // ## Current pen stroke being drawn ##
     const canvasRef = useRef(null);  // Reference to the main canvas element
     const drawingCanvasRef = useRef(null);  // Reference to the drawing canvas element
     const undoStack = useRef([]);  // Stack to keep track of actions for undo functionality
     const [cachedImage, setCachedImage] = useState(null);  // Cached version of the selected image
+
+    //for ai using
     const [generatedImages, setGeneratedImages] = useState({}); // State to store AI-generated image filenames
     const [savedGeneratedImages, setSavedGeneratedImages] = useState(new Set()); // Set of saved image names
     const baseUrl = 'http://127.0.0.1:5000';
@@ -224,6 +232,9 @@ export default function Upload() {
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 2;
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineJoin = 'round';  
+        ctx.lineCap = 'round';
+
         // Draw all the rectangles from the rect array
         rect.forEach(r => {
             ctx.fillRect(offsetX + r.x * imgScale, offsetY + r.y * imgScale, r.width * imgScale, r.height * imgScale);
@@ -235,7 +246,32 @@ export default function Upload() {
             ctx.fillRect(offsetX + currentRect.x * imgScale, offsetY + currentRect.y * imgScale, currentRect.width * imgScale, currentRect.height * imgScale);
             ctx.strokeRect(offsetX + currentRect.x * imgScale, offsetY + currentRect.y * imgScale, currentRect.width * imgScale, currentRect.height * imgScale);
         }
-    }, [cachedImage, originalWidth, originalHeight, rect, currentRect]);
+
+        // Draw all the pen strokes 
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = penWidth;
+        ctx.lineJoin = 'round';  // Make the rectangle corners smooth
+        ctx.lineCap = 'round';
+
+        penStrokes.forEach(stroke => {
+            ctx.beginPath();
+            ctx.moveTo(offsetX + stroke[0].x * imgScale, offsetY + stroke[0].y * imgScale);
+            stroke.forEach(point => {
+                ctx.lineTo(offsetX + point.x * imgScale, offsetY + point.y * imgScale);
+            });
+            ctx.stroke();
+        });
+
+        //  Draw the current pen stroke if it's being drawn 
+        if (currentPenStroke.length > 0) {
+            ctx.beginPath();
+            ctx.moveTo(offsetX + currentPenStroke[0].x * imgScale, offsetY + currentPenStroke[0].y * imgScale);
+            currentPenStroke.forEach(point => {
+                ctx.lineTo(offsetX + point.x * imgScale, offsetY + point.y * imgScale);
+            });
+            ctx.stroke();
+        }
+    }, [cachedImage, originalWidth, originalHeight, rect, currentRect, penStrokes, currentPenStroke, penWidth]); 
 
     // useEffect hook to draw the image when the canvas or cached image changes
     useEffect(() => {
@@ -308,6 +344,7 @@ export default function Upload() {
             const ctx = canvasRef.current.getContext('2d');
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
             setRects([]);
+            setPenStrokes([]);  // Clear all pen strokes 
             setCurrentRect(null);
             undoStack.current = [];
             // Redraw the image on the cleared canvas
@@ -322,14 +359,24 @@ export default function Upload() {
 
     // Undo the last drawn rectangle
     const undoLastAction = () => {
-        if (rect.length > 0) {
-            const newRects = rect.slice(0, -1);
-            setRects(newRects);
-            undoStack.current.push(rect[rect.length - 1]);
-
+        if (penStrokes.length > 0 || rect.length > 0) {
+            // If pen strokes exist, undo the last pen stroke
+            if (penStrokes.length > 0) {
+                const newPenStrokes = penStrokes.slice(0, -1);  // Remove the last pen stroke
+                setPenStrokes(newPenStrokes);  // Update the state
+                undoStack.current.push({ type: 'pen', data: penStrokes[penStrokes.length - 1] });  // Save the pen stroke to the undo stack
+            }
+            // If no pen strokes left, but rectangles exist, undo the last rectangle
+            else if (rect.length > 0) {
+                const newRects = rect.slice(0, -1);  // Remove the last rectangle
+                setRects(newRects);  // Update the state
+                undoStack.current.push({ type: 'rect', data: rect[rect.length - 1] });  // Save the rectangle to the undo stack
+            }
+    
+            // Redraw the canvas
             if (canvasRef.current && cachedImage) {
                 const ctx = canvasRef.current.getContext('2d');
-                drawImageOnCanvas(ctx);
+                drawImageOnCanvas(ctx);  // Redraw the canvas with updated state
             }
         }
     };
@@ -350,8 +397,14 @@ export default function Upload() {
         const x = (e.clientX - rectBounds.left - offsetX) / imgScale;
         const y = (e.clientY - rectBounds.top - offsetY) / imgScale;
 
-        setStartPos({ x, y });
-        setCurrentRect({ x, y, width: 0, height: 0 });
+        if (isPenMode) {
+            //  Start drawing with pen (freehand) 
+            setCurrentPenStroke([{ x, y }]);
+        } else {
+            // Start drawing a rectangle
+            setStartPos({ x, y });
+            setCurrentRect({ x, y, width: 0, height: 0 });
+        }
     };
 
     // Finish drawing a rectangle when the user releases the mouse
@@ -370,26 +423,43 @@ export default function Upload() {
         const width = currentX - startPos.x;
         const height = currentY - startPos.y;
 
-        setCurrentRect({ ...currentRect, width, height });
+        if (isPenMode) {
+            //  Add points to the current pen stroke 
+            setCurrentPenStroke(prev => [...prev, { x: currentX, y: currentY }]);
+        } else {
+            // Draw a rectangle
+            setCurrentRect({ ...currentRect, width, height });
+        }
 
         drawImageOnCanvas(ctx);
     };
 
     const stopDrawing = () => {
-        if (!isDrawing) return;
-        setIsDrawing(false);
-
-        if (currentRect && currentRect.width !== 0 && currentRect.height !== 0) {
-            setRects(prev => [...prev, currentRect]); // Add the new rectangle to the array
-            setCurrentRect(null);
+        if (!isDrawing) return;  // If drawing is not active, return immediately
+        setIsDrawing(false);  // Stop drawing
+    
+        if (isPenMode) {
+            // ## Save the current pen stroke to the penStrokes array ##
+            if (currentPenStroke.length > 0) {
+                setPenStrokes(prev => [...prev, currentPenStroke]);  // Add the current pen stroke to penStrokes
+                undoStack.current.push({ type: 'pen', data: currentPenStroke });  // Save the pen stroke to the undo stack
+            }
+            setCurrentPenStroke([]);  // Reset the current pen stroke
+        } else {
+            if (currentRect && currentRect.width !== 0 && currentRect.height !== 0) {
+                setRects(prev => [...prev, currentRect]);  // Add the new rectangle to the rects array
+                undoStack.current.push({ type: 'rect', data: currentRect });  // Save the rectangle to the undo stack
+            }
+            setCurrentRect(null);  // Reset the current rectangle
         }
-
+    
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
-            // Redraw the canvas with the updated rectangles
+            // Redraw the canvas with the updated rectangles or pen strokes
             drawImageOnCanvas(ctx);
         }
     };
+    
 
     // Handle file submission and send the selected files and drawn rectangles to the backend
     const handleSubmit = async (event) => {
@@ -416,9 +486,31 @@ export default function Upload() {
             exportCtx.fillStyle = '#000000';
             exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
             exportCtx.fillStyle = 'white';
-            rect.forEach(r => {
-                exportCtx.fillRect(r.x, r.y, r.width, r.height);
-            });
+            
+            // store either the rectangle or brush part into mask.
+            if (rect.length > 0) {
+                rect.forEach(r => {
+                    exportCtx.fillRect(r.x, r.y, r.width, r.height);
+                });
+            }
+    
+           
+            if (penStrokes.length > 0) {
+                exportCtx.strokeStyle = 'white';  
+                exportCtx.lineWidth = penWidth;  
+                exportCtx.lineJoin = 'round';  
+                exportCtx.lineCap = 'round';  
+    
+                penStrokes.forEach(stroke => {
+                    exportCtx.beginPath();
+                    exportCtx.moveTo(stroke[0].x, stroke[0].y);  
+                    stroke.forEach(point => {
+                        exportCtx.lineTo(point.x, point.y); 
+                    });
+                    exportCtx.stroke();
+                });
+            }
+    
     
             const maskBlob = await new Promise((resolve, reject) => {
                 exportCanvas.toBlob((blob) => {
@@ -431,7 +523,10 @@ export default function Upload() {
             });
             formData.append('maskImage', maskBlob);
             formData.append('canvasImage', selectedImage);
+
         }
+
+        
     
         // Debugging the formData
         for (let pair of formData.entries()) {
@@ -574,7 +669,7 @@ export default function Upload() {
                     <br />
                     {showCanvas && (
                         <div>
-                            <h1>Polish your work with inpainting</h1>
+                            <h2>Polish your work with inpainting</h2>
                             <canvas
                                 id="canvasRef"
                                 ref={canvasRef}
@@ -597,6 +692,23 @@ export default function Upload() {
                             <div className="canvas-btn">
                                 <button type="button" onClick={undoLastAction} className="painting-tool">
                                     <img src="../images/undo.png" className="painting-icon" alt="undo" />
+                                </button>
+                                
+                                <div style={{ display: 'inline-block' }}> 
+                                    <label htmlFor="penWidth" style={{color:'white'}}>Brush Width: </label>  
+                                    <input 
+                                        id="penWidth" 
+                                        type="range" 
+                                        min="1" 
+                                        max="20" 
+                                        value={penWidth} 
+                                        onChange={(e) => setPenWidth(e.target.value)} 
+                                        style={{ width: '100px' }} 
+                                    />  
+                                </div>  
+  
+                                <button className="function-btn" type="button" onClick={() => setIsPenMode(!isPenMode)} >
+                                    {isPenMode ? "Switch to Rectangle" : "Switch to Pen"}
                                 </button>
                                 <input
                                     type="file"

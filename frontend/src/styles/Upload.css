@@ -38,6 +38,8 @@ canvas {
 .canvas-btn {
   display: flex; /* Use flexbox for button layout */
   justify-content: center; /* Center the button horizontally */
+  align-items: center;
+  gap:1em;
 }
 
 textarea {
@@ -160,18 +162,22 @@ select {
 }
 
 .function-btn {
+  border: 2px solid white; /* White border */
   color: white; /* Set button text color */
   background-color: black; /* Set button background color */
-  cursor: pointer; /* Show pointer cursor on hover */
   border-radius: 10px; /* Round button corners */
   width: 15vw; /* Set button width */
   padding: 10px; /* Add padding inside button */
-  border: 1px solid #ccc; /* Light grey border */
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s ease; /* Smooth transitions */
+  text-align: center;
 }
 
+/* Button hover effect */
 .function-btn:hover {
   background-color: white; /* Change background on hover */
   color: black; /* Change text color on hover */
+  transition: box-shadow 0.3s ease; /* Add shadow transition */
+  box-shadow: 0 0 8px rgb(255, 255, 255); /* Shadow effect on hover */
 }
 
 /* Responsive design for screens with max width of 500px */
@@ -206,5 +212,11 @@ select {
     width: 80%; /* Increase image width for smaller screens */
     display: block; /* Remove inline spacing */
     margin: 0 auto; /* Center images within the cell */
+  }
+
+  .canvas-btn {
+    flex-direction:column;
+    justify-content:center;
+    align-items: center;
   }
 }  
