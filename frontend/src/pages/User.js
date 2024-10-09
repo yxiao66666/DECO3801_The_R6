@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/User.css"; // Make sure this contains the masonry grid CSS
+import "../styles/User.css"; 
+import "../styles/Button.css"; 
 
 export default function User() {
     const [userId, setUserId] = useState(null);  // Store the user's ID
@@ -11,7 +12,6 @@ export default function User() {
     const [previousSearchQueries, setPreviousSearchQueries] = useState([]); // Store previous search queries
     const baseUrl = 'http://127.0.0.1:5000'; // Define the base URL for the backend API requests
     const [visibleImages] = useState(999); // To control how many images are visible initially
-	const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         const id = localStorage.getItem('userId');
@@ -31,7 +31,7 @@ export default function User() {
                 });
                 if (response.ok) {
                     const savedImageArray = await response.json();
-                    const savedImageSet = await new Set(savedImageArray.map(image => image.sd_image_path));
+                    const savedImageSet = new Set(savedImageArray.map(image => image.sd_image_path));
                     setSavedImages(savedImageSet); // Store saved images in state
                 } else {
                     console.error('Failed to fetch saved images');
@@ -52,7 +52,7 @@ export default function User() {
                 });
                 if (response.ok) {
                     const generatedImageArray = await response.json();
-                    const generatedImageSet = await new Set(generatedImageArray.map(image => image.g_image_path));
+                    const generatedImageSet = new Set(generatedImageArray.map(image => image.g_image_path));
                     setGeneratedImages(generatedImageSet); // Store saved images in state
                 } else {
                     console.error('Failed to fetch generated images');
@@ -145,48 +145,19 @@ export default function User() {
         return atIndex !== -1 ? email.substring(0, atIndex) : email;
     };
 
-    // Toggles the saving or unsaving of an search image
-    const toggleSaveImage = async (imageUrl) => {
-        const newSavedImages = new Set(savedImages);
-		setIsLiked(!isLiked);
+	// Toggles the saving or unsaving of a search image
+	const toggleSaveImage = async (imageUrl) => {
+		const newSavedImages = new Set(savedImages);
 
-        if (newSavedImages.has(imageUrl)) {
-            await deleteSavedImage(imageUrl); // Call the delete function
-            newSavedImages.delete(imageUrl); // Remove if already saved
-        } else {
-            newSavedImages.add(imageUrl); // Add if not saved
-            console.log('Saving image with:', {
-                user_id: userId, // Use the state variable here
-                sd_image_path: imageUrl,
-            });
+		// Check if the image is saved to update isLiked state accordingly
+		if (newSavedImages.has(imageUrl)) {
+			await deleteSavedImage(imageUrl); // Call the delete function
+			newSavedImages.delete(imageUrl); // Remove if already saved
+		} 
 
-            if (!userId) {
-                console.error("User ID is not available. Cannot save image.");
-                return; // Exit the function if userId is null
-            }
-
-            // Make the API call to save the image
-            try {
-                const response = await fetch(`${baseUrl}/backend/saved_image/insert`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        sd_image_path: imageUrl,
-                    }),
-                });
-    
-                if (!response.ok) {
-                    throw new Error('Failed to save image');
-                }
-            } catch (error) {
-                console.error('Error saving image:', error);
-            }
-        }
-        setSavedImages(newSavedImages);
-    };
+		// Update the saved images
+		setSavedImages(newSavedImages);
+	};
 
     // Deletes a saved generated image from the server
     const deleteSavedImage = async (imageUrl) => {
@@ -218,41 +189,14 @@ export default function User() {
     // Toggles the saving or unsaving of an AI-generated image
     const toggleSaveGeneratedImage = async (imageUrl) => {
         const newSavedGeneratedImages = new Set(GeneratedImages);
+
+    	// Check if the image is already saved to update isLiked state accordingly
         if (newSavedGeneratedImages.has(imageUrl)) {
             await deleteGeneratedImage(imageUrl); // Call the delete function
             newSavedGeneratedImages.delete(imageUrl); // Remove if already saved
-        } else {
-            newSavedGeneratedImages.add(imageUrl); // Add if not saved
-            console.log('Saving generated image with:', {
-                user_id: userId, // Use the state variable here
-                g_image_path: imageUrl,
-            });
-
-            if (!userId) {
-                console.error("User ID is not available. Cannot save image.");
-                return; // Exit the function if userId is null
-            }
-
-            // Make the API call to save the image
-            try {
-                const response = await fetch(`${baseUrl}/backend/generate_image/insert`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        g_image_path: imageUrl,
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to save generated image');
-                }
-            } catch (error) {
-                console.error('Error saving generated image:', error);
-            }
         }
+
+		// Update the generated images
         setGeneratedImages(newSavedGeneratedImages);
     };
 
@@ -303,44 +247,44 @@ export default function User() {
             </header>
             <main className="user-home-content">
                 <section className="user-works" id="user-works">
-                    {/* List of saved images */}
-                    <h4>Saved Images</h4>
-                    <div className="image-grid">
-                        {savedImages.size > 0 ? (
-                            Array.from(savedImages).slice(0, visibleImages).map((url, index) => (
-                                <div key={index} className="image-cell">
-                                    <img className="results" src={`${url}`} alt={`Saved Img ${index + 1}`} />
-                                    <img 
-                                        src={savedImages.has(url) ? "../images/saved.png" : "../images/save.png"} 
-                                        alt={savedImages.has(url) ? "Saved Icon" : "Save Icon"} 
-                                        className="save-icon" 
-                                        onClick={() => toggleSaveImage(url)} 
-                                    />
-									<button
-										className={`like-button ${isLiked ? 'liked' : ''}`}
-										onClick={() => toggleSaveImage(url)}
-									>
-									<div className="like-wrapper">
-										<div className="ripple"></div>
-										<svg className="heart" style={{ width: '24', height: '24', viewBox: '0 0 24 24' }}>
-										<path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"></path>
-										</svg>
-										<div className="particles" style={{ '--total-particles': 6 }}>
-											<div className="particle" style={{ '--i': 1, '--color': '#7642F0' }}></div>
-											<div className="particle" style={{ '--i': 2, '--color': '#AFD27F' }}></div>
-											<div className="particle" style={{ '--i': 3, '--color': '#DE8F4F' }}></div>
-											<div className="particle" style={{ '--i': 4, '--color': '#D0516B' }}></div>
-											<div className="particle" style={{ '--i': 5, '--color': '#5686F2' }}></div>
-											<div className="particle" style={{ '--i': 6, '--color': '#D53EF3' }}></div>
-										</div>
+					{/* List of saved images */}
+					<h4>Saved Images</h4>
+					<div className="image-grid">
+						{savedImages.size > 0 ? (
+							Array.from(savedImages).slice(0, visibleImages).map((url, index) => {
+								return (
+									<div key={index} className="image-cell">
+										{/* Saved images */}
+										<img className="results" src={`${url}`} alt={`Saved Img ${index + 1}`} />
+										{/* Like button */}
+										<button
+											className={`like-button ${savedImages.has(url) ? 'liked' : ''}`}
+											onClick={() => {
+												toggleSaveImage(url);
+											}}
+										>
+											<div className="like-wrapper">
+												<div className="ripple"></div>
+												<svg className="heart" style={{ width: '24', height: '24', viewBox: '0 0 24 24' }}>
+													<path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"></path>
+												</svg>
+												<div className="particles" style={{ '--total-particles': 6 }}>
+													<div className="particle" style={{ '--i': 1, '--color': '#7642F0' }}></div>
+													<div className="particle" style={{ '--i': 2, '--color': '#AFD27F' }}></div>
+													<div className="particle" style={{ '--i': 3, '--color': '#DE8F4F' }}></div>
+													<div className="particle" style={{ '--i': 4, '--color': '#D0516B' }}></div>
+													<div className="particle" style={{ '--i': 5, '--color': '#5686F2' }}></div>
+													<div className="particle" style={{ '--i': 6, '--color': '#D53EF3' }}></div>
+												</div>
+											</div>
+										</button>
 									</div>
-								</button>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No saved images found.</p>
-                        )}
-                    </div>
+								);
+							})
+						) : (
+							<p>No saved images found.</p>
+						)}
+					</div>
 
                     {/* List of previous works */}
                     <h4>My Works</h4>
@@ -355,6 +299,27 @@ export default function User() {
                                         className="save-icon" 
                                         onClick={() => toggleSaveGeneratedImage(url)} 
                                     />
+										<button
+											className={`like-button ${GeneratedImages.has(url) ? 'liked' : ''}`}
+											onClick={() => {
+												toggleSaveGeneratedImage(url);
+											}}
+										>
+											<div className="like-wrapper">
+												<div className="ripple"></div>
+												<svg className="heart" style={{ width: '24', height: '24', viewBox: '0 0 24 24' }}>
+													<path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"></path>
+												</svg>
+												<div className="particles" style={{ '--total-particles': 6 }}>
+													<div className="particle" style={{ '--i': 1, '--color': '#7642F0' }}></div>
+													<div className="particle" style={{ '--i': 2, '--color': '#AFD27F' }}></div>
+													<div className="particle" style={{ '--i': 3, '--color': '#DE8F4F' }}></div>
+													<div className="particle" style={{ '--i': 4, '--color': '#D0516B' }}></div>
+													<div className="particle" style={{ '--i': 5, '--color': '#5686F2' }}></div>
+													<div className="particle" style={{ '--i': 6, '--color': '#D53EF3' }}></div>
+												</div>
+											</div>
+										</button>
                                 </div>
                             ))
                         ) : (
