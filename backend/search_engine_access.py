@@ -53,6 +53,7 @@ def search_pinterest(
         query (str): The search query to send to pinterest
         options (dict[str,str] | None, optional): Any extra arguments for the search. Defaults to {}.
         content (str, optional): Unknown extra argument, can be supplied. Defaults to "{}".
+        timeout (float, optional): The timeout for the get request. Defaults to 100.0.
 
     Returns:
         requests.Response: The entire, unprocessed response from py-requests
@@ -65,6 +66,10 @@ def search_pinterest(
         options['"rs"'] = '"typed"'
     if not options.get('"query"'):
         options['"query"'] = query
+    if not options.get('"journey_depth"'):
+        options['"journey_depth"'] = "null"
+    if not options.get('"page_size"'):
+        options['"page_size"'] = "null"
     elif query != options.get('"query"'):
         raise QueryMissmatchException()
     request = (
@@ -72,7 +77,10 @@ def search_pinterest(
         + options['"query"'][1:-1]
         + r"&rs="
         + options['"rs"']
-        + r'&data={"options":{"applied_filters":null,"appliedProductFilters":"---","article":null,"auto_correction_disabled":false,"corpus":null,"customized_rerank_type":null,"domains":null,"filters":null,"journey_depth":null,"page_size":null,"price_max":null,"price_min":null,"query_pin_sigs":null,"query":'
+        + r'&data={"options":{"applied_filters":null,"appliedProductFilters":"---","article":null,"auto_correction_disabled":false,"corpus":null,"customized_rerank_type":null,"domains":null,"filters":null,'
+        + r'"journey_depth":' + options['"journey_depth"']
+        + r',"page_size":' + options['"page_size"']
+        + r',"price_max":null,"price_min":null,"query_pin_sigs":null,"query":'
         + options['"query"']
         + r',"redux_normalize_feed":true,"rs":'
         + options['"rs"']
@@ -87,6 +95,7 @@ def response_pull_images(response:requests.Response, img_size:str ="236x") -> li
     Args:
         response (requests.Response): The response recieved from a search function
             (search_pinterest)
+        img_size (str, optional): The image size to pull. Defaults to "236x".
 
     Returns:
         list[str]: A list of links to images.
@@ -98,22 +107,27 @@ def response_pull_images(response:requests.Response, img_size:str ="236x") -> li
 
     return out
 
-def pull_more_pinterest(response:requests.Response, image_list:list[str]|None=None, img_size:str ="236x") -> list[str]:
-    """Takes a response from pinterest to create a new response and pull more images.
+def pull_more_pinterest(response:requests.Response, image_list:list[str]|None=None, img_size:str ="236x", timeout: float = 100.0) -> list[str]:
+    """
+    Takes a response from pinterest to create a new response and pull more images.
+    This can return a new list of images, or add to an existing list.
 
     Args:
         response (requests.Response): The response from search_pinterest
         image_list (list[str] | None, optional): The list of images to add to. Defaults to None.
         img_size (str, optional): The image size to pull. Defaults to "236x".
+        timeout (float, optional): The timeout for the get request. Defaults to 100.0.
 
     Returns:
         list[str]: Link to given list or new list if list not supplied
     """
     if not image_list:
         image_list = []
-    newresponse = requests.get(url="https://au.pinterest.com/resource/BaseSearchResource/get/",cookies=response.cookies)
+    newresponse = requests.post(url="https://au.pinterest.com/resource/BaseSearchResource/get/",
+                                cookies=response.cookies,timeout=timeout
+                                )
     parsed = json.loads(newresponse.content)
     for im_dat in parsed["resource_response"]["data"]["results"]:
         image_list.append(im_dat["images"][img_size]["url"])
-    
+
     return image_list
