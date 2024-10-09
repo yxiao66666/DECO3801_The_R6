@@ -842,7 +842,7 @@ def search():
             if not os.path.exists(app.config['UPLOAD_FOLDER']):
                 os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            # Initialize variables for the final search query
+            # Initialise variables for the final search query
             final_query = ""
             raw_imgs = []
 
@@ -927,7 +927,7 @@ def upload():
     inpaint_mask = request.files.get('maskImage')
     keep_aspect_ratio = request.form.get('keep_aspect_ratio', 'true') == 'true'
 
-    # Initialize output to prevent UnboundLocalError
+    # Initialise output to prevent UnboundLocalError
     output = None
 
     # Process inpaint or text-to-image
