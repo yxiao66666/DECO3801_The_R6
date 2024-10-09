@@ -276,6 +276,7 @@ h4 {
           justify-content: center;
   z-index: 1;
 }
+
 .like-wrapper > * {
   margin: auto;
   grid-area: 1 / 1;
@@ -288,6 +289,7 @@ h4 {
   -webkit-transform-origin: center 80%;
           transform-origin: center 80%;
 }
+
 .heart > path {
   stroke: var(--color-heart);
   stroke-width: 2;
@@ -295,13 +297,33 @@ h4 {
   -webkit-transition: fill var(--duration) var(--easing);
   transition: fill var(--duration) var(--easing);
 }
+
 .like-button:focus .heart > path {
   fill: var(--color-heart);
 }
+
 .like-button:focus .heart {
   -webkit-animation: heart-bounce var(--duration) var(--easing);
           animation: heart-bounce var(--duration) var(--easing);
 }
+
+.like-button.liked .heart > path {
+    fill: var(--color-heart);
+}
+  
+.like-button.liked .heart {
+    animation: heart-bounce var(--duration) var(--easing);
+}
+  
+.like-button.liked .particle {
+    animation: particles-out calc(var(--duration) * 1.2) var(--easing) forwards;
+}
+  
+.like-button.liked .ripple:before {
+    animation: ripple-out var(--duration) var(--easing);
+}
+  
+
 @-webkit-keyframes heart-bounce {
   40% {
     -webkit-transform: scale(0.7);
@@ -424,15 +446,8 @@ h4 {
             transform: scale(5);
   }
 }
-body {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-          align-items: center;
-  background-color: var(--color-bg);
-}
+
+
 
 /* Reset the animation when clicking again! */
 .like-button:focus {
