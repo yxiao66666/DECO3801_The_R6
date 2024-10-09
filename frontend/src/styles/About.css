@@ -34,7 +34,7 @@
 
 /* Illustration styling */
 .illustration {
-  margin-top: 60px; /* Space above the illustration */
+  margin-top: 10px; /* Space above the illustration */
   max-width: 70%; /* Maximum width of the image set to 70% of its container */
   height: auto; /* Maintain aspect ratio */
 }
