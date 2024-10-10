@@ -20,10 +20,6 @@ from controlnet.sd_backbone import StableDiffusionBackBone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import LONGTEXT
 
-# Database
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.mysql import LONGTEXT
-
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable your_random_secret_key
 
@@ -109,7 +105,7 @@ def get_users():
         {
             "user_id": user.user_id,
             "user_email": user.user_email,
-            "user_password": user.password,
+            "user_password": user.user_password,
             "created_at": user.created_at  # Convert datetime to string
         }
         for user in users
@@ -204,7 +200,7 @@ def authenticate_user():
             return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
-@app.route('/backend/users/delete', methods = ['POST'])
+@app.route('/backend/users/delete', methods = ['DELETE'])
 @cross_origin()
 def delete_user():
     '''
@@ -213,7 +209,7 @@ def delete_user():
     Returns:
         The corresponding response to the outcome of query
     '''
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         try:
             data = request.get_json()
             user_id = data.get('user_id')
@@ -381,6 +377,59 @@ def insert_search_text():
             return {'Exception Raised: ' : e}, 500
     return {}, 405
 
+@app.route('/backend/search_text/get/user', methods=['POST'])
+@cross_origin()
+def get_search_text_for_user():    
+    if request.method == 'POST': 
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+
+        search_text = db.session.query(SearchText).filter_by(user_id = user_id).all()
+        search_text_list = [
+            {
+                "s_text_id": s.s_text_id, 
+                "user_id": s.user_id,
+                "s_text_query": s.s_text_query,
+                "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for s in search_text
+        ]
+        return jsonify(search_text_list), 200
+    return {}, 405
+
+@app.route('/backend/search_text/delete', methods=['DELETE'])
+@cross_origin()
+def delete_search_text():
+    '''
+    Deletes the search history from the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id and s_text_query.
+    '''
+    if request.method == 'DELETE':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            s_text_query = data.get('s_text_query')
+
+            # Query to find the search history
+            saved_history = db.session.query(SearchText).filter(SearchText.user_id == user_id,
+                                                               SearchText.s_text_query == s_text_query).first()
+            if saved_history:
+                db.session.delete(saved_history)
+                db.session.commit()
+                return jsonify({'message': 'History deleted successfully'}), 200
+            else:
+                return jsonify({'message': 'History not found'}), 404
+
+        except Exception as e:
+            db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
+    return {}, 405
+
 class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
     g_image_id = db.Column(db.Integer, primary_key = True)
@@ -441,27 +490,24 @@ def get_generated_imgs_for_user():
         JSON with all generated images for the specified user
     '''
     if request.method == 'POST':
-        try:
-            data = request.get_json()
-            user_id = data.get('user_id')
-            if user_id is None:
-                return {'error': 'user_id is required'}, 400
-            
-            generated_imgs = db.session.query(GenerateImage).filter_by(user_id = user_id).all()
+        data = request.get_json()
+        user_id = data.get('user_id')
 
-            generated_imgs_list = [
-                {
-                    "sd_image_id": g.g_image_id,
-                    "user_id": g.user_id,
-                    "sd_image_path": g.g_image_id,
-                    "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
-                }
-                for g in generated_imgs
-            ]
-            return jsonify(generated_imgs_list), 200
-        except Exception as e:
-            print('Exception Raised: ', e)
-            return {'Exception Raised: ': str(e)}, 500
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
+        
+        generated_imgs = db.session.query(GenerateImage).filter_by(user_id = user_id).all()
+
+        generated_imgs_list = [
+            {
+                "g_image_id": g.g_image_id,
+                "user_id": g.user_id,
+                "g_image_path": g.g_image_path,
+                "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for g in generated_imgs
+        ]
+        return jsonify(generated_imgs_list), 200
     return {}, 405
 
 @app.route('/backend/generate_image/insert', methods=['POST'])
@@ -479,10 +525,8 @@ def insert_generate_image():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            user_id = data.get('user_id')
-            g_image_path = data.get('g_iamge_path')
-            new_generate_image = GenerateImage(user_id = user_id,
-                                   g_image_path = g_image_path)
+            new_generate_image = GenerateImage(user_id = data['user_id'],
+                                   g_image_path = data['g_image_path'])
             db.session.add(new_generate_image)
             db.session.commit()
             return jsonify({'g_image_id': new_generate_image.g_image_id,
@@ -510,7 +554,8 @@ def delete_generate_image():
             g_image_path = data.get('g_image_path')
 
             # Query to find the saved image
-            generated_image = db.session.query(GenerateImage).filter(GenerateImage.user_id == user_id, GenerateImage.g_image_path == g_image_path).first()
+            generated_image = db.session.query(GenerateImage).filter(GenerateImage.user_id == user_id,
+                                                                      GenerateImage.g_image_path == g_image_path).first()
             if generated_image:
                 db.session.delete(generated_image)
                 db.session.commit()
@@ -520,6 +565,40 @@ def delete_generate_image():
 
         except Exception as e:
             db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
+    return {}, 405
+
+@app.route('/backend/generate_image/get/saved', methods=['POST'])
+@cross_origin()
+def get_saved_generated_imgs_for_user():
+    '''
+    Gets all saved generated images for a specific user
+
+    Returns:
+        JSON with all saved generated images for the specified user
+    '''
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+
+            if user_id is None:
+                return {'error': 'user_id is required'}, 400
+            
+            saved_generated_imgs = db.session.query(GenerateImage).filter_by(user_id=user_id).all()  # Assuming you have a model for saved images
+
+            saved_generated_imgs_list = [
+                {
+                    "g_image_id": s.g_image_id,
+                    "user_id": s.user_id,
+                    "g_image_path": s.g_image_path,
+                    "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+                }
+                for s in saved_generated_imgs
+            ]
+            return jsonify(saved_generated_imgs_list), 200
+        except Exception as e:
+            print('Exception Raised: ', e)
             return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
@@ -674,7 +753,8 @@ def delete_saved_image():
             sd_image_path = data.get('sd_image_path')
 
             # Query to find the saved image
-            saved_image = db.session.query(SavedImage).filter(SavedImage.user_id == user_id, SavedImage.sd_image_path == sd_image_path).first()
+            saved_image = db.session.query(SavedImage).filter(SavedImage.user_id == user_id,
+                                                               SavedImage.sd_image_path == sd_image_path).first()
             if saved_image:
                 db.session.delete(saved_image)
                 db.session.commit()
@@ -762,7 +842,7 @@ def search():
             if not os.path.exists(app.config['UPLOAD_FOLDER']):
                 os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            # Initialize variables for the final search query
+            # Initialise variables for the final search query
             final_query = ""
             raw_imgs = []
 
@@ -807,10 +887,6 @@ def search():
 
     return {}, 405
 
-
-# Store filenames for cleanup
-image_files = []
-
 @app.route('/backend/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -830,13 +906,11 @@ def upload():
         option_value = request.form.get(option_key)
         intensity_value = request.form.get(intensity_key, 1.0)  # Default intensity if not provided
 
-        print('DEEZNUTS', option_value)
         if image_file and option_value:
-            module_value, intensity_value = option_value.split('|')
             bb.add_control_unit(
                 unit_num=idx,
                 image_path=image_file,
-                module=module_value,
+                module=option_value,
                 intensity=intensity_value
             )
         else:
@@ -849,7 +923,7 @@ def upload():
     inpaint_mask = request.files.get('maskImage')
     keep_aspect_ratio = request.form.get('keep_aspect_ratio', 'true') == 'true'
 
-    # Initialize output to prevent UnboundLocalError
+    # Initialise output to prevent UnboundLocalError
     output = None
 
     # Process inpaint or text-to-image
@@ -892,6 +966,9 @@ def upload():
 
     return jsonify(response), 200
 
+# Store filenames for cleanup
+image_files = []
+
 @app.route('/backend/cleanup', methods=['DELETE'])
 def cleanup_images():
     # Define the path to the generations folder
@@ -914,4 +991,4 @@ if __name__ == '__main__':
 
     with app.app_context():
         # db.create_all()
-        app.run(host='localhost', debug=True)
+        app.run(host='127.0.0.1', debug=True)
