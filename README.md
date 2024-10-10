@@ -12,6 +12,7 @@ The R6 Digital Art Assistant is a program to assist artists in their drawing pro
 2. [Release History](#release-history)
 3. [Features](#features)
 4. [Contributors](#contributors)
+5. [References](#references)
 
 ## Release History
 
@@ -48,3 +49,7 @@ The product is to be used as a side assisstant for artists to search for artwork
 | Shan Liu | Design Coordinator / Deont-End Developer |
 | Yang Xiao | Back-End Developer |
 | Ryuto Hisamoto | The King |
+
+## References
+Animation Bro
+Retrieved from: https://codepen.io/animationbro/pen/YzXqzLv
