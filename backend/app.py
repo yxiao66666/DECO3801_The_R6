@@ -50,6 +50,13 @@ bb = StableDiffusionBackBone(webui_url)
 # Creating Database
 db = SQLAlchemy(app)
 
+import hashlib
+
+def hash_password(password):
+   password_bytes = password.encode('utf-8')
+   hash_object = hashlib.sha256(password_bytes)
+   return hash_object.hexdigest()
+
 # temporarily user_name is replaced with user_email
 class Users(db.Model):
     __tablename__ = 'Users'
@@ -148,7 +155,7 @@ def insert_user():
         try:
             data = request.get_json()
             user_email = data.get('user_email')
-            user_password = data.get('user_password')
+            user_password = hash_password(data.get('user_password'))
 
             # Check if the user already exists
             existing_user = db.session.query(Users).filter_by(user_email = user_email).first()
@@ -181,7 +188,7 @@ def authenticate_user():
         try:
             data = request.get_json()
             user_email = data.get('user_email')
-            user_password = data.get('user_password')
+            user_password = hash_password(data.get('user_password'))
 
             # Find the user by email
             user = db.session.query(Users).filter_by(user_email = user_email).first()
@@ -192,7 +199,7 @@ def authenticate_user():
                     'created_at': user.created_at
                 }), 200  # Successful authentication
             else:
-                return jsonify({'message': 'Invalid email or password'}), 401  # Unauthorized
+                return jsonify({'message': 'Invalid email or password'}), 401  # Unauthorised
 
         except Exception as e:
             return {'Exception Raised: ': str(e)}, 500
