@@ -527,8 +527,10 @@ def insert_generate_image():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            new_generate_image = GenerateImage(user_id = data['user_id'],
-                                   g_image_path = data['g_image_path'])
+            user_id = data.get('user_id')
+            g_image_path = data.get('g_iamge_path')
+            new_generate_image = GenerateImage(user_id = user_id,
+                                   g_image_path = g_image_path)
             db.session.add(new_generate_image)
             db.session.commit()
             return jsonify({'g_image_id': new_generate_image.g_image_id,
