@@ -1,0 +1,156 @@
+div header h1 {
+    color: black;
+}
+
+/* User home page styling */
+.user-home {
+    font-family: Arial, sans-serif; /* Set font style */
+    text-align: center; /* Center align all text */
+}
+
+/* Header section styling */
+.user-home-header {
+    background-size: cover; /* Ensure background covers the entire section */
+    background-position: center; /* Center the background image */
+    padding: 100px; /* Add padding around the content */
+    text-align: center; /* Center align the content */
+    color: black; /* Set text color */
+    font-size: small; /* Use small font size */
+    width: 100%; /* Set header width to 100% */
+    min-height: 700px; /* Minimum height for the header */
+}
+
+/* Content section styling */
+.user-home-content {
+    margin-bottom: 20px; /* Add space below the content section */
+}
+
+/* User works list styling */
+.user-works ul {
+    list-style-type: none; /* Remove default list style */
+    padding: 0; /* Remove padding */
+}
+
+.user-works li {
+    margin: 10px 0; /* Add margin between list items */
+}
+
+/* Section heading text styling */
+h4 {
+    font-family: cursive; /* Cursive font style */
+    font-size: 4em; /* Large font size for the heading */
+    color: black; /* Set heading text color to black */
+    font-weight: bold; /* Make the heading bold */
+}
+
+/* User options section styling */
+.user-options {
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center align the items */
+    gap: 90px; /* Space between items */
+}
+
+/* Button styling */
+.button {
+    padding: 8px 20px; /* Padding for the button */
+    border: 2px solid white; /* White border */
+    border-radius: 20px; /* Rounded corners */
+    background-color: black; /* Black background color */
+    color: white; /* White text color */
+    font-size: 16px; /* Button font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+/* Button hover effect */
+.button:hover {
+    background-color: white; /* Change background to white on hover */
+    color: black; /* Change text color to black on hover */
+    transition: box-shadow 0.3s ease; /* Add shadow transition */
+    box-shadow: 0 0 8px rgb(0, 0, 0); /* Shadow effect on hover */
+}
+
+/* Margin for user works section */
+.user-works {
+    margin-top: 50px; /* Add margin to the top of the user works section */
+}
+
+/* User avatar container styling */
+.user-avatar-container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center align the avatar */
+    margin-bottom: 20px; /* Add margin below the avatar */
+}
+
+/* User avatar styling */
+.user-avatar {
+    width: 100px; /* Set avatar width */
+    height: 100px; /* Set avatar height */
+    border-radius: 50%; /* Make avatar circular */
+    object-fit: cover; /* Ensure the avatar fits within the container */
+    border: 3px solid white; /* White border around the avatar */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow around the avatar */
+}
+
+/* Save icon styling */
+.save-icon {
+    transform: translateY(-50%); /* Center vertically */
+    width: 24px; /* Set icon width */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: 25px; /* Add margin to the top */
+    position: absolute; /* Position the icon absolutely */
+    top: -9px; /* Set the top position */
+    right: 1px; /* Set the right position */
+}
+
+/* Image container styling */
+.image-cell {
+    display: inline-block; /* Align images in columns */
+    margin-bottom: 20px; /* Add space below each image */
+    width: 100%; /* Ensure the container takes full width */
+    position: relative; /* Relative positioning for the container */
+}
+
+/* Masonry layout for image results */
+.image-grid {
+    column-count: 3; /* Three columns for the image grid */
+    column-gap: 20px; /* Gap between columns */
+    margin: 20px auto; /* Center the grid and add margin */
+    width: 50%; /* Set grid width to 50% */
+}
+
+/* Ensure images fit within their container */
+.image-cell {
+    display: inline-block; /* Align images in columns */
+    margin-bottom: 20px; /* Space below each image */
+    width: 100%; /* Ensure the container takes full width */
+}
+
+.image-grid .image-cell .results {
+    width: 100%; /* Make sure images fit inside their containers */
+    display: block; /* Remove inline spacing */
+    margin: 0 auto; /* Center images horizontally */
+}
+
+/* Responsive design for different screen sizes */
+
+/* For screens smaller than 1400px */
+@media (max-width: 1400px) {
+    .image-grid {
+        width: 70%; /* Reduce grid width to 70% */
+    }
+}
+
+/* For screens smaller than 1000px */
+@media (max-width: 1000px) {
+    .image-grid {
+        width: 80%; /* Reduce grid width to 80% */
+    }
+}
+
+/* For screens smaller than 800px */
+@media (max-width: 800px) {
+    .image-grid {
+        width: 90%; /* Reduce grid width to 90% */
+    }
+}

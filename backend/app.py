@@ -499,9 +499,9 @@ def get_generated_imgs_for_user():
 
             generated_imgs_list = [
                 {
-                    "sd_image_id": g.g_image_id,
+                    "g_image_id": g.g_image_id,
                     "user_id": g.user_id,
-                    "sd_image_path": g.g_image_id,
+                    "g_image_path": g.g_image_path,
                     "created_at": g.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
                 }
                 for g in generated_imgs

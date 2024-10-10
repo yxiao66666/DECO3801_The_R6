@@ -1,0 +1,57 @@
+/* Import FontAwesome icons */
+@import url('https://use.fontawesome.com/releases/v5.8.1/css/all.css');
+
+/* Full height section styling */
+.full-height-section {
+  background-color: black; /* Black background for the full-height section */
+  color: white; /* White text color */
+  min-height: 100vh; /* Minimum height of the viewport height */
+  padding: 20px; /* Padding around the content */
+}
+
+/* Styling for sections with a background image */
+.styled-background {
+  background-size: cover; /* Cover the background area with the image */
+  background-position: center; /* Center the background image */
+  padding: 50px 10px; /* Padding around the content */
+  border-radius: 5px; /* Rounded corners */
+  margin-bottom: 40px; /* Space below the section */
+  color: white; /* White text color */
+}
+
+/* Large heading styling */
+.display-4.styled-heading {
+  font-family: serif; /* Serif font for the heading */
+  font-size: 18vw; /* Font size relative to viewport width */
+}
+
+/* Center text alignment for container */
+.container {
+  text-align: center; /* Center-align text within the container */
+}
+
+/* Styling for social media box */
+.social_box {
+  margin-top: 20px; /* Space above the social box */
+}
+
+/* Styling for social media list */
+.social_box ul {
+  list-style: none; /* Remove default list styling */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  display: inline-flex; /* Display items in a horizontal line */
+}
+
+/* Styling for each list item in the social media list */
+.social_box ul li {
+  display: inline-block; /* Display list items inline */
+  margin: 0px 10px; /* Space between list items */
+}
+
+/* Styling for text within the social media box */
+.social_box .text {
+  margin-bottom: 10px; /* Space below the text */
+  font-size: 18px; /* Font size for the text */
+  font-weight: bold; /* Bold text */
+}
