@@ -18,7 +18,7 @@ def search():
     If both a search query and an image are provided, combine the keyword and the image caption for a more refined search.
 
     Returns:
-        Response: A JSON response with a unique id for each image.
+        Response: A JSON response with a unique id for each image. The function returns 100 images.
 
     Requires:
         - the type of 'query' == String (optional)
