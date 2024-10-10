@@ -1,18 +1,34 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
-import axios from "axios";
 
 // Header
 export default function Header() {
     const [showPopup, setShowPopup] = useState(false);
-    const [isLoggedIn] = useState(false); 
+    const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true'); 
     const [haveAccount, setHaveAccount] = useState(false); 
+    const baseUrl = 'http://127.0.0.1:5000';
+    const navigate = useNavigate(); // Initialise the useNavigate hook
 
     const handleLogin = () => {
+        setIsLoggedIn(true);
         setHaveAccount(true);
+        localStorage.setItem('isLoggedIn', 'true');
+        navigate('/user'); 
     };
 
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            setIsLoggedIn(loggedIn);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+    
     // Login/Signup Popup Component
     const LoginSignupPopup = ({ closePopup, onLogin }) => {
         const [inputs, setInputs] = useState({
@@ -25,7 +41,6 @@ export default function Header() {
             setHaveAccount(!haveAccount);
         };
         
-    
         const handleOverlayClick = (event) => {
             if (event.target === event.currentTarget) {
                 closePopup();
@@ -43,41 +58,64 @@ export default function Header() {
         const handleSubmit = async (event) => {
             event.preventDefault();
             console.log(inputs);
-
-            // If the password does not match
+        
+            // Check if the passwords match for signup
             if (!haveAccount && inputs.password !== inputs.confirmPassword) {
-                alert("Passwords do not match!");
-                return;
+                alert("Passwords do not match. Please try again.");
+                return; // Stop further execution if passwords don't match
             }
-
-            const url = isLoggedIn
-                ? 'http://localhost:5000/get-users'
-                : 'http://localhost:5000/create-users';
+        
+            const url = haveAccount
+                ? `${baseUrl}/backend/users/authenticate`
+                : `${baseUrl}/backend/users/insert`;
         
             try {
-                const response = isLoggedIn
-                    ? await axios.get(url, {
-                          params: { email: inputs.email, password: inputs.password }
-                      })
-                    : await axios.post(url, {
-                          email: inputs.email,
-                          password: inputs.password,
-                          confirmPassword: inputs.confirmPassword
-                      }, {
-                          headers: {
-                              'Content-Type': 'application/json',
-                          }
-                      });
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_email: inputs.email,
+                        user_password: inputs.password,
+                        ...(haveAccount ? {} : { confirmPassword: inputs.confirmPassword })
+                    })
+                });
         
-                if (response.status === 200 || response.status === 201) {
-                    onLogin();
-                    closePopup();
+                if (haveAccount) {
+                    // Handle login response
+                    if (response.status === 200) {
+                        const data = await response.json();
+                        console.log("Login successful:", data);
+                        localStorage.setItem('userEmail', inputs.email); // Store the email in localStorage
+                        localStorage.setItem('userId', data.user_id); // Store the user ID in localStorage
+                        console.log("Stored user ID:", data.user_id); // Log the stored user ID
+                        onLogin(); // Set the user as logged in
+                        closePopup();
+                    } else if (response.status === 401) {
+                        const errorData = await response.json();
+                        alert(errorData.message); // Show invalid login message
+                    } else {
+                        console.error("Failed to log in:", response.statusText);
+                    }
+                } else {
+                    // Handle signup response
+                    if (response.status === 201) {
+                        const data = await response.json();
+                        console.log("User created successfully:", data);
+                        setHaveAccount(true); // Switch to login form
+                    } else if (response.status === 400) {
+                        const errorData = await response.json();
+                        alert(errorData.message); // Show email already exists message
+                    } else {
+                        console.error("Failed to create user:", response.statusText);
+                    }
                 }
             } catch (error) {
                 console.error('Error making request:', error);
             }
         };
-        
+                                        
         return (
             <div className="popup-overlay" onClick={handleOverlayClick}>
                 <div className="popup-container">
@@ -139,7 +177,7 @@ export default function Header() {
 
     return (
         <header>
-            <nav className="navbar navbar-expand-lg" >
+            <nav className="navbar navbar-expand-lg">
                 <div className="container">
                     <NavLink className="navbar-brand" to="/">Arty</NavLink>
                     <button 
@@ -195,11 +233,11 @@ export default function Header() {
                                         className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
                                         to="/user" 
                                     >
-                                        Account
+                                        My Account
                                     </NavLink>
                                 ) : (
                                     <NavLink 
-                                        className={({ isActive }) => isActive ? "nav-link option active-link" : "nav-link option"} 
+                                        className={({ isActive }) => (isActive && window.location.pathname !== '/') ? "nav-link option active-link" : "nav-link option"} 
                                         to="/" 
                                         onClick={(event) => {
                                             event.preventDefault();
@@ -214,9 +252,7 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
-            {/* For the loggin pop up */}
             {showPopup && <LoginSignupPopup closePopup={() => setShowPopup(false)} onLogin={handleLogin} />}
         </header>
     );
 }
-
