@@ -3,7 +3,6 @@ This file contains the API of the application. All methods handle requests and J
  return response and a JSON file.
 """
 import os
-import glob
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -11,14 +10,13 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
-from search_engine_access import generate_image_caption, search_pinterest, response_pull_images
-from transformers import BlipProcessor, BlipForConditionalGeneration
-
-from controlnet.sd_backbone import StableDiffusionBackBone
-
 # Database
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import LONGTEXT
+
+from transformers import BlipProcessor, BlipForConditionalGeneration
+
+from controlnet.sd_backbone import StableDiffusionBackBone
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable your_random_secret_key
@@ -400,6 +398,36 @@ def get_search_text_for_user():
         return jsonify(search_text_list), 200
     return {}, 405
 
+@app.route('/backend/search_text/delete', methods=['DELETE'])
+@cross_origin()
+def delete_search_text():
+    '''
+    Deletes the search history from the database
+
+    IMPORTANT:
+        The endpoint assumes that it will be handed with a user_id and s_text_query.
+    '''
+    if request.method == 'DELETE':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            s_text_query = data.get('s_text_query')
+
+            # Query to find the search history
+            saved_history = db.session.query(SearchText).filter(SearchText.user_id == user_id,
+                                                               SearchText.s_text_query == s_text_query).first()
+            if saved_history:
+                db.session.delete(saved_history)
+                db.session.commit()
+                return jsonify({'message': 'History deleted successfully'}), 200
+            else:
+                return jsonify({'message': 'History not found'}), 404
+
+        except Exception as e:
+            db.session.rollback()
+            return {'Exception Raised: ': str(e)}, 500
+    return {}, 405
+
 class GenerateImage(db.Model):
     __tablename__ = 'GenerateImage'
     g_image_id = db.Column(db.Integer, primary_key = True)
@@ -737,8 +765,6 @@ def get_saved_imgs_for_user():
             for s in saved_imgs
         ]
 
-        print(saved_imgs_list)
-
         return jsonify(saved_imgs_list), 200
     return {}, 405
 
@@ -761,179 +787,12 @@ def get_saved_img():
         return {'error': 'Image not found'}, 404
     return {}, 405
 
-@app.route('/backend/search', methods=['POST'])
-@cross_origin()
-def search():
-    '''
-    Retrieve data from the Pinterest API using the keyword or an image submitted by the user.
-    
-    If both a search query and an image are provided, combine the keyword and the image caption for a more refined search.
-
-    Returns:
-        Response: A JSON response with a unique id for each image.
-
-    Requires:
-        - the type of 'query' == String (optional)
-        - the type of 'image' == Path to File (optional)
-    '''
-    if request.method == 'POST':
-        try:
-            print("Received POST request")
-            
-            # Ensure the upload folder exists
-            if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                os.makedirs(app.config['UPLOAD_FOLDER'])
-
-            # Initialize variables for the final search query
-            final_query = ""
-            raw_imgs = []
-
-            # Check if an image is uploaded
-            if 'image' in request.files:
-                image = request.files['image']
-                if image.filename != '':
-                    # Save the image
-                    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
-                    image.save(image_path)
-                    print(f"Image saved at: {image_path}")
-                    
-                    # Generate caption from the image
-                    caption = generate_image_caption(image_path=image_path, model=blip, processor=blip_processor)
-                    print(f"Generated caption: {caption}")
-                    final_query += caption  # Add the caption to the final query
-
-            # Get the search text query (if provided)
-            keyword = request.form.get('query', '').strip()
-            if keyword:
-                print(f"Search keyword: {keyword}")
-                # If keyword exists, append it to the final query
-                if final_query:
-                    final_query += " " + keyword  # Combine both image caption and text
-                else:
-                    final_query = keyword  # Only the keyword if no image caption
-
-            # If there is a query (either from image, keyword, or both), search
-            if final_query:
-                print(f"Final search query: {final_query}")
-                raw_imgs = search_pinterest(final_query)
-            else:
-                return {'error': 'No search query or image provided'}, 400
-
-            images = response_pull_images(raw_imgs)
-            response = {i: images[i] for i in range(len(images))}
-            return jsonify(response), 200
-
-        except Exception as e:
-            print(f"Error occurred: {e}")
-            return {'error': str(e)}, 500
-
-    return {}, 405
-
-
-# Store filenames for cleanup
-image_files = []
-
-@app.route('/backend/upload', methods=['POST'])
-@cross_origin()
-def upload():
-    if request.method != 'POST':
-        return {}, 405
-    
-    bb.reset()
-
-    # Handle image files and associated options
-    idx = 0
-    while True:
-        image_key = f'image{idx}'
-        option_key = f'option{idx}'
-        intensity_key = f'intensity{idx}'
-
-        image_file = request.files.get(image_key)
-        option_value = request.form.get(option_key)
-        intensity_value = request.form.get(intensity_key, 1.0)  # Default intensity if not provided
-
-        print('DEEZNUTS', option_value)
-        if image_file and option_value:
-            module_value, intensity_value = option_value.split('|')
-            bb.add_control_unit(
-                unit_num=idx,
-                image_path=image_file,
-                module=module_value,
-                intensity=intensity_value
-            )
-        else:
-            break
-
-        idx += 1
-
-    prompt = request.form.get('text')
-    inpaint_image = request.files.get('canvasImage')
-    inpaint_mask = request.files.get('maskImage')
-    keep_aspect_ratio = request.form.get('keep_aspect_ratio', 'true') == 'true'
-
-    # Initialize output to prevent UnboundLocalError
-    output = None
-
-    # Process inpaint or text-to-image
-    if inpaint_image and inpaint_mask:
-        bb.add_inpaint_image(inpaint_image)
-        bb.add_inpaint_mask(inpaint_mask)
-        output = bb.img2img_inpaint(
-            prompt=prompt,
-            keep_aspect_ratio=keep_aspect_ratio
-        )
-    else:
-        try:
-            output = bb.txt2img(prompt=prompt)
-            print(f"Direct test output: {output}")
-
-            # Check if output is None or not a list of images
-            if not output:
-                print("txt2img returned an empty result.")
-                return jsonify({'error': 'Image generation returned no results.'}), 500
-            if not isinstance(output, list):
-                output = [output]  # Ensure it's treated as a list of images
-
-            print(f"Output from txt2img: {output}")
-        except KeyError as ke:
-            print(f"Error during direct txt2img test: {ke}")
-            return jsonify({'error': 'Failed to generate image, key error occurred.'}), 500
-        except Exception as e:
-            print(f"Error during txt2img generation: {e}")
-            return jsonify({'error': 'Failed to generate image.'}), 500
-
-    # Save and respond with output images
-    response = {}
-    for idx, img in enumerate(output):
-        file_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{prompt.replace(' ', '_')}_{idx}.png"
-        file_path = os.path.join(app.config['GENERATION_FOLDER'], file_name)
-        img.save(file_path, format='PNG')
-        
-        #print(f"Image saved at: {file_path}")
-        response[idx] = file_name
-
-    return jsonify(response), 200
-
-@app.route('/backend/cleanup', methods=['DELETE'])
-def cleanup_images():
-    # Define the path to the generations folder
-    generation_folder = app.config['GENERATION_FOLDER']
-
-    # Use glob to find all image files in the folder
-    image_files = glob.glob(os.path.join(generation_folder, '*'))
-
-    for file_path in image_files:
-        if os.path.isfile(file_path):  # Check if it's a file
-            try:
-                os.remove(file_path)
-                print(f"Deleted file: {file_path}")
-            except Exception as e:
-                print(f"Error deleting file {file_path}: {e}")
-
-    return jsonify({'message': 'Cleanup successful'}), 200
-
 if __name__ == '__main__':
 
     with app.app_context():
+
+        import key_functionalities
+        app.register_blueprint(key_functionalities.bp)
+
         # db.create_all()
         app.run(host='127.0.0.1', debug=True)
