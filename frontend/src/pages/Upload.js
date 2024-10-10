@@ -425,7 +425,6 @@ export default function Upload() {
                 method: 'POST',
                 body: formData,
             });
-            console.log(formData)
             if (response.ok) {
                 const result = await response.json();
                 console.log('AI generated image:', result);
