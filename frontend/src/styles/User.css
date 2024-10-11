@@ -130,6 +130,7 @@ h4 {
     width: 100%; /* Make sure images fit inside their containers */
     display: block; /* Remove inline spacing */
     margin: 0 auto; /* Center images horizontally */
+    border-radius: 8px; /* Rounded edges */
 }
 
 /* Responsive design for different screen sizes */
