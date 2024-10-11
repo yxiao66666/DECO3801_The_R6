@@ -23,11 +23,9 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key')  # Use
 
 load_dotenv()
 
-DB_LINK = os.getenv('DB_LINK')
-
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_LINK
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_LINK')
 # Folder to temporarily save generation results
 GENERATION_FOLDER = os.path.join('static', 'generations')
 app.config['GENERATION_FOLDER'] = GENERATION_FOLDER
@@ -528,7 +526,7 @@ def insert_generate_image():
         try:
             data = request.get_json()
             user_id = data.get('user_id')
-            g_image_path = data.get('g_iamge_path')
+            g_image_path = data.get('g_image_path')
             new_generate_image = GenerateImage(user_id = user_id,
                                    g_image_path = g_image_path)
             db.session.add(new_generate_image)
