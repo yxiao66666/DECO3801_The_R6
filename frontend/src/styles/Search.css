@@ -10,7 +10,7 @@
     gap: 10px;
     margin:  auto; /* Center grid and add margin */
     width: 50%; /* Grid takes up 50% of container */
-    column-gap:1%; /* Space between columns */        grid-auto-rows: 10px;
+    column-gap:1%; /* Space between columns */        
     grid-auto-rows: auto;
 }
 
