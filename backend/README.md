@@ -39,8 +39,13 @@ conda create --name arty_backend --file requirements.txt
    `ssh -L 3306:localhost:3306 -J your_student_account@remote.labs.eait.uq.edu.au your_student_account@arty.zones.eait.uq.edu.au`.
    Make sure to keep this termianl open. (NOTE: If this does not work you may have to set your ssh key to the EAIT Remote Desktop first!)
 2. Create a new terminal at the root directory, activate the conda virtual environment by running `conda activate arty_backend`.
-3. From the same terminal, run `python backend/app.py` and keep this terminal open.
-4. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
+3. From the same terminal, run
+   ```bash
+   cd backend
+   python app.py
+   ```
+   and keep this terminal open.
+6. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
 
 ## Key Services
 
