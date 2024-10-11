@@ -373,12 +373,11 @@ export default function Search() {
             
             <br />
 
-            {/* Display grid of search results */}
-            <div className="image-grid">
+            <div className="masonry">
                 {/* Iterate through the list of images and display each one */}
                 {images.slice(0, visibleImages).map((url, index) => (
-                    <div key={index} className="image-cell">
-                        <img className="results" src={url} alt={`Searched result ${index}`} />
+                    <div>
+                        <img className="item" src={url} alt={`Searched result ${index}`} />
                         {/* Save button */}
                         <button
                             className={`like-button ${savedImages.has(url) ? 'liked' : ''}`}
@@ -404,6 +403,7 @@ export default function Search() {
                     </div>
                 ))}
             </div>
+
             {/* If there are more images to load, display the "More results" button */}
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">More results...</label>
