@@ -101,6 +101,11 @@ textarea {
   width: 100%; /* Ensure images fill their container */
   display: block; /* Remove any inline spacing */
   margin: 0 auto; /* Center images within the container */
+  transition: transform 0.3s;
+}
+
+.image-display .results:hover {
+  transform: translateY(5px);
 }
 
 .upload-icon {

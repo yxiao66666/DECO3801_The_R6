@@ -131,10 +131,14 @@ h4 {
     display: block; /* Remove inline spacing */
     margin: 0 auto; /* Center images horizontally */
     border-radius: 8px; /* Rounded edges */
+    transition: transform 0.3s;
+}
+
+.image-grid .image-cell .results:hover {
+    transform: translateY(5px);
 }
 
 /* Responsive design for different screen sizes */
-
 /* For screens smaller than 1400px */
 @media (max-width: 1400px) {
     .image-grid {
