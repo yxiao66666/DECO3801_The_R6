@@ -535,7 +535,7 @@ def insert_generate_image():
         try:
             data = request.get_json()
             user_id = data.get('user_id')
-            g_image_path = data.get('g_iamge_path')
+            g_image_path = data.get('g_image_path')
             new_generate_image = GenerateImage(user_id = user_id,
                                    g_image_path = g_image_path)
             db.session.add(new_generate_image)
