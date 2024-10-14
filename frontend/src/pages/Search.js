@@ -376,11 +376,12 @@ export default function Search() {
             <div className="masonry">
                 {/* Iterate through the list of images and display each one */}
                 {images.slice(0, visibleImages).map((url, index) => (
-                    <div>
-                        <img className="item" src={url} alt={`Searched result ${index}`} />
+                    <div key={`contain ${index}`}>
+                        <img className="item" src={url} alt={`Searched result ${index}`} key={`img ${index}`} />
                         {/* Save button */}
                         <button
                             className={`like-button ${savedImages.has(url) ? 'liked' : ''}`}
+                            key={`button ${index}`}
                             onClick={() => {
                                 toggleSaveImage(url);
                             }}
