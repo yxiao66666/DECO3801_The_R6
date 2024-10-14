@@ -453,7 +453,6 @@ export default function Upload() {
                         )}
                         {previews.map((preview, index) => (
                             <div key={index} id="imagePreview" style={{ backgroundImage: `url(${preview})` }}>
-                                <p>{preview}</p>
                                 <select
                                     value={aiOptions[index]}
                                     onChange={(e) => handleOptionChange(index, e.target.value)}

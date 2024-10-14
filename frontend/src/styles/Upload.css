@@ -40,6 +40,7 @@ canvas {
   justify-content: center; /* Center the button horizontally */
   align-items: center;
   gap:1em;
+  width:80%;
 }
 
 textarea {
@@ -67,8 +68,6 @@ textarea {
   background-color: aliceblue; /* Background color */
   width: 30vw; /* Set preview width */
   height: 30vw; /* Set preview height */
-  object-fit: cover; /* Visually crop the image to fit the preview box */
-  overflow: hidden; /* Hide the overflow of the image */
 }
 
 
@@ -94,10 +93,12 @@ textarea {
   gap: 2em; /* Add space between elements */
   margin-top: 10px; /* Add margin at the top */
   overflow: hidden; /* Hide overflowing content */
+  width:15%;
 }
 
 .avatar-edit #imageUpload {
   display: none; /* Hide image upload input */
+  z-index: 1;
 }
 
 .image-display .results {
@@ -174,7 +175,7 @@ select {
   color: white; /* Set button text color */
   background-color: black; /* Set button background color */
   border-radius: 10px; /* Round button corners */
-  width: 15vw; /* Set button width */
+  width: 100%; /* Set button width */
   padding: 10px; /* Add padding inside button */
   transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s ease; /* Smooth transitions */
   text-align: center;
@@ -210,11 +211,9 @@ select {
     flex-direction: column; /* Stack elements vertically */
     justify-content: center; /* Center contents horizontally */
     align-items: center; /* Center contents vertically */
+    width:23%;
   }
 
-  .function-btn {
-    width: 24vw; /* Increase button width on smaller screens */
-  }
 
   .image-cell .results {
     width: 80%; /* Increase image width for smaller screens */
@@ -226,5 +225,6 @@ select {
     flex-direction:column;
     justify-content:center;
     align-items: center;
+    width:23%;
   }
 }  
