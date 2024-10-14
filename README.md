@@ -39,7 +39,7 @@ Get a better idea of how our platform works from our explainer video [here](http
   - [Front-end](#front-end)
   - [Flask Server (Back-end)](#flask-server-back-end)
   - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
-- [Usage](#usage)
+- [Screenshots and Usage Example](#screenshots-and-usage-example)
 - [References](#references)
 
 ## Release History
@@ -171,9 +171,21 @@ Run `webui.bat` under `/backend/controlnet` folder to start the stable diffusion
 
 _\*For more details, please refer to the [controlnet README](/backend/controlnet/README.md)._
 
-## Usage
+## Screenshots and Usage Example
 
 The product is to be used as a side assisstant for artists to search for artwork references.
+<p align="center">
+  <img src = images/pages.png alt = "screenshots" width = 100% >
+<p>
+<p align="center">
+  Screenshots
+<p>
+<p align="center">
+  <img src = images/ipad_.jpeg alt = "Side-by-Side Usage Example" width = 40% >
+<p>
+<p align="center">
+  Side-by-Side Usage Example
+<p>
 
 ## References
 
