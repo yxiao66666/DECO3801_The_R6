@@ -141,6 +141,7 @@ export default function Search() {
         // Check if the search query is empty and no image is uploaded
         if (!searchQuery.trim() && !hasImage) {
             console.log("Search query is empty and no image uploaded. No search");
+            setImages([]);
             setLoading(false); // Stop loading if both search query and image are empty
             return; // Exit the function without saving or searching
         }
