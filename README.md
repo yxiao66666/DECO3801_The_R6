@@ -7,6 +7,8 @@
 Arty is a productivity tool specifically tailored for digital 2D art illustrators.
 It's a platform that allows artists to automate frequent, repetitive, and time-consuming tasks like reference searching, idea organisation and visualisation, while ensuring the creative process remains entirely in artist’s control.
 
+Link to our website host on UQ-Zone: [https://arty.uqcloud.net/](https://arty.uqcloud.net/)
+
 ## Main features
 
 Get a better idea of how our platform works from our explainer video [here](https://youtu.be/8cGWy8hhmNw)!
@@ -173,7 +175,7 @@ The product is to be used as a side assisstant for artists to search for artwork
 
 ## References
 
-1. **The BLIP Model**
+1. **The BLIP Model**:
    - [Hugging Face: BLIP](https://huggingface.co/docs/transformers/en/model_doc/blip)
 2. **ControlNet Extension for Stable Diffusion Web UI**:
     - [Mikubill ControlNet GitHub Repository](https://github.com/Mikubill/sd-webui-controlnet)
@@ -181,9 +183,9 @@ The product is to be used as a side assisstant for artists to search for artwork
     - [Flask Official Documentation](https://flask.palletsprojects.com/en/3.0.x/)
 4. **Flask-SQLAlchemy Documentation**:
     - [Flask-SQLAlchemy Official Documentation](https://flask-sqlalchemy.readthedocs.io/en/3.1.x/)
-5. **Printerest**
+5. **Printerest**:
     - [Pinterest Website](https://au.pinterest.com/business/hub/)
-6. **React 18.3.1**
+6. **React 18.3.1**:
     - [React Documentation](https://react.dev/versions)
 7. **Stable Diffusion v1.5**:
     - [Hugging Face: Stable Diffusion v1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
