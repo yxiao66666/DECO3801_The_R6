@@ -9,7 +9,7 @@ It's a platform that allows artists to automate frequent, repetitive, and time-c
 
 ## Main features
 
-Get a better idea of how our platform works from our explainer video [here]()!
+Get a better idea of how our platform works from our explainer video [here](https://youtu.be/8cGWy8hhmNw)!
 
 -   Cross-Platform Compatibility
 -   Integrated Reference Searching
@@ -50,7 +50,7 @@ Get a better idea of how our platform works from our explainer video [here]()!
 
     -   Added bookmarking for searched/generated images
     -   Added support for loading more images
-    -   Fixed incorrect API calling
+    -   Fixed incorrect API calls
 
 -   0.3.0 Interim Submission V3
 
