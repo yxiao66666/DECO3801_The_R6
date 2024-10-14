@@ -1,5 +1,7 @@
-<img src = images/favicon.jpg alt = "The R6 Logo" width = 25%>
-
+<p align="center">
+  <img src = images/banner.png alt = "The R6 banner" width = 80% >
+<p>
+  
 # Arty - Digital Art Assisstant by Team The Ryuto 6
 
 Arty is a productivity tool specifically tailored for digital 2D art illustrators.
