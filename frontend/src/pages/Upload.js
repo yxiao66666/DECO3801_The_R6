@@ -179,7 +179,7 @@ export default function Upload() {
     };
 
     // Handle file selection and enforce a maximum of 3 images
-    const handleChange = (event) => {
+    const handleImageChange = (event) => {
         const selectedFiles = event.target.files;
         if (selectedFiles.length > 0) {
             if(selectedFiles.length > 3) {
@@ -367,6 +367,7 @@ export default function Upload() {
         }
     
         formData.append('text', text);
+
         if (selectedImage && drawingCanvas) {
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = originalWidth;
@@ -452,6 +453,7 @@ export default function Upload() {
                         )}
                         {previews.map((preview, index) => (
                             <div key={index} id="imagePreview" style={{ backgroundImage: `url(${preview})` }}>
+                                <p>{preview}</p>
                                 <select
                                     value={aiOptions[index]}
                                     onChange={(e) => handleOptionChange(index, e.target.value)}
@@ -515,14 +517,14 @@ export default function Upload() {
                                 </select>
                             </div>
                         ))}
-
+                        
                         <div className="avatar-edit">
                             <input
                                 multiple
                                 type="file"
                                 id="imageUpload"
                                 accept=".png, .jpg, .jpeg"
-                                onChange={handleChange}
+                                onChange={handleImageChange}
                             />
                             {/* Button that toggles between Browse and Clear */}
                             <button 

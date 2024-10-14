@@ -60,14 +60,17 @@ textarea {
 }
 
 #imagePreview {
-  background-size: cover; /* Ensure image covers the preview area */
-  background-position: center; /* Center the background image */
+  background-size: cover; /* Ensure the image covers the preview area */
+  background-position: center; /* Center the image within the container */
   border: 2px solid #ccc; /* Light grey border */
-  border-radius: 5px; /* Round the corners */
-  background-color: aliceblue; /* Set background color */
+  border-radius: 5px; /* Rounded corners */
+  background-color: aliceblue; /* Background color */
   width: 30vw; /* Set preview width */
   height: 30vw; /* Set preview height */
+  object-fit: cover; /* Visually crop the image to fit the preview box */
+  overflow: hidden; /* Hide the overflow of the image */
 }
+
 
 .avatar-preview {
   margin: 15px; /* Add margin around avatar preview */
