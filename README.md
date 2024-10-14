@@ -28,23 +28,13 @@ Get a better idea of how our platform works from our explainer video [here]()!
 
 # Table of Contents
 
-- [Arty - Digital Art Assisstant by Team The Ryuto 6](#arty---digital-art-assisstant-by-team-the-ryuto-6)
-  - [Main features](#main-features)
-  - [Contributors](#contributors)
-- [Table of Contents](#table-of-contents)
-  - [Release History](#release-history)
-  - [Local Installation and Running](#local-installation-and-running)
-    - [Front-end](#front-end)
-      - [Installation](#installation)
-      - [Running](#running)
-    - [Flask Server (Back-end)](#flask-server-back-end)
-      - [Installation](#installation-1)
-      - [Running](#running-1)
-    - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
-      - [Installation](#installation-2)
-      - [Running](#running-2)
-  - [Usage](#usage)
-  - [References](#references)
+- [Release History](#release-history)
+- [Local Installation and Running](#local-installation-and-running)
+  - [Front-end](#front-end)
+  - [Flask Server (Back-end)](#flask-server-back-end)
+  - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
+- [Usage](#usage)
+- [References](#references)
 
 ## Release History
 
