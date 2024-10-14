@@ -35,16 +35,25 @@ canvas {
   display: none; /* Hide the canvas upload button */
 }
 
-.canvas-btn {
+.Canvas {
   display: flex; /* Use flexbox for button layout */
   justify-content: center; /* Center the button horizontally */
   align-items: center;
   gap:1em;
-  width:80%;
+}
+
+.canvas-btn {
+  display: flex; /* Use flexbox for button layout */
+  flex-direction: column;
+  justify-content: center; /* Center the button horizontally */
+  align-items: center;
+  gap:1em;
+  width:15%;
 }
 
 textarea {
-  max-width: 65% !important; /* Limit width of text areas to 65% */
+  width:80% !important;/* Limit width of text areas to 65% */
+  
 }
 
 #defaultPreview {
@@ -221,10 +230,14 @@ select {
     margin: 0 auto; /* Center images within the cell */
   }
 
-  .canvas-btn {
+  .Canvas {
     flex-direction:column;
-    justify-content:center;
+    justify-content: center; /* Center the button horizontally */
     align-items: center;
+    gap:1em;
+  }
+
+  .canvas-btn {
     width:23%;
   }
 }  
