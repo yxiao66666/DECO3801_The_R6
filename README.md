@@ -173,17 +173,19 @@ The product is to be used as a side assisstant for artists to search for artwork
 
 ## References
 
-1. **ControlNet Extension for Stable Diffusion Web UI**:
+1. **The BLIP Model**
+   - [Hugging Face: BLIP](https://huggingface.co/docs/transformers/en/model_doc/blip)
+2. **ControlNet Extension for Stable Diffusion Web UI**:
     - [Mikubill ControlNet GitHub Repository](https://github.com/Mikubill/sd-webui-controlnet)
-2. **Flask Documentation**:
+3. **Flask Documentation**:
     - [Flask Official Documentation](https://flask.palletsprojects.com/en/3.0.x/)
-3. **Flask-SQLAlchemy Documentation**:
+4. **Flask-SQLAlchemy Documentation**:
     - [Flask-SQLAlchemy Official Documentation](https://flask-sqlalchemy.readthedocs.io/en/3.1.x/)
-4. **Printerest**
+5. **Printerest**
     - [Pinterest Website](https://au.pinterest.com/business/hub/)
-5. **React 18.3.1**
+6. **React 18.3.1**
     - [React Documentation](https://react.dev/versions)
-6. **Stable Diffusion v1.5**:
+7. **Stable Diffusion v1.5**:
     - [Hugging Face: Stable Diffusion v1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
-7. **Stable Diffusion Web UI**:
+8. **Stable Diffusion Web UI**:
     - [AUTOMATIC1111 GitHub Repository](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
