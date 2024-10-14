@@ -1,50 +1,197 @@
 <img src = images/favicon.jpg alt = "The R6 Logo" width = 25%>
 
-# The R6 Digital Art Assistant
+# Arty - Digital Art Assisstant by Team The Ryuto 6
 
-> Help Artists draw by collating and generating references
+Arty is a productivity tool specifically tailored for digital 2D art illustrators.
+It's a platform that allows artists to automate frequent, repetitive, and time-consuming tasks like reference searching, idea organisation and visualisation, while ensuring the creative process remains entirely in artist’s control.
 
-The R6 Digital Art Assistant is a program to assist artists in their drawing process by finding references. It will also supply AI generated references for the artist at their request.
+## Main features
+
+Get a better idea of how our platform works from our explainer video [here]()!
+
+-   Cross-Platform Compatibility
+-   Integrated Reference Searching
+-   Generative AI for Visualisation
+-   Cross-Device History Syncing
+-   Side-by-Side Panel
+
+## Contributors
+
+| Name            | Role                                     |
+| --------------- | ---------------------------------------- |
+| William Mercado | Team Leader                              |
+| Brian Zhang     | Machine Learning Developer               |
+| Hongyingzi Lu   | Design Coordinator / Front-End Developer |
+| Shan Liu        | Design Coordinator / Deont-End Developer |
+| Yang Xiao       | Back-End Developer                       |
+| Ryuto Hisamoto  | The King                                 |
 
 # Table of Contents
 
-1. [Usage](#usage)
-2. [Release History](#release-history)
-3. [Features](#features)
-4. [Contributors](#contributors)
+- [Arty - Digital Art Assisstant by Team The Ryuto 6](#arty---digital-art-assisstant-by-team-the-ryuto-6)
+  - [Main features](#main-features)
+  - [Contributors](#contributors)
+- [Table of Contents](#table-of-contents)
+  - [Release History](#release-history)
+  - [Local Installation and Running](#local-installation-and-running)
+    - [Front-end](#front-end)
+      - [Installation](#installation)
+      - [Running](#running)
+    - [Flask Server (Back-end)](#flask-server-back-end)
+      - [Installation](#installation-1)
+      - [Running](#running-1)
+    - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
+      - [Installation](#installation-2)
+      - [Running](#running-2)
+  - [Usage](#usage)
+  - [References](#references)
 
 ## Release History
 
-* 0.0.0
-    * README Written
+-   **1.0.0 Final Codebase Realse** _<< Current Version_
+
+    -   Revamped readme structure and content
+    -   Improved security measures
+    -   Improved front-end visual design and feedback
+
+-   0.4.0 Interim Submission V4
+
+    -   Added bookmarking for searched/generated images
+    -   Added support for loading more images
+    -   Fixed incorrect API calling
+
+-   0.3.0 Interim Submission V3
+
+    -   Improved file structure
+    -   Improved content in readme
+    -   Implemented Flask back-end server with database access
+    -   Added about page for displaying user info and history
+    -   Added inpaint canvas in generator page
+    -   Added inpaint with controlnet support in stable diffusion backbone
+
+-   0.2.0 Interim Submission V2
+
+    -   Added Arty icon
+    -   Added stable diffusion backbone code
+    -   Added image searching support for search engine
+    -   Improved front-end page design
+
+-   0.1.0 Interim Submission V1
+
+    -   Added ControlNet test code
+    -   Initial version of seach engine
+    -   Initial version of front-end
+
+-   0.0.0 Repository Creation
+    -   Initial readme written
+
+## Local Installation and Running
+
+### Front-end
+
+#### Installation
+
+1. Download and install Node.js (a JavaScript runtime environment) from their [website](https://nodejs.org/en/download/package-manager).
+2. Start a new terminal instance from the project root directory, run `cd frontend` to navigate to frontend's folder.
+3. Automatically install the dependencies needed by running `npm install`.
+
+#### Running
+
+1. Start a new terminal instance from the project root directory, run `cd frontend` to navigate to frontend's folder.
+2. Run `npm start`, the front-end server will be created at http://localhost:3000.
+
+_\*For more details, please refer to the [front-end README](/frontend/README.md)._
+
+### Flask Server (Back-end)
+
+#### Installation
+
+Python environment configuration:
+
+1.  Download and install Conda (a Python package/environment management system) from their [website](https://www.anaconda.com/download/success).
+2.  Create a conda virtual environment and install the dependencies by running the following command in your terminal:
+
+    ```bash
+    conda create --name arty_backend --file requirements.txt
+    ```
+
+Environment variable setup:
+
+1. Navigate to `/backend` folder, create a file named `.env`.
+2. Open the `.env` file with a text editor, insert:
+
+    ```
+    DB_LINK = <private link to our database>
+    ```
+
+    _\*Contact one of our team members to get a private link for testing._
+
+#### Running
+
+1. Make an SSH tunnel to UQ-Zone by entering the command:
+
+    ```bash
+    ssh -L 3306:localhost:3306 -J <your_uq_account>@remote.labs.eait.uq.edu.au <your_uq_account>@arty.zones.eait.uq.edu.au
+    ```
+
+    Make sure to keep this termianl open.
+
+    _\*If this does not work you may have to set your ssh key to the EAIT Remote Desktop first!_
+
+2. Create a new terminal at the root directory, activate the conda virtual environment by running `conda activate arty_backend`.
+3. From the same terminal, run:
+    ```bash
+    cd backend
+    python app.py
+    ```
+    and keep this terminal open.
+4. Now you are set up to run tests for the codebase. Feel free to tweek around the codes here and there.
+
+_\*For more details, please refer to the [back-end README](/backend/README.md)._
+
+### Stable Diffusion Backbone (Back-end)
+
+#### Installation
+
+Download models here:
+
+-   [Stable Diffusion 1.5 (v1-5-pruned.ckpt)](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
+-   [SD1.5 ControlNet models](https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main)
+
+Installing stable-diffusion-webui:
+
+> **Note**: The `controlnet` folder contains a copy of stable-diffusion-webui with the ControlNet extension pre-installed. If you encounter any issues during installation following the steps below, please refer to the original installation guide for [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) and [sd-webui-controlnet](https://github.com/Mikubill/sd-webui-controlnet).
+
+1. Run `webui.bat` under `/backend/controlnet` folder.
+
+    _\*The first initialisation will fail as it doesn't have access to the model weights._
+
+2. Copy `v1-5-pruned.ckpt` to `/backend/controlnet/models/Stable-diffusion`, copy the ControlNet model weights to `/backend/controlnet/models/ControlNet`.
+3. Run `webui.bat` again, and the stable diffusion backbone server will start.
+
+#### Running
+
+Run `webui.bat` under `/backend/controlnet` folder to start the stable diffusion backbone server.
+
+_\*For more details, please refer to the [controlnet README](/backend/controlnet/README.md)._
 
 ## Usage
 
 The product is to be used as a side assisstant for artists to search for artwork references.
 
-## Features
+## References
 
-* Cross-Platform Compatibility
-* [History Logging](/backend/README.md)
-* [Search Engine](/backend/README.md)
-* [Style Recognition](/backend/controlnet/README.md)
-* [Assets Rigging](/backend/controlnet/README.md)
-
-> **Notes:**
->
-> * The users are to access the service through a device that supports a modern browser (e.g. Google Chome, Firefox, etc.)
->
-> * The cloud server is assumed to be capable of storing data in large quantity and running the model with the utilisation of parallelism.
->
-> * The service entrusts the robustness and reliability of the database of a third-party provider.
-
-## Contributors
-
-| Name | Role |
-| ----| ---- |
-| William Mercado | Team Leader |
-| Brian Zhang | Machine Learning Developer |
-| Hongyingzi Lu | Design Coordinator / Front-End Developer |
-| Shan Liu | Design Coordinator / Deont-End Developer |
-| Yang Xiao | Back-End Developer |
-| Ryuto Hisamoto | The King |
+1. **ControlNet Extension for Stable Diffusion Web UI**:
+    - [Mikubill ControlNet GitHub Repository](https://github.com/Mikubill/sd-webui-controlnet)
+2. **Flask Documentation**:
+    - [Flask Official Documentation](https://flask.palletsprojects.com/en/3.0.x/)
+3. **Flask-SQLAlchemy Documentation**:
+    - [Flask-SQLAlchemy Official Documentation](https://flask-sqlalchemy.readthedocs.io/en/3.1.x/)
+4. **Printerest**
+    - [Pinterest Website](https://au.pinterest.com/business/hub/)
+5. **React 18.3.1**
+    - [React Documentation](https://react.dev/versions)
+6. **Stable Diffusion v1.5**:
+    - [Hugging Face: Stable Diffusion v1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
+7. **Stable Diffusion Web UI**:
+    - [AUTOMATIC1111 GitHub Repository](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
