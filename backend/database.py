@@ -14,10 +14,8 @@ class Users(db.Model):
         user_email (str): Unique email address of the user.
         user_password (str): Password of the user.
         created_at (datetime): Timestamp when the account was created.
-        s_images (relationship): Relationship to SearchImage table.
         s_text (relationship): Relationship to SearchText table.
         g_images (relationship): Relationship to GenerateImage table.
-        g_text (relationship): Relationship to GenerateText table.
         sd_images (relationship): Relationship to SavedImage table.
     """
     __tablename__ = 'Users'
@@ -26,27 +24,9 @@ class Users(db.Model):
     user_password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
-    s_images = db.relationship('SearchImage', backref='users', cascade='all, delete-orphan')
     s_text = db.relationship('SearchText', backref='users',cascade='all, delete-orphan')
     g_images = db.relationship('GenerateImage', backref='users', cascade='all, delete-orphan')
-    g_text = db.relationship('GenerateText', backref='users', cascade='all, delete-orphan')
     sd_images = db.relationship('SavedImage', backref='users', cascade='all, delete-orphan')
-
-class SearchImage(db.Model):
-    """
-    SearchImage table to store image users search.
-
-    Attributes:
-        s_image_id (int): Primary key, unique identifier for each searched image.
-        user_id (int): Foreign key referencing Users table.
-        s_image_file_path (str): File path of the search image.
-        created_at (datetime): Timestamp when the image was searched.
-    """
-    __tablename__ = 'SearchImage'
-    s_image_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
-    s_image_file_path = db.Column(LONGTEXT)
-    created_at = db.Column(db.DateTime, default = datetime.now)
 
 class SearchText(db.Model):
     """
@@ -78,22 +58,6 @@ class GenerateImage(db.Model):
     g_image_id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
     g_image_path = db.Column(LONGTEXT)
-    created_at = db.Column(db.DateTime, default = datetime.now)
-
-class GenerateText(db.Model):
-    """
-    GenerateText table to store prompts used to generate images.
-
-    Attributes:
-        g_text_id (int): Primary key, unique identifier for each generated text.
-        user_id (int): Foreign key referencing Users table.
-        g_text_content (str): Text prompt used to generate images.
-        created_at (datetime): Timestamp when the generated text was created.
-    """
-    __tablename__ = 'GenerateText'
-    g_text_id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id', ondelete = 'CASCADE'))
-    g_text_query = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default = datetime.now)
 
 class SavedImage(db.Model):

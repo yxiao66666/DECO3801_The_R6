@@ -162,116 +162,6 @@ def delete_user():
             db.session.rollback()
             return {'Exception Raised: ' : e}, 500
     return {}, 405
-
-@bp.route('/backend/search_image/get', methods = ['POST'])
-@cross_origin()
-def get_search_img():
-    '''
-    Gets the searched image with the corresponding id
-
-    Returns:
-        JSON with infomation of the searched image with the corresponding id or
-        None if the handed id does not exist
-    '''
-    if request.method == 'POST':
-        data = request.get_json()
-        s_img_id = data.get('s_image_id')
-        search_image = db.session.get(SearchImage, s_img_id)
-        return jsonify({'SearchImage': search_image}), 200
-    return {}, 405
-
-@bp.route('/backend/search_image/get/all', methods = ['GET'])
-@cross_origin()
-def get_search_imgs():
-    '''
-    Gets all searched images
-
-    Returns:
-        JSON with all searched images
-    '''
-    if request.method == 'GET':
-        search_imgs = db.session.query(SearchImage).all()
-        search_imgs_list = [
-        {
-            "s_image_id": s.s_image_id,
-            "user_id": s.user_id,
-            "s_image_file_path": s.s_image_file_path,
-            "created_at": s.created_at  # Convert datetime to string
-        }
-        for s in search_imgs
-        ]
-        return jsonify(search_imgs_list), 200
-    return {}, 405
-    
-@bp.route('/backend/search_image/insert', methods=['POST'])
-@cross_origin()
-def insert_search_image():
-    '''
-    Inserts the new search image to the database
-
-    IMPORTANT:
-        The endpoint assumes that it will be handed with a user_id
-
-    Returns:
-        The corresponding response to the outcome of query
-    '''
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            user_id = data.get('user_id')
-            s_image_file_path = data.get('s_image_file_path')
-            new_search_image = SearchImage(user_id = user_id,
-                                   s_image_file_path = s_image_file_path)
-            db.session.add(new_search_image)
-            db.session.commit()
-            return jsonify({'s_image_id': new_search_image.s_image_id,
-                            'user_id': new_search_image.user_id,
-                            's_image_file_path': new_search_image.s_image_file_path,
-                            'created_at': new_search_image.created_at}), 201
-        except Exception as e:
-            db.session.rollback()
-            return {'Exception Raised: ' : e}, 500
-    return {}, 405
-
-@bp.route('/backend/search_text/get', methods = ['POST'])
-@cross_origin()
-def get_search_text():
-    '''
-    Gets the text used to search images with the corresponding id
-
-    Returns:
-        JSON with infomation of the text used to search with the corresponding id or
-        None if the handed id does not exist
-    '''
-    if request.method == 'POST':
-        data = request.get_json()
-        s_text_id = data.get('s_text_id')
-        search_text = db.session.get(SearchText, s_text_id)
-        return jsonify({'SearchText': search_text}), 201
-    return {}, 405
-
-@bp.route('/backend/search_text/get/all', methods = ['GET'])
-@cross_origin()
-def get_search_texts():
-    '''
-    Gets all texts used to search images
-
-    Returns:
-        JSON with all texts used for search
-    '''
-    if request.method == 'GET':
-        search_texts = db.session.query(SearchText).all()
-        search_texts_list = [
-        {
-            "s_text_id": s.s_text_id,
-            "user_id": s.user_id,
-            "s_text_query": s.s_text_query,
-            "created_at": s.created_at  # Convert datetime to string
-        }
-        for s in search_texts
-        ]
-        return jsonify(search_texts_list), 200
-    return {}, 405
     
 @bp.route('/backend/search_text/insert', methods=['POST'])
 @cross_origin()
@@ -355,49 +245,6 @@ def delete_search_text():
         except Exception as e:
             db.session.rollback()
             return {'Exception Raised: ': str(e)}, 500
-    return {}, 405
-
-@bp.route('/backend/generate_image/get', methods = ['POST'])
-@cross_origin()
-def get_generate_img():
-    '''
-    Gets the generated image with the corresponding id
-
-    Returns:
-        JSON with infomation of the generated image used to search with the corresponding id or
-        None if the handed id does not exist
-    '''
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            g_image_id = data.get('g_image_id')
-            generate_image = db.session.get(GenerateImage, g_image_id)
-            return jsonify({'GenerateImage': generate_image}), 200
-        except Exception as e:
-            return {'Exception Raised: ': str(e)}, 500
-    return {}, 405
-
-@bp.route('/backend/generate_image/get/all', methods = ['GET'])
-@cross_origin()
-def get_generate_imgs():
-    '''
-    Gets all generated images
-
-    Returns:
-        JSON with all generated images
-    '''
-    if request.method == 'GET':
-        generate_imgs = db.session.query(GenerateImage).all()
-        generate_imgs_list = [
-        {
-            "g_image_id": g.g_image_id,
-            "user_id": g.user_id,
-            "g_image_path": g.g_image_path,
-            "created_at": g.created_at
-        }
-        for g in generate_imgs
-        ]
-        return jsonify(generate_imgs_list), 200
     return {}, 405
 
 @bp.route('/backend/generate_image/get/user', methods=['POST'])
@@ -494,97 +341,34 @@ def delete_generate_image():
             return {'Exception Raised: ': str(e)}, 500
     return {}, 405
 
-@bp.route('/backend/generate_text/get', methods = ['POST'])
+@bp.route('/backend/saved_image/get/user', methods=['POST'])
 @cross_origin()
-def get_generate_text():
+def get_saved_imgs_for_user():
     '''
-    Gets the text used for image generation with the corresponding id
+    Gets all saved images for a specific user
 
     Returns:
-        JSON with infomation of the text used for image generation with the corresponding id or
-        None if the handed id does not exist
+        JSON with all saved images for the specified user
     '''
     if request.method == 'POST':
         data = request.get_json()
-        g_text_id = data.get('g_text_id')
-        generate_text = db.session.get(GenerateText, g_text_id)
-        return jsonify({'GenerateText': generate_text}), 200
-    return {}, 405
+        user_id = data.get('user_id')
+        
+        if user_id is None:
+            return {'error': 'user_id is required'}, 400
 
-@bp.route('/backend/generate_text/get/all', methods = ['GET'])
-@cross_origin()
-def get_generate_texts():
-    '''
-    Gets all prompts used to generate images
+        saved_imgs = db.session.query(SavedImage).filter_by(user_id = user_id).all()
 
-    Returns:
-        JSON with all texts used to generate images
-
-    '''
-    if request.method == 'GET':
-        generate_texts = db.session.query(GenerateText).all()
-        generate_texts_list = [
-        {
-            "g_text_id": g.g_text_id,
-            "user_id": g.user_id,
-            "g_text_query": g.g_text_query,
-            "created_at": g.created_at  # Convert datetime to string
-        }
-        for g in generate_texts
-        ]
-        return jsonify(generate_texts_list), 200
-    return {}, 405
-    
-@bp.route('/backend/generate_text/insert', methods=['POST'])
-@cross_origin()
-def insert_generate_text():
-    '''
-    Inserts the new text used to generate images to the database
-
-    IMPORTANT:
-        The endpoint assumes that it will be handed with a user_id
-
-    Returns:
-        The corresponding response to the outcome of query
-    '''
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            user_id = data.get('user_id')
-            g_text_query = data.get('g_text_query')
-            new_generate_text = GenerateText(user_id = user_id,
-                                   g_text_query = g_text_query)
-            db.session.add(new_generate_text)
-            db.session.commit()
-            return jsonify({'g_text_id': new_generate_text.g_text_id,
-                            'user_id': new_generate_text.user_id,
-                            'g_text_query': new_generate_text.g_text_query,
-                            'created_at': new_generate_text.created_at}), 201
-        except Exception as e:
-            db.session.rollback()
-            return {'Exception Raised: ' : e}, 500
-    return {}, 405
-
-@bp.route('/backend/saved_image/get/all', methods = ['GET'])
-@cross_origin()
-def get_saved_imgs():
-    '''
-    Gets all saved images
-
-    Returns:
-        JSON with all saved images
-    '''
-    if request.method == 'GET':
-        saved_imgs = db.session.query(SavedImage).all()
         saved_imgs_list = [
-        {
-            "sd_image_id": s.sd_image_id,
-            "user_id": s.user_id,
-            "sd_image_path": s.sd_image_path,
-            "created_at": s.created_at  # Convert datetime to string
-        }
-        for s in saved_imgs
+            {
+                "sd_image_id": s.sd_image_id,
+                "user_id": s.user_id,
+                "sd_image_path": s.sd_image_path,
+                "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+            }
+            for s in saved_imgs
         ]
+
         return jsonify(saved_imgs_list), 200
     return {}, 405
 
@@ -643,54 +427,4 @@ def delete_saved_image():
         except Exception as e:
             db.session.rollback()
             return {'Exception Raised: ': str(e)}, 500
-    return {}, 405
-
-@bp.route('/backend/saved_image/get/user', methods=['POST'])
-@cross_origin()
-def get_saved_imgs_for_user():
-    '''
-    Gets all saved images for a specific user
-
-    Returns:
-        JSON with all saved images for the specified user
-    '''
-    if request.method == 'POST':
-        data = request.get_json()
-        user_id = data.get('user_id')
-        
-        if user_id is None:
-            return {'error': 'user_id is required'}, 400
-
-        saved_imgs = db.session.query(SavedImage).filter_by(user_id = user_id).all()
-
-        saved_imgs_list = [
-            {
-                "sd_image_id": s.sd_image_id,
-                "user_id": s.user_id,
-                "sd_image_path": s.sd_image_path,
-                "created_at": s.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
-            }
-            for s in saved_imgs
-        ]
-
-        return jsonify(saved_imgs_list), 200
-    return {}, 405
-
-@bp.route('/backend/saved_image/get', methods=['POST'])
-@cross_origin()
-def get_saved_img():
-    '''
-    Gets the saved image with the corresponding id
-
-    Returns:
-        JSON with information of the saved image with the corresponding id or
-        None if the handed id does not exist
-    '''
-    if request.method == 'POST':
-        data = request.get_json()
-        sd_image_id = data.get('sd_image_id')
-        saved_image = db.session.get(SavedImage, sd_image_id)
-        if saved_image:
-            return jsonify({'SavedImage': saved_image}), 200
-        return {'error': 'Image not found'}, 404
     return {}, 405
