@@ -111,8 +111,16 @@ Python environment configuration:
 2.  Create a conda virtual environment and install the dependencies by running the following command in your terminal:
 
     ```bash
-    conda create --name arty_backend --file requirements.txt
+    conda create --name arty_backend python=3.12
     ```
+    
+3. Activate the conda virtual environment by running `conda activate arty_backend`.
+4. Install Pytorch from their [website](https://pytorch.org/get-started/locally/).
+5. Install dependencies by running:
+
+   ```bash
+   pip install -r /backend/requirements.txt
+   ```
 
 Environment variable setup:
 
