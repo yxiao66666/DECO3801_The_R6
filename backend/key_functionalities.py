@@ -162,7 +162,7 @@ def upload():
 
     return jsonify(response), 200
 
-@current_app.route('/backend/cleanup', methods=['DELETE'])
+@bp.route('/backend/cleanup', methods=['DELETE'])
 def cleanup_images():
     # Define the path to the generations folder
     generation_folder = current_app.config['GENERATION_FOLDER']
