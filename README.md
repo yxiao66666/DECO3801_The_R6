@@ -28,9 +28,9 @@ Get a better idea of how our platform works from our explainer video [here](http
 | William Mercado | Team Leader                              |
 | Brian Zhang     | Machine Learning Developer               |
 | Hongyingzi Lu   | Design Coordinator / Front-End Developer |
-| Shan Liu        | Design Coordinator / Deont-End Developer |
+| Shan Liu        | Design Coordinator / Front-End Developer |
 | Yang Xiao       | Back-End Developer                       |
-| Ryuto Hisamoto  | The King                                 |
+| Ryuto Hisamoto  | Back-End Developer                       |
 
 # Table of Contents
 
