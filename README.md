@@ -152,7 +152,7 @@ _\*For more details, please refer to the [back-end README](/backend/README.md)._
 Download models here:
 
 -   [Stable Diffusion 1.5 (v1-5-pruned.ckpt)](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
--   [SD1.5 ControlNet models](https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main)
+-   [SD1.5 ControlNet models (all of them)](https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main)
 
 Installing stable-diffusion-webui:
 
