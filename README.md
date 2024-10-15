@@ -104,6 +104,9 @@ _\*For more details, please refer to the [front-end README](/frontend/README.md)
 
 Python environment configuration:
 
+> **Note**: The list of dependencies used can be found in [`/backend/requirements.txt`](/backend/requirements.txt).
+
+
 1.  Download and install Conda (a Python package/environment management system) from their [website](https://www.anaconda.com/download/success).
 2.  Create a conda virtual environment and install the dependencies by running the following command in your terminal:
 
