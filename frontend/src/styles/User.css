@@ -82,6 +82,21 @@ h4 {
     margin-bottom: 20px; /* Add margin below the avatar */
 }
 
+/* Search History */
+.previous-search-item {
+    display: block; /* This will ensure each query is on a new line */
+    padding: 5px 0; /* Adds space between the items */
+    color: black; /* Change the link color to your preference */
+    text-decoration: none; /* Remove underline from the links */
+    transform: scale(1); /* Default scale */
+    transition: transform 0.2s ease; /* Smooth scaling transition */
+}
+
+/* Search History hover */
+.previous-search-item:hover {
+    transform: scale(1.05); /* Slightly increase the size on hover */
+}
+
 /* User avatar styling */
 .user-avatar {
     width: 100px; /* Set avatar width */
