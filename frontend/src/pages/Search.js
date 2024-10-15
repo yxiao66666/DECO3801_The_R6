@@ -141,6 +141,7 @@ export default function Search() {
         // Check if the search query is empty and no image is uploaded
         if (!searchQuery.trim() && !hasImage) {
             console.log("Search query is empty and no image uploaded. No search");
+            setImages([]);
             setLoading(false); // Stop loading if both search query and image are empty
             return; // Exit the function without saving or searching
         }
@@ -373,15 +374,15 @@ export default function Search() {
             
             <br />
 
-            {/* Display grid of search results */}
-            <div className="image-grid">
+            <div className="masonry">
                 {/* Iterate through the list of images and display each one */}
                 {images.slice(0, visibleImages).map((url, index) => (
-                    <div key={index} className="image-cell">
-                        <img className="results" src={url} alt={`Searched result ${index}`} />
+                    <div key={`container ${index}`}>
+                        <img className="item" src={url} alt={`Searched result ${index}`} key={`img ${index}`} />
                         {/* Save button */}
                         <button
                             className={`like-button ${savedImages.has(url) ? 'liked' : ''}`}
+                            key={`button ${index}`}
                             onClick={() => {
                                 toggleSaveImage(url);
                             }}
@@ -404,6 +405,7 @@ export default function Search() {
                     </div>
                 ))}
             </div>
+
             {/* If there are more images to load, display the "More results" button */}
             {visibleImages < images.length && (
                 <label onClick={loadMore} className="load-more">More results...</label>

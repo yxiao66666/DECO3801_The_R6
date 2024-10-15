@@ -87,14 +87,14 @@ export default function Header() {
                     if (response.status === 200) {
                         const data = await response.json();
                         console.log("Login successful:", data);
-                        localStorage.setItem('userEmail', inputs.email); // Store the email in localStorage
-                        localStorage.setItem('userId', data.user_id); // Store the user ID in localStorage
+                        localStorage.setItem('userEmail', inputs.email); // Store the email
+                        localStorage.setItem('userId', data.user_id); // Store the user ID
                         console.log("Stored user ID:", data.user_id); // Log the stored user ID
                         onLogin(); // Set the user as logged in
                         closePopup();
                     } else if (response.status === 401) {
                         const errorData = await response.json();
-                        alert(errorData.message); // Show invalid login message
+                        alert(errorData.message);
                     } else {
                         console.error("Failed to log in:", response.statusText);
                     }

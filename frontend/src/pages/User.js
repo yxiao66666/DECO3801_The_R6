@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/User.css"; 
 import "../styles/Button.css"; 
 
@@ -325,16 +325,16 @@ export default function User() {
                     <h4>My Search History</h4>
                     <div className="previous-search-container">
                         {previousSearchQueries.length > 0 ? (
-                            <ul>
+                            <div>
                                 {previousSearchQueries.map((query, index) => (
-                                    <li
-                                        key={index}
-                                        className="previous-search-item"
+                                    <NavLink className="previous-search-item" 
+                                        key={index} 
+                                        to="/search"
                                     >
                                         {query}
-                                    </li>
+                                    </NavLink>
                                 ))}
-                            </ul>
+                            </div>
                         ) : (
                             <p>No search history found.</p> 
                         )}

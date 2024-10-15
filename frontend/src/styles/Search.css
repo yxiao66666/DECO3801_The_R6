@@ -4,6 +4,39 @@
     height: 100vw; /* Full viewport width for the height */
 }
 
+.masonry {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    gap: 10px;
+    margin:  auto; /* Center grid and add margin */
+    width: 50%; /* Grid takes up 50% of container */
+    column-gap:1%; /* Space between columns */        
+    grid-auto-rows: auto;
+}
+
+.item {
+    background-color: #ffffff;
+    border-radius: 8px;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Full width */
+    margin: auto; /* Center the image */
+}
+
+.item:hover {
+    transform: translateY(5px);
+}
+
+/* Add specific dimensions or styling for the items, or dynamically adjust the row span */
+.item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
 /* Background container with full viewport height and centered background */
 .background-container {
     background-size: cover; /* Cover entire container */
@@ -175,7 +208,7 @@ div .upload-icon {
     padding: 0;
     margin: 0;
     list-style-type: none; /* Remove bullet points */
-    z-index: 1; /* Layer above other content */
+    z-index: 999; /* Layer above other content */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
@@ -211,29 +244,6 @@ div .upload-icon {
     padding: 0 10px; /* Padding around button */
 }
 
-/* Masonry grid for displaying image results */
-.image-grid {
-    column-count: 3; /* 3 columns */
-    column-gap: 20px; /* Space between columns */
-    margin: 20px auto; /* Center grid and add margin */
-    width: 50%; /* Grid takes up 50% of container */
-}
-
-/* Styling for individual image cells in the grid */
-.image-cell {
-    display: inline-block; /* Align images properly */
-    margin-bottom: 20px; /* Space below each image */
-    width: 100%; /* Full width in the column */
-    position: relative; /* Allows positioning of child elements */
-}
-
-/* Ensure images fit within the grid cells */
-.image-grid .image-cell .results {
-    width: 100%; /* Full width */
-    display: block; /* Block display */
-    margin: 0 auto; /* Center the image */
-}
-
 /* Styling for the search button */
 .search-btn {
     background-color: black; /* Black background */
@@ -260,21 +270,19 @@ div .upload-icon {
 
 /* Responsive design adjustments */
 @media (max-width: 1400px) {
-    .image-grid {
+    .masonry {
         width: 70%; /* Increase width for medium-sized screens */
     }
 }
 
 @media (max-width: 1000px) {
-    .image-grid {
+    .masonry {
         width: 90%; /* Increase width for smaller screens */
-        column-count: 2; /* Reduce columns to 2 */
     }
 }
 
 @media (max-width: 700px) {
-    .image-grid {
-        column-count: 1; /* Single column for mobile devices */
+    .masonry {
         width: 100%; /* Full width */
     }
 }
