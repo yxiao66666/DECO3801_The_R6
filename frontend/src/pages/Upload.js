@@ -556,8 +556,7 @@ export default function Upload() {
                     </div>
                     <br />
                     {showCanvas && (
-                        <div>
-                            <h2>Polish your work with inpainting</h2>
+                        <div className="Canvas">
                             <canvas
                                 id="canvasRef"
                                 ref={canvasRef}
