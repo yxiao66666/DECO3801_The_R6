@@ -9,8 +9,6 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 
-from flask_migrate import Migrate
-
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
 from controlnet.sd_backbone import StableDiffusionBackBone
@@ -46,7 +44,6 @@ bb = StableDiffusionBackBone(webui_url)
 
 # Creating Database
 db.init_app(app)
-migrate = Migrate(app, db)
 
 if __name__ == '__main__':
 
