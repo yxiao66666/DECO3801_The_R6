@@ -15,7 +15,9 @@ https://codepen.io/animationbro/pen/YzXqzLv
   --easing: cubic-bezier(.7,0,.3,1);
   --duration: .5s;
 }
-
+.like-button:hover {
+	transform: translateY(-20px);
+}
 .like-button {
   font-size: 50px; /* Size of the button */
   -webkit-appearance: none;
@@ -36,6 +38,7 @@ https://codepen.io/animationbro/pen/YzXqzLv
   transition: transform var(--duration) var(--easing), -webkit-transform var(--duration) var(--easing);
   transform: translateY(-50%); /* Center vertically */
   cursor: pointer; /* Pointer cursor on hover */
+  
   margin-top: 25px; /* Add margin to the top */
   position: absolute; /* Position the icon absolutely */
   top: 5px; /* Set the top position */

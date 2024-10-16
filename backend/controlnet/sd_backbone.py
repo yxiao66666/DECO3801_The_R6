@@ -205,7 +205,9 @@ class StableDiffusionBackBone:
             'image': b64_image,
             'pixel_perfect': pixel_perfect,
             'weight': self.weights[module][intensity],
-            'processor_res': processor_res
+            'processor_res': processor_res,
+            'resize_mode': 'Resize and Fill',
+
         }
         
         if unit_num == 0:

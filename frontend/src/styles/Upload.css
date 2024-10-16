@@ -35,15 +35,25 @@ canvas {
   display: none; /* Hide the canvas upload button */
 }
 
-.canvas-btn {
+.Canvas {
   display: flex; /* Use flexbox for button layout */
   justify-content: center; /* Center the button horizontally */
   align-items: center;
   gap:1em;
 }
 
+.canvas-btn {
+  display: flex; /* Use flexbox for button layout */
+  flex-direction: column;
+  justify-content: center; /* Center the button horizontally */
+  align-items: center;
+  gap:1em;
+  width:15%;
+}
+
 textarea {
-  max-width: 65% !important; /* Limit width of text areas to 65% */
+  width:80% !important;/* Limit width of text areas to 65% */
+  
 }
 
 #defaultPreview {
@@ -60,14 +70,15 @@ textarea {
 }
 
 #imagePreview {
-  background-size: cover; /* Ensure image covers the preview area */
-  background-position: center; /* Center the background image */
+  background-size: cover; /* Ensure the image covers the preview area */
+  background-position: center; /* Center the image within the container */
   border: 2px solid #ccc; /* Light grey border */
-  border-radius: 5px; /* Round the corners */
-  background-color: aliceblue; /* Set background color */
+  border-radius: 5px; /* Rounded corners */
+  background-color: aliceblue; /* Background color */
   width: 30vw; /* Set preview width */
   height: 30vw; /* Set preview height */
 }
+
 
 .avatar-preview {
   margin: 15px; /* Add margin around avatar preview */
@@ -91,16 +102,23 @@ textarea {
   gap: 2em; /* Add space between elements */
   margin-top: 10px; /* Add margin at the top */
   overflow: hidden; /* Hide overflowing content */
+  width:15%;
 }
 
 .avatar-edit #imageUpload {
   display: none; /* Hide image upload input */
+  z-index: 1;
 }
 
 .image-display .results {
   width: 100%; /* Ensure images fill their container */
   display: block; /* Remove any inline spacing */
   margin: 0 auto; /* Center images within the container */
+  transition: transform 0.3s;
+}
+
+.image-display .results:hover {
+  transform: translateY(5px);
 }
 
 .upload-icon {
@@ -166,7 +184,7 @@ select {
   color: white; /* Set button text color */
   background-color: black; /* Set button background color */
   border-radius: 10px; /* Round button corners */
-  width: 15vw; /* Set button width */
+  width: 100%; /* Set button width */
   padding: 10px; /* Add padding inside button */
   transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s ease; /* Smooth transitions */
   text-align: center;
@@ -202,11 +220,9 @@ select {
     flex-direction: column; /* Stack elements vertically */
     justify-content: center; /* Center contents horizontally */
     align-items: center; /* Center contents vertically */
+    width:23%;
   }
 
-  .function-btn {
-    width: 24vw; /* Increase button width on smaller screens */
-  }
 
   .image-cell .results {
     width: 80%; /* Increase image width for smaller screens */
@@ -214,9 +230,14 @@ select {
     margin: 0 auto; /* Center images within the cell */
   }
 
-  .canvas-btn {
+  .Canvas {
     flex-direction:column;
-    justify-content:center;
+    justify-content: center; /* Center the button horizontally */
     align-items: center;
+    gap:1em;
+  }
+
+  .canvas-btn {
+    width:23%;
   }
 }  

@@ -25,13 +25,21 @@ The list of dependencies used can be found in [requirements.txt](backend/require
 
 ### Installation
 
-1. Run the command below to setup a conda virtual environment and install the dependencies:
+1.  Create a conda virtual environment and install the dependencies by running the following command in your terminal:
 
-```bash
-conda create --name arty_backend --file requirements.txt
-```
+    ```bash
+    conda create --name arty_backend python=3.12
+    ```
+    
+2. Activate the conda virtual environment by running `conda activate arty_backend`.
+3. Install Pytorch from their [website](https://pytorch.org/get-started/locally/).
+4. Install dependencies by running:
 
-2. Follow the instruction [here](#updates) to setup `.env` for storing perosnal credentials needed to access UQ Zone.
+   ```bash
+   pip install -r backend/requirements.txt
+   ```
+
+5. Follow the instruction [here](#updates) to setup `.env` for storing perosnal credentials needed to access UQ Zone.
 
 ## Running the Server
 
@@ -75,13 +83,15 @@ Below is the pipeline of the Stable Diffuion backbone:
 
 Below are some important resources and documentation related to the tools and models used in the backend:
 
-1. **ControlNet Extension for Stable Diffusion Web UI**:
+1. **The BLIP Model**
+   - [Hugging Face: BLIP](https://huggingface.co/docs/transformers/en/model_doc/blip)
+2. **ControlNet Extension for Stable Diffusion Web UI**:
     - [Mikubill ControlNet GitHub Repository](https://github.com/Mikubill/sd-webui-controlnet)
-2. **Flask Documentation**:
+3. **Flask Documentation**:
     - [Flask Official Documentation](https://flask.palletsprojects.com/en/3.0.x/)
-3. **Flask-SQLAlchemy Documentation**:
+4. **Flask-SQLAlchemy Documentation**:
     - [Flask-SQLAlchemy Official Documentation](https://flask-sqlalchemy.readthedocs.io/en/3.1.x/)
-4. **Stable Diffusion v1.5**:
+5. **Stable Diffusion v1.5**:
     - [Hugging Face: Stable Diffusion v1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
-5. **Stable Diffusion Web UI**:
+6. **Stable Diffusion Web UI**:
     - [AUTOMATIC1111 GitHub Repository](https://github.com/AUTOMATIC1111/stable-diffusion-webui)

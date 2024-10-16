@@ -42,7 +42,6 @@ blip = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-capti
 webui_url = 'https://civil-tahr-stirring.ngrok-free.app'
 bb = StableDiffusionBackBone(webui_url)
 
-# Creating Database
 db.init_app(app)
 
 if __name__ == '__main__':

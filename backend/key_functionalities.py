@@ -32,7 +32,7 @@ def search():
             if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
                 os.makedirs(current_app.config['UPLOAD_FOLDER'])
 
-            # Initialize variables for the final search query
+            # Initialise variables for the final search query
             final_query = ""
             raw_imgs = []
 
@@ -77,9 +77,6 @@ def search():
 
     return {}, 405
 
-
-# Store filenames for cleanup
-image_files = []
 
 @bp.route('/backend/upload', methods=['POST'])
 @cross_origin()
@@ -162,6 +159,8 @@ def upload():
 
     return jsonify(response), 200
 
+# Store filenames for cleanup
+image_files = []
 @bp.route('/backend/cleanup', methods=['DELETE'])
 def cleanup_images():
     # Define the path to the generations folder
