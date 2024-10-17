@@ -41,6 +41,7 @@ Get a better idea of how our platform works from our explainer video [here](http
   - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
 - [Screenshots and Usage Example](#screenshots-and-usage-example)
 - [References](#references)
+- [Prompts](#prompts)
 
 ## Release History
 
@@ -219,4 +220,8 @@ The product is to be used as a side assisstant for artists to search for artwork
 9. **Button**:
     - [Animation Bro](https://codepen.io/animationbro/pen/YzXqzLv)
 
-
+## Prompts
+1. **Inpainting Canvas**:
+   - Help me create a inpainting canvas.
+1. **Comments in CSS files**:
+   - Help me add comments in these CSS files. 
