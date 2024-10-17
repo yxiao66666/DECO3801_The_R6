@@ -580,21 +580,12 @@ export default function Upload() {
                                 onMouseDown={startDrawing}
                                 onMouseUp={stopDrawing}
                                 onMouseMove={draw}
-                                style={{ touchAction: 'none' }} // Add this line
-                                onTouchMove={(e) => {
-                                    preventScroll(e);
-                                    draw(e);
-                                }}
-                                onTouchStart={(e) => {
-                                    preventScroll(e);
-                                    startDrawing(e);
-                                }}
-                                onTouchEnd={(e) => {
-                                    preventScroll(e);
-                                    stopDrawing(e);
-                                }}
-                                width="800"
-                                height="600"
+                                onTouchStart={startDrawing}
+                                onTouchMove={draw}
+                                onTouchEnd={stopDrawing}
+                                style={{ touchAction: 'none' }} // Prevent scrolling
+                                width={800}  // Set the width attribute
+                                height={600} // Set the height attribute
                             />
                             <canvas
                                 id="drawingCanvasRef"
