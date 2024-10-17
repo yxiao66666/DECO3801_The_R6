@@ -286,10 +286,6 @@ export default function Upload() {
         return { x: clientX, y: clientY };
     };
 
-    const preventScroll = (e) => {
-        e.preventDefault();
-    };
-
     // Start drawing a rectangle when the user clicks on the canvas
     const startDrawing = (e) => {
         if (!selectedImage) {
