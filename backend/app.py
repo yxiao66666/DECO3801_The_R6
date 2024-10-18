@@ -43,6 +43,7 @@ webui_url = 'https://civil-tahr-stirring.ngrok-free.app'
 bb = StableDiffusionBackBone(webui_url)
 # bb = StableDiffusionBackBone()    # use this for local testing, and comment out the line above.
 
+# Initialising Database
 db.init_app(app)
 
 if __name__ == '__main__':
