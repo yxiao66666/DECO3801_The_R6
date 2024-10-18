@@ -7,7 +7,7 @@ export default function Header() {
     const [showPopup, setShowPopup] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true'); 
     const [haveAccount, setHaveAccount] = useState(false); 
-    const baseUrl = 'http://127.0.0.1:5000';
+    const baseUrl = process.env.REACT_APP_BASE_URL;
     const navigate = useNavigate(); // Initialise the useNavigate hook
 
     const handleLogin = () => {

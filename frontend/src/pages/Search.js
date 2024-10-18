@@ -13,7 +13,7 @@ export default function Search() {
     const [loading, setLoading] = useState(false); // Show or hide a loading indicator during searches
     const [savedImages, setSavedImages] = useState(new Set()); // Stores images that have been saved/bookmarked
     const [showSearchHistory, setShowSearchHistory] = useState(1); // Controls whether the search history is visible
-    const baseUrl = 'http://127.0.0.1:5000'; // Define the base URL for the backend API requests
+    const baseUrl = process.env.REACT_APP_BASE_URL;
     
     useEffect(() => {
         const id = localStorage.getItem('userId');
