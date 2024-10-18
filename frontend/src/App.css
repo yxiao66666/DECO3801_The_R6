@@ -7,6 +7,20 @@
   pointer-events: none;
 }
 
+html, body {
+  height: 100%;
+}
+
+main {
+  flex: 1; /* Allow main content to grow and fill the available space */
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

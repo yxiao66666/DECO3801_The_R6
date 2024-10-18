@@ -34,7 +34,7 @@
 
 /* Illustration styling */
 .illustration {
-  margin-top: 60px; /* Space above the illustration */
+  margin-top: 10px; /* Space above the illustration */
   max-width: 70%; /* Maximum width of the image set to 70% of its container */
   height: auto; /* Maintain aspect ratio */
 }
@@ -156,6 +156,10 @@
     height: 160px; /* Increase height of the decorative element */
     bottom: -90px; /* Adjust position */
   }
+}
+
+.single_advisor_profile {
+  margin: 10px auto; /* Center cards with auto margin */
 }
 
 /* Social media icons inside the advisor profile */

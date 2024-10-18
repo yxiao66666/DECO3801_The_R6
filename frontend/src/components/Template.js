@@ -2,13 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
+import '../App.css'; 
 
 // Template for all pages with a header and footer
 export default function Template({ children }) {
     return (
-        <>
+        <div className="wrapper">
             <Header />
-                {children}
+            <main>{children}</main>
             <Footer />
 
             {/* Stylesheet links for Bootstrap */}
@@ -16,7 +17,7 @@ export default function Template({ children }) {
             
             {/* Bootstrap bundle JS */}
             <script src="<?= base_url('../assets/dist/js/bootstrap.bundle.min.js'); ?>"></script>
-        </>
+        </div>
     );
 }
 

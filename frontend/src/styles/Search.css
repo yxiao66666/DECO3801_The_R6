@@ -1,201 +1,288 @@
 /* Main container with black background */
 .main {
-/* Main container with black background */
-.main {
     background-color: black;
-    height: 100vw; /* Full viewport width height */
+    height: 100vw; /* Full viewport width for the height */
 }
 
+.masonry {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    gap: 10px;
+    margin:  auto; /* Center grid and add margin */
+    width: 50%; /* Grid takes up 50% of container */
+    column-gap:1%; /* Space between columns */        
+    grid-auto-rows: auto;
+}
+
+.item {
+    background-color: #ffffff;
+    border-radius: 8px;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Full width */
+    margin: auto; /* Center the image */
+}
+
+.item:hover {
+    transform: translateY(5px);
+}
+
+/* Add specific dimensions or styling for the items, or dynamically adjust the row span */
+.item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+/* Background container with full viewport height and centered background */
 .background-container {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-size: cover; /* Cover entire container */
+    background-repeat: no-repeat; /* No repeating background */
+    background-position: center; /* Center the background image */
     background-color: black;
     color: white;
-    min-height: 100vh;
-    padding: 20px;
-}
-  
-.arty-image {
-    width: auto;
-    height: 18vw;
-    margin: 50px 0;
-}
-  
-.searchbar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    min-height: 100vh; /* Minimum height is full viewport */
+    padding: 20px; /* Padding around content */
 }
 
-.searchbar {
-    padding-left: 15px;
-    padding-right: 60px; /* Adjust width to accommodate icons */
-    width: 600px;
+/* Image styling with dynamic height */
+.arty-image {
+    width: auto; /* Auto-adjust width */
+    height: 18vw; /* Dynamic height based on viewport width */
+    margin: 50px 0; /* Top and bottom margin */
 }
-  
-.upload-icon {
+
+/* Upload icon positioning and styling */
+div .upload-icon {
     position: relative;
-    right: 50px;
-    top: 50%;
+    right: 60px; /* Move 60px to the right */
+    top: 50%; /* Align vertically */
+    transform: translateY(-50%); /* Center icon vertically */
+    width: 24px; /* Set icon size */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: 25px; /* Spacing from the top */
+}
+
+/* Save icon styling similar to upload icon */
+.save-icon {
     transform: translateY(-50%);
     width: 24px;
     cursor: pointer;
     margin-top: 25px;
+    position: absolute; /* Absolute position */
+    top: -9px; /* Position slightly above the container */
+    right: 1px; /* Slight adjustment to the right */
 }
-  
+
+/* Search button styling and alignment */
 .search-btn {
     position: relative;
-    right: 0;
-    top: 50%;
-    margin-top: 30px;
-    transform: translateY(-50%);
+    right: 0; /* Align to the right */
+    top: 50%; /* Align vertically */
+    margin-top: 30px; /* Margin from top */
+    transform: translateY(-50%); /* Center button vertically */
 }
 
+/* Hide file input by default */
+#file-upload {
+    display: none;
+}
+
+/* Loading container styling for centered content */
 .loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
 }
-  
+
+/* Loading icon size */
 .loading-icon {
-    width: 150px;
-    height: 150px;
+    width: 35vw; /* Width relative to viewport */
+    height: 25vw; /* Height relative to viewport */
 }
 
+/* Overlay during loading state */
+.loading-overlay {
+    position: fixed; /* Fixed position covering entire screen */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    display: flex; /* Flexbox to center content */
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000; /* Layer above other content */
+}
 
+/* Container for image preview with centered alignment */
 .image-preview-container {
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    text-align: center; /* Center text */
 }
-  
+
+/* Styling for image preview */
 .image-preview {
-    max-width: 500px;
-    max-height: 400px;
+    max-width: 100%; /* Adjust image to fit container */
+    max-height: 250px; /* Limit image height */
+    display: block; /* Display as a block element */
+    margin-bottom: 20px; /* Space below the image */
+    margin-top: 30px; /* Space above the image */
+    border-radius: 8px; /* Rounded corners */
 }
-  
+
+/* Discard button styling */
+.discard-button {
+    background-color: transparent; /* Transparent background */
+    color: white; /* White text */
+    border: 2px solid white; /* White border */
+    padding: 7px 15px; /* Padding inside the button */
+    border-radius: 10px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 15px; /* Font size */
+}
+
+/* Discard button hover effect */
+.discard-button:hover {
+    background-color: black; /* Black background on hover */
+    color: white; /* Keep text white */
+}
+
+/* Load more button styling */
 .load-more {
-    margin: auto;
-    cursor: pointer;
-    border: 2px solid white;
-    color: white;
-    border-radius: 5px;
-    text-align: center;
-    justify-content: center;
-    width: 50%;
-    display: flex
-    
+    margin: auto; /* Center button */
+    cursor: pointer; /* Pointer cursor */
+    border: 2px solid white; /* White border */
+    color: white; /* White text */
+    border-radius: 5px; /* Rounded corners */
+    text-align: center; /* Center text */
+    justify-content: center; /* Center flex items */
+    width: 50%; /* Set width to 50% of parent */
+    display: flex; /* Flex container */
 }
 
-
-/* Text description styling with white color, cursive font, and text shadow */
+/* Text description styling with cursive font and shadow */
 .description {
-    color: rgb(255, 255, 255); /* White text color */
-    font-size: 1.5em; /* Larger font size for emphasis */
-    font-family: cursive; /* Cursive font style */
-    text-shadow: 2px 4px 4px; /* Subtle shadow for text */
+    color: rgb(255, 255, 255); /* White text */
+    font-size: 1.5em; /* Larger font size */
+    font-family: cursive; /* Cursive font */
+    text-shadow: 2px 4px 4px; /* Subtle shadow */
+}
+
+/* Search bar container styling */
+.searchbar-container {
+    display: flex;
+    justify-content: center; /* Center content */
+    align-items: center; /* Vertically center */
+    position: relative; /* Relative positioning */
+    width: 60%; /* Width for the search bar container */
 }
 
 /* Search bar input styling */
 .searchbar {
-    height: 45px; /* Height of the search input field */
-    width: 575px; /* Width of the search bar */
-    font-size: 16px; /* Font size for the input text */
-    border-radius: 25px; /* Rounded edges for search bar */
-    border: none; /* No border for a cleaner look */
-    outline: none; /* Remove outline on focus */
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside input */
+    font-size: 16px; /* Font size */
+    border-radius: 10px; /* Rounded corners */
+    border: 1px solid #ccc; /* Light border */
+    box-sizing: border-box; /* Ensure padding is inside width */
+    outline: none; /* No outline when focused */
 }
 
-/* Masonry layout for image results */
-.image-grid {
-    column-count: 3; /* Number of columns in the masonry layout */
-    column-gap: 20px; /* Gap between columns */
-    margin: 20px auto; /* Center horizontally and add top/bottom margin */
-    width: 50%; /* Set maximum width to 70% */
+/* Search history dropdown styling */
+.search-history-dropdown {
+    position: absolute;
+    top: 100%; /* Position directly below search bar */
+    left: 0;
+    right: 0;
+    background-color: rgb(39, 39, 39); /* Dark background */
+    border-radius: 1px 1px 10px 10px; /* Rounded bottom corners */
+    max-height: 200px; /* Limit height */
+    overflow-y: auto; /* Scrollable if too long */
+    padding: 0;
+    margin: 0;
+    list-style-type: none; /* Remove bullet points */
+    z-index: 999; /* Layer above other content */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-/* Ensure images fit within their container */
-.image-cell {
-    display: inline-block; /* Allow images to align properly in columns */
-    margin-bottom: 20px; /* Space below each image */
-    width: 100%; /* Make sure the cell takes full width in the column */
+/* Styling for each search history item */
+.search-history-item {
+    display: flex; /* Flex layout */
+    justify-content: space-between; /* Space between text and delete button */
+    align-items: center; /* Center vertically */
+    padding: 10px; /* Padding inside each item */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 14px; /* Font size */
+    color: white; /* White text */
 }
 
-.results {
-    width: 100%; /* Ensure images fit within their container */
-    display: block; /* Remove inline spacing */
-    margin: 0 auto; /* Center images horizontally within the cell */
+/* Hover effect for search history items */
+.search-history-item:hover {
+    background-color: #565656; /* Dark background on hover */
 }
 
+/* Styling for search history text */
+.search-history-text {
+    flex: 1; /* Take up remaining space */
+    color: white; /* White text */
+}
 
-/* Search button styling */
+/* Delete button for search history */
+.search-history-delete {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: white; /* White text */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 12px; /* Smaller font size */
+    padding: 0 10px; /* Padding around button */
+}
+
+/* Styling for the search button */
 .search-btn {
-    background-color: black; /* Black button background */
-    border: none; /* No border for the button */
-    cursor: pointer; /* Pointer cursor on hover */
+    background-color: black; /* Black background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor */
     border-radius: 30px; /* Rounded button */
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
 }
 
-/* Search icon inside the search button */
+/* Search icon inside the button */
 .search-icon {
-    width: 30px; /* Width of the search icon */
-    height: 30px; /* Height of the search icon */
-    filter: invert(1); /* Invert color to make icon white */
-    width: 30px; /* Width of the search icon */
-    height: 30px; /* Height of the search icon */
-    filter: invert(1); /* Invert color to make icon white */
+    width: 30px; /* Icon width */
+    height: 30px; /* Icon height */
+    filter: invert(1); /* Invert colors to white */
 }
 
-/* Painting icon styling (presumably used elsewhere in the UI) */
-/* Painting icon styling (presumably used elsewhere in the UI) */
+/* Painting icon styling */
 .painting-icon {
-    width: 60px; /* Width of the painting icon */
-    height: 60px; /* Height of the painting icon */
-    filter: invert(1); /* Invert color to make icon white */
+    width: 60px; /* Icon width */
+    height: 60px; /* Icon height */
+    filter: invert(1); /* Invert colors to white */
 }
 
-/* Responsive design */
+/* Responsive design adjustments */
 @media (max-width: 1400px) {
-    .image-grid {
-        width: 50%; /* Width for medium-sized screens */
+    .masonry {
+        width: 70%; /* Increase width for medium-sized screens */
     }
 }
 
 @media (max-width: 1000px) {
-    .image-grid {
-        width: 70%; /* Width for small screens */
+    .masonry {
+        width: 90%; /* Increase width for smaller screens */
     }
 }
 
-@media (max-width: 800px) {
-    .image-grid {
-        width: 100%; /* Width for extra small screens */
-    }
-}
-    width: 60px; /* Width of the painting icon */
-    height: 60px; /* Height of the painting icon */
-    filter: invert(1); /* Invert color to make icon white */
-}
-
-/* Responsive design */
-@media (max-width: 1400px) {
-    .image-grid {
-        width: 50%; /* Width for medium-sized screens */
-    }
-}
-
-@media (max-width: 1000px) {
-    .image-grid {
-        width: 70%; /* Width for small screens */
-    }
-}
-
-@media (max-width: 800px) {
-    .image-grid {
-        width: 100%; /* Width for extra small screens */
+@media (max-width: 700px) {
+    .masonry {
+        width: 100%; /* Full width */
     }
 }
