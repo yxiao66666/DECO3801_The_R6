@@ -34,14 +34,24 @@ Get a better idea of how our platform works from our explainer video [here](http
 
 # Table of Contents
 
-- [Release History](#release-history)
-- [Local Installation and Running](#local-installation-and-running)
-  - [Front-end](#front-end)
-  - [Flask Server (Back-end)](#flask-server-back-end)
-  - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
-- [Screenshots and Usage Example](#screenshots-and-usage-example)
-- [References](#references)
-- [Prompts](#prompts)
+- [Arty - Digital Art Assisstant by Team The Ryuto 6](#arty---digital-art-assisstant-by-team-the-ryuto-6)
+  - [Main features](#main-features)
+  - [Contributors](#contributors)
+- [Table of Contents](#table-of-contents)
+  - [Release History](#release-history)
+  - [Local Installation and Running](#local-installation-and-running)
+    - [Front-end](#front-end)
+      - [Installation](#installation)
+      - [Running](#running)
+    - [Flask Server (Back-end)](#flask-server-back-end)
+      - [Installation](#installation-1)
+      - [Running](#running-1)
+    - [Stable Diffusion Backbone (Back-end)](#stable-diffusion-backbone-back-end)
+      - [Installation](#installation-2)
+      - [Running](#running-2)
+  - [Screenshots and Usage Example](#screenshots-and-usage-example)
+  - [References](#references)
+  - [Prompts](#prompts)
 
 ## Release History
 
@@ -132,7 +142,10 @@ Environment variable setup:
     DB_LINK = <private link to our database>
     ```
 
-    _\*Contact one of our team members to get a private link for testing._
+    _\*For testing purposes the link is supplied below_
+    ```
+    mysql+pymysql://BACKEND:0aLScGcj0gWhB$YY1noB@localhost/ArtAssistant
+    ```
 
 #### Running
 
@@ -142,7 +155,7 @@ Environment variable setup:
     ssh -L 3306:localhost:3306 -J <your_uq_account>@remote.labs.eait.uq.edu.au <your_uq_account>@arty.zones.eait.uq.edu.au
     ```
 
-    Make sure to keep this termianl open.
+    Make sure to keep this terminal open. This connects to the mysql database run on UQ-Zone as it can be ea pain to set up locally. If you need to test the database and don't have access, please contact Jason as he has been granted access and should be able to add other users.
 
     _\*If this does not work you may have to set your ssh key to the EAIT Remote Desktop first!_
 
