@@ -142,11 +142,6 @@ Environment variable setup:
     DB_LINK = <private link to our database>
     ```
 
-    _\*For testing purposes the link is supplied below_
-    ```
-    mysql+pymysql://BACKEND:0aLScGcj0gWhB$YY1noB@localhost/ArtAssistant
-    ```
-
 #### Running
 
 1. Make an SSH tunnel to UQ-Zone by entering the command:
