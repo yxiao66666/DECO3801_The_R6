@@ -7,7 +7,7 @@
 Arty is a productivity tool specifically tailored for digital 2D art illustrators.
 It's a platform that allows artists to automate frequent, repetitive, and time-consuming tasks like reference searching, idea organisation and visualisation, while ensuring the creative process remains entirely in artist’s control.
 
-Link to our website hosted on UQ-Zone: [https://arty.uqcloud.net/](https://arty.uqcloud.net/) 
+Link to our website hosted on UQ-Zone (UQ credentials needed): [https://arty.uqcloud.net/](https://arty.uqcloud.net/) 
 
 _\*Generative AI and Image searching may not work as our cloud GPU isn't always online._
 
