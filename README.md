@@ -230,7 +230,7 @@ The product is to be used as a side assisstant for artists to search for artwork
 10. **Icon**:
     - [FlatIcon](https://www.flaticon.com/)
 
-## Prompts
+## AI Prompts
 1. **Inpainting Canvas**:
    - Help me create a inpainting canvas.
 2. **Comments in CSS files**:
